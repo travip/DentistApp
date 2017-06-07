@@ -10,7 +10,9 @@ namespace CylinderMenu
         public static MenuManager instance { get; private set; }
 
         public MenuRow currentMenu;
-        public MenuRow prevMenu;
+        public MenuRow belowMenu;
+
+		private MenuRow TempAboveMenu;
 
         public float moveTime = 0.1f;
         private bool isMoving = false;
@@ -29,7 +31,8 @@ namespace CylinderMenu
             InputManager.instance.goRight.AddListener(MoveMenuRight);
             InputManager.instance.goLeft.AddListener(MoveMenuLeft);
             InputManager.instance.goUp.AddListener(MoveMenuUp);
-        }
+			InputManager.instance.goDown.AddListener(MoveMenuDown);
+		}
 
         public void MoveMenuRight()
         {
@@ -46,11 +49,44 @@ namespace CylinderMenu
 			if (isMoving)
 				return;
 
-			Vector3 newPosition = transform.position + Vector3.down * 8;
-            currentMenu = currentMenu.menuItems[currentMenu.selectedItem].menuOnSelect;
+			MenuRow newMenu = currentMenu.menuItems[currentMenu.selectedItem].menuOnSelect;
 
-            StartCoroutine(SmoothMovement(newPosition));
+			if (newMenu == null)
+				return;
+
+			belowMenu = currentMenu;
+			currentMenu = newMenu;
+
+			Debug.Log(currentMenu);
+			currentMenu.gameObject.SetActive(true);
+
+			Vector3 newPosition = transform.position;
+			newPosition.y = -currentMenu.transform.localPosition.y;
+
+			StartCoroutine(SmoothMovement(newPosition));
         }
+
+		public void MoveMenuDown()
+		{
+			if (isMoving)
+				return;
+			if (belowMenu == null)
+				return;
+
+			TempAboveMenu = currentMenu;
+			currentMenu = belowMenu;
+			belowMenu = null;
+
+			Vector3 newPosition = transform.position;
+			newPosition.y = -currentMenu.transform.localPosition.y;
+
+			StartCoroutine(BackMenu(newPosition));
+		}
+
+		private IEnumerator BackMenu(Vector3 end) {
+			yield return StartCoroutine(SmoothMovement(end));
+			TempAboveMenu.gameObject.SetActive(false);
+		}
 
         private IEnumerator SmoothMovement(Vector3 end)
         {

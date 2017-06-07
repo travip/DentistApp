@@ -13,12 +13,10 @@ namespace CylinderMenu
         public float rotateTime = 0.1f;
         private bool isRotating = false;
 
+		IEnumerator movement;
 
         public void MoveRight()
         {
-			if (isRotating)
-				return;
-
 			if (selectedItem < menuItems.Count - 1)
             {
 				selectedItem++;
@@ -28,9 +26,6 @@ namespace CylinderMenu
 
         public void MoveLeft()
         {
-			if (isRotating)
-				return;
-
             if (selectedItem > 0)
             {
 				selectedItem--;
@@ -39,8 +34,14 @@ namespace CylinderMenu
         }
 
 		private void MoveToSelectedItem() {
+
+			if (movement != null)
+				StopCoroutine(movement);
+
 			Quaternion quart = Quaternion.Euler(90f, 0f, 45f * (selectedItem));
-			StartCoroutine(SmoothRotation(quart));
+
+			movement = SmoothRotation(quart);
+			StartCoroutine(movement);
 		}
 
         private IEnumerator SmoothRotation(Quaternion end)
