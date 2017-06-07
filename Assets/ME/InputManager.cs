@@ -9,6 +9,8 @@ public class InputManager : MonoBehaviour {
 
     public UnityEvent goRight;
     public UnityEvent goLeft;
+    public UnityEvent goUp;
+    public UnityEvent goDown;
 
     private void Awake()
     {
@@ -27,6 +29,14 @@ public class InputManager : MonoBehaviour {
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             goLeft.Invoke();
-        }	
-	}
+        }
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            goUp.Invoke();
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            goDown.Invoke();
+        }
+    }
 }

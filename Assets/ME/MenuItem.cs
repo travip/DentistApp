@@ -9,6 +9,7 @@ namespace CylinderMenu {
     public class MenuItem : MonoBehaviour {
 
         public string itemName;
+        public Menu menuOnSelect;
 
         // Use this for initialization
         void Start() {
