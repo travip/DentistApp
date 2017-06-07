@@ -10,9 +10,7 @@ namespace CylinderMenu
         public static MenuManager instance { get; private set; }
 
         public MenuRow currentMenu;
-        public MenuRow belowMenu;
-
-		private MenuRow TempAboveMenu;
+        public Transform spentMenuContainer;
 
         public float moveTime = 0.1f;
         private bool isMoving = false;
@@ -27,7 +25,6 @@ namespace CylinderMenu
         // Use this for initialization
         void Start()
         {
-            Debug.Log("Add Listener");
             InputManager.instance.goRight.AddListener(MoveMenuRight);
             InputManager.instance.goLeft.AddListener(MoveMenuLeft);
             InputManager.instance.goUp.AddListener(MoveMenuUp);
@@ -49,15 +46,18 @@ namespace CylinderMenu
 			if (isMoving)
 				return;
 
-			MenuRow newMenu = currentMenu.menuItems[currentMenu.selectedItem].menuOnSelect;
-
-			if (newMenu == null)
+            // Maybe simplify this somehow
+			if (currentMenu.selectedItem.subMenuItems.Count == 0)
 				return;
 
-			belowMenu = currentMenu;
-			currentMenu = newMenu;
+            MenuItem selectedItem = currentMenu.selectedItem;
 
-			Debug.Log(currentMenu);
+            // Set the above menu to be be the selected items submenu
+			currentMenu.aboveMenu.menuItems = currentMenu.selectedItem.subMenuItems;
+
+            // Change the current menu
+            currentMenu = currentMenu.aboveMenu;
+            currentMenu.InitializeMenu(selectedItem);         
 			currentMenu.gameObject.SetActive(true);
 
 			Vector3 newPosition = transform.position;
@@ -70,23 +70,24 @@ namespace CylinderMenu
 		{
 			if (isMoving)
 				return;
-			if (belowMenu == null)
+
+			if (currentMenu.belowMenu == null)
 				return;
 
-			TempAboveMenu = currentMenu;
-			currentMenu = belowMenu;
-			belowMenu = null;
-
 			Vector3 newPosition = transform.position;
-			newPosition.y = -currentMenu.transform.localPosition.y;
+			newPosition.y = -currentMenu.belowMenu.transform.localPosition.y;
 
+            currentMenu = currentMenu.belowMenu;
 			StartCoroutine(BackMenu(newPosition));
 		}
 
+        
 		private IEnumerator BackMenu(Vector3 end) {
 			yield return StartCoroutine(SmoothMovement(end));
-			TempAboveMenu.gameObject.SetActive(false);
+            currentMenu.aboveMenu.TerminateMenu(spentMenuContainer);
+			currentMenu.aboveMenu.gameObject.SetActive(false);         
 		}
+        
 
         private IEnumerator SmoothMovement(Vector3 end)
         {

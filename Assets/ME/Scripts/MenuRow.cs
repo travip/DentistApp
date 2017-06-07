@@ -8,27 +8,57 @@ namespace CylinderMenu
     {
 
 		public List<MenuItem> menuItems;
-        public int selectedItem = 0;
+        private int selectedIndex = 0;
+
+        public MenuRow aboveMenu;
+        public MenuRow belowMenu;
 
         public float rotateTime = 0.1f;
         private bool isRotating = false;
 
 		IEnumerator movement;
 
+        public MenuItem selectedItem
+        {
+            get { return menuItems[selectedIndex]; }
+        }
+
+        // Dynamic creation of menu
+        public void InitializeMenu(MenuItem parentItem)
+        {
+            // Need to track index for proper positioning
+            for(int i = 0; i < menuItems.Count; i++)
+            {
+                // Some of this might be able to be done in MenuItem or set beforehand
+                menuItems[i].transform.SetParent(transform);
+                menuItems[i].transform.localPosition = Vector3.zero;
+                menuItems[i].transform.localRotation = Quaternion.Euler(new Vector3(0, 0, -45f * i));
+            }
+        }
+
+        // Remove menu items - put them in the faraway land where they wont get in our way
+        public void TerminateMenu(Transform container)
+        {
+            foreach(MenuItem item in menuItems)
+            {
+                item.transform.SetParent(container);
+            }
+        }
+
         public void MoveRight()
         {
-			if (selectedItem < menuItems.Count - 1)
+			if (selectedIndex < menuItems.Count - 1)
             {
-				selectedItem++;
+                selectedIndex++;
 				MoveToSelectedItem();
             }
         }
 
         public void MoveLeft()
         {
-            if (selectedItem > 0)
+            if (selectedIndex > 0)
             {
-				selectedItem--;
+                selectedIndex--;
 				MoveToSelectedItem();
 			}
         }
@@ -38,7 +68,7 @@ namespace CylinderMenu
 			if (movement != null)
 				StopCoroutine(movement);
 
-			Quaternion quart = Quaternion.Euler(90f, 0f, 45f * (selectedItem));
+			Quaternion quart = Quaternion.Euler(90f, 0f, 45f * (selectedIndex));
 
 			movement = SmoothRotation(quart);
 			StartCoroutine(movement);
