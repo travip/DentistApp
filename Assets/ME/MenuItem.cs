@@ -9,16 +9,7 @@ namespace CylinderMenu {
     public class MenuItem : MonoBehaviour {
 
         public string itemName;
-        public Menu menuOnSelect;
+        public MenuRow menuOnSelect;
 
-        // Use this for initialization
-        void Start() {
-            
-        }
-
-        // Update is called once per frame
-        void Update() {
-
-        }
     }
 }

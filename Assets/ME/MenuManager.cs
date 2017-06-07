@@ -9,13 +9,10 @@ namespace CylinderMenu
 
         public static MenuManager instance { get; private set; }
 
-        public Menu currentMenu;
-        public Menu prevMenu;
-
-        public MenuItem selectedItem;
+        public MenuRow currentMenu;
+        public MenuRow prevMenu;
 
         public float moveTime = 0.1f;
-        private float inverseMoveTime;
         private bool isMoving = false;
 
         private void Awake() {
@@ -32,14 +29,6 @@ namespace CylinderMenu
             InputManager.instance.goRight.AddListener(MoveMenuRight);
             InputManager.instance.goLeft.AddListener(MoveMenuLeft);
             InputManager.instance.goUp.AddListener(MoveMenuUp);
-
-            inverseMoveTime = 1f / moveTime;
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
 
         public void MoveMenuRight()
@@ -54,25 +43,32 @@ namespace CylinderMenu
 
         public void MoveMenuUp()
         {
-            Vector3 newPosition = transform.position + Vector3.down * 8;
-            currentMenu = selectedItem.menuOnSelect;
+			if (isMoving)
+				return;
+
+			Vector3 newPosition = transform.position + Vector3.down * 8;
+            currentMenu = currentMenu.menuItems[currentMenu.selectedItem].menuOnSelect;
+
             StartCoroutine(SmoothMovement(newPosition));
         }
 
         private IEnumerator SmoothMovement(Vector3 end)
         {
             isMoving = true;
-            float sqrRemainingDistance = (transform.position - end).sqrMagnitude;
-            while (sqrRemainingDistance > float.Epsilon)
+
+			Vector3 startPos = transform.position;
+			float t = 0;
+
+            while (t < 1)
             {
-                Vector3 newPosition = Vector3.MoveTowards(transform.position, end, inverseMoveTime * Time.deltaTime);
-                transform.position = newPosition;
-                sqrRemainingDistance = (transform.position - end).sqrMagnitude;
+				t += Time.deltaTime / moveTime;
+				t = Mathf.Clamp01(t);
 
-                yield return null;
+				transform.position = Vector3.Lerp(startPos, end, Easing.Quadratic.InOut(t));
+				yield return null;
             }
-            isMoving = false;
 
+            isMoving = false;
         }
     }
 }
