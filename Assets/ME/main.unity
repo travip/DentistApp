@@ -173,8 +173,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7117498765443e848a6a5fcd0fa88e36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menuItems: []
-  rotateTime: 0.5
+  menuItems:
+  - {fileID: 499975831}
+  - {fileID: 1065480273}
+  - {fileID: 1517308827}
+  rotateTime: 0.1
 --- !u!1 &325198347
 GameObject:
   m_ObjectHideFlags: 0
