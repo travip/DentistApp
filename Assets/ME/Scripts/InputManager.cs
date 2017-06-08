@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
-public class InputManager : MonoBehaviour {
 
+public abstract class InputManager : MonoBehaviour
+{
     public static InputManager instance { get; private set; }
 
     public UnityEvent goRight;
@@ -20,23 +19,5 @@ public class InputManager : MonoBehaviour {
             Destroy(this);
     }
 
-    // Update is called once per frame
-    void Update () {
-        if(Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            goRight.Invoke();
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            goLeft.Invoke();
-        }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            goUp.Invoke();
-        }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            goDown.Invoke();
-        }
-    }
+    public abstract Vector2 Get2DMovement();
 }
