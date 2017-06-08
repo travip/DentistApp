@@ -9,9 +9,12 @@ namespace CylinderMenu
 
         public static MenuManager instance { get; private set; }
 
-        public MenuRow currentMenu;
+		public GameObject MenuRowPrefab;
+
+        public MenuRow currentRow;
         public Transform spentMenuContainer;
 
+		public float rowGap = 10f;
         public float moveTime = 0.1f;
         private bool isMoving = false;
 
@@ -29,16 +32,28 @@ namespace CylinderMenu
             InputManager.instance.goLeft.AddListener(MoveMenuLeft);
             InputManager.instance.goUp.AddListener(MoveMenuUp);
 			InputManager.instance.goDown.AddListener(MoveMenuDown);
+
+			currentRow = transform.Find("First Row").GetComponent<MenuRow>();
+
+			for (int i = 0; i < currentRow.transform.childCount; i++) {
+				currentRow.menuItems.Add(currentRow.transform.GetChild(i).GetComponent<MenuItem>());
+			}
+
+			/*
+			// Generate starting MenuRow
+			currentRow = Instantiate(NewMenuRow, transform).GetComponent<MenuRow>();
+			currentRow.FillMenuItems(transform . find menu items);
+			*/
 		}
 
-        public void MoveMenuRight()
+		public void MoveMenuRight()
         {
-            currentMenu.MoveRight();
+            currentRow.MoveRight();
         }
 
         public void MoveMenuLeft()
         {
-            currentMenu.MoveLeft();
+            currentRow.MoveLeft();
         }
 
         public void MoveMenuUp()
@@ -47,21 +62,19 @@ namespace CylinderMenu
 				return;
 
             // Maybe simplify this somehow
-			if (currentMenu.selectedItem.subMenuItems.Count == 0)
+			if (currentRow.selectedItem.subMenuItems.Count == 0)
 				return;
 
-            MenuItem selectedItem = currentMenu.selectedItem;
+            MenuRow prevRow = currentRow;
 
-            // Set the above menu to be be the selected items submenu
-			currentMenu.aboveMenu.menuItems = currentMenu.selectedItem.subMenuItems;
+			// Generate new MenuRow and set its list of menu items
+			currentRow = Instantiate(MenuRowPrefab, transform).GetComponent<MenuRow>();
+			currentRow.transform.position = new Vector3(prevRow.transform.position.x, prevRow.transform.position.y + rowGap, prevRow.transform.position.z);
 
-            // Change the current menu
-            currentMenu = currentMenu.aboveMenu;
-            currentMenu.InitializeMenu(selectedItem);         
-			currentMenu.gameObject.SetActive(true);
+			currentRow.InitializeMenu(prevRow);
 
 			Vector3 newPosition = transform.position;
-			newPosition.y = -currentMenu.transform.localPosition.y;
+			newPosition.y = -currentRow.transform.localPosition.y;
 
 			StartCoroutine(SmoothMovement(newPosition));
         }
@@ -71,21 +84,21 @@ namespace CylinderMenu
 			if (isMoving)
 				return;
 
-			if (currentMenu.belowMenu == null)
+			if (currentRow.belowRow == null)
 				return;
 
 			Vector3 newPosition = transform.position;
-			newPosition.y = -currentMenu.belowMenu.transform.localPosition.y;
+			newPosition.y = -currentRow.belowRow.transform.localPosition.y;
 
-            currentMenu = currentMenu.belowMenu;
-			StartCoroutine(BackMenu(newPosition));
+			MenuRow prevRow = currentRow;
+            currentRow = currentRow.belowRow;
+			StartCoroutine(BackMenu(newPosition, prevRow));
 		}
 
         
-		private IEnumerator BackMenu(Vector3 end) {
+		private IEnumerator BackMenu(Vector3 end, MenuRow prevRow) {
 			yield return StartCoroutine(SmoothMovement(end));
-            currentMenu.aboveMenu.TerminateMenu(spentMenuContainer);
-			currentMenu.aboveMenu.gameObject.SetActive(false);         
+			prevRow.TerminateMenu(spentMenuContainer);       
 		}
         
 

@@ -10,8 +10,7 @@ namespace CylinderMenu
 		public List<MenuItem> menuItems;
         private int selectedIndex = 0;
 
-        public MenuRow aboveMenu;
-        public MenuRow belowMenu;
+        public MenuRow belowRow;
 
         public float rotateTime = 0.1f;
         private bool isRotating = false;
@@ -24,10 +23,14 @@ namespace CylinderMenu
         }
 
         // Dynamic creation of menu
-        public void InitializeMenu(MenuItem parentItem)
+        public void InitializeMenu(MenuRow parentRow)
         {
-            // Need to track index for proper positioning
-            for(int i = 0; i < menuItems.Count; i++)
+			belowRow = parentRow;
+			menuItems = belowRow.selectedItem.subMenuItems;
+			gameObject.SetActive(true);
+
+			// Need to track index for proper positioning
+			for (int i = 0; i < menuItems.Count; i++)
             {
                 // Some of this might be able to be done in MenuItem or set beforehand
                 menuItems[i].transform.SetParent(transform);
@@ -43,6 +46,10 @@ namespace CylinderMenu
             {
                 item.transform.SetParent(container);
             }
+
+			menuItems = null;
+
+			Destroy(gameObject);
         }
 
         public void MoveRight()
