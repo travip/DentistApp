@@ -9,6 +9,13 @@ namespace CylinderMenu
 
         public static MenuManager instance { get; private set; }
 
+		public enum SelectAction {
+			subMenu,
+			imageView,
+			webcam
+		}
+
+
 		public GameObject MenuRowPrefab;
 
         public MenuRow currentRow;
@@ -18,7 +25,10 @@ namespace CylinderMenu
         public float moveTime = 0.1f;
         private bool isMoving = false;
 
-        private void Awake() {
+		
+
+
+		private void Awake() {
             if (instance == null || instance == this)
                 instance = this;
             else
@@ -49,11 +59,6 @@ namespace CylinderMenu
 			currentRow.FillMenuItems(transform . find menu items);
 			*/
 
-			// Set up menu actions
-			MenuAction.subMenu = MoveMenuUp;
-			MenuAction.imageView = ImageView;
-			MenuAction.webcam = StartWebcam;
-
 		}
 
 		public void MoveMenuRight()
@@ -67,10 +72,23 @@ namespace CylinderMenu
         }
 
 
-
-		public void SelectMenuItem() {
-			MenuAction.GetDelegate(currentRow.selectedItem.selectAction)();
+		public void SelectMenuItem()
+		{
+			switch (currentRow.selectedItem.selectAction) {
+				case MenuManager.SelectAction.subMenu:
+					MoveMenuUp();
+					break;
+				case MenuManager.SelectAction.imageView:
+					ImageView();
+					break;
+				case MenuManager.SelectAction.webcam:
+					StartWebcam();
+					break;
+				default:
+					break;
+			}
 		}
+
 
 		public void ImageView() {
 			Debug.Log("Viewing Image");

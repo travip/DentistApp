@@ -18,7 +18,7 @@ namespace CylinderMenu {
 
         public string itemName;
 		public Texture menuPic;
-		public MenuAction.SelectAction selectAction;
+		public MenuManager.SelectAction selectAction;
 
 		private GameObject pic;
 
