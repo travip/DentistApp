@@ -38,39 +38,44 @@ public class ImageViewer : MonoBehaviour
 
 		gameObject.SetActive(true);
         StartCoroutine(InputGracePeriod());
-		StartCoroutine(AppearAnimation(0.5f));
+
+		Vector3 start = picContainerOffset;
+		start.z = 9f;
+		StartCoroutine(ZoomAnimation(0.5f, start, picContainerOffset, new Vector3(5.87f, 4.8f, 1f), new Vector3(15f, 15f, 1f)));
     }
 
 	public void HideImage()
 	{
 		viewingImage = false;
-		mat.mainTexture = null;
-		gameObject.SetActive(false);
+		StartCoroutine(HideAnimation());
 	}
 
-	private IEnumerator AppearAnimation(float animTime) {
-		Vector3 p = picContainerOffset;
-		p.z = 9f;
-		transform.position = p;
+	private IEnumerator HideAnimation() {
+		Vector3 end = picContainerOffset;
+		end.z = 9f;
+		yield return StartCoroutine(ZoomAnimation(0.5f, picContainerOffset, end, new Vector3(15f, 15f, 1f), new Vector3(5.87f, 4.8f, 1f)));
 
-		Vector3 startPos = p;
-		Vector3 startScale = new Vector3 (5.87f, 4.8f, 1f);
-		Vector3 endScale = new Vector3(15f, 15f, 1f);
+		Debug.Log("1");
+		mat.mainTexture = null;
+		gameObject.SetActive(false);
+		transform.localScale = new Vector3(15f, 15f, 1f);
+	}
 
-		Vector3 s = startScale;
-		transform.localScale = s;
-
+	private IEnumerator ZoomAnimation(float animTime, Vector3 startPos, Vector3 endPos, Vector3 startScale, Vector3 endScale)
+	{
+		transform.position = startPos;
+		transform.localScale = startScale;
+		Debug.Break();
 		float t = 0;
 		while (t < 1) {
 			t += Time.deltaTime / animTime;
 
-			p = Vector3.Lerp(startPos, picContainerOffset, t);
-			s = Vector3.Lerp(startScale, endScale, t);
-			transform.position = p;
-			transform.localScale = s;
+			float tEased = Easing.Quadratic.Out(t);
+			tEased = t;
+			transform.position = Vector3.Lerp(startPos, endPos, tEased);
+			transform.localScale = Vector3.Lerp(startScale, endScale, tEased);
 
 			yield return null;
-			//Debug.Break();
 		}
 	}
 
