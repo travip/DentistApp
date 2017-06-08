@@ -106,7 +106,7 @@ namespace CylinderMenu
 
 			// Show the full sized pic
 			imageViewer.ViewImage(currentRow.selectedItem.FullSizedPic);
-		}
+        }
 
 		public void ExitImageView()
 		{

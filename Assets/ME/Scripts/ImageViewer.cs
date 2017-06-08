@@ -35,27 +35,28 @@ public class ImageViewer : MonoBehaviour
 		clampHigh = new Vector2(topRightView.x - extent.x, topRightView.y - extent.y);
 		clampLow = new Vector2(bottomLeftView.x + extent.x, bottomLeftView.y + extent.y);
 
+        transform.position = new Vector3(0, 15f, 5f);
 
 		gameObject.SetActive(true);
         StartCoroutine(InputGracePeriod());
-
-		Vector3 start = picContainerOffset;
-		start.z = 9f;
-		//StartCoroutine(ZoomAnimation(0.5f, start, picContainerOffset, new Vector3(5.87f, 4.8f, 1f), new Vector3(15f, 15f, 1f)));
-		transform.position = new Vector3(0f, 15f, 5f);
     }
 
 	public void HideImage()
 	{
 		viewingImage = false;
-		//StartCoroutine(HideAnimation());
-		DeactivateAfter(0.5f);
-	}
+        StartCoroutine(ToggleActiveAfterSeconds(0.5f));
+    }
+
+    private IEnumerator ToggleActiveAfterSeconds(float t)
+    {
+        yield return new WaitForSeconds(t);
+        gameObject.SetActive(!gameObject.activeSelf);
+    }
 
 	private IEnumerator HideAnimation() {
 		Vector3 end = picContainerOffset;
 		end.z = 9f;
-		yield return StartCoroutine(ZoomAnimation(0.5f, picContainerOffset, end, new Vector3(15f, 15f, 1f), new Vector3(5.87f, 4.8f, 1f)));
+		yield return StartCoroutine(ZoomAnimation(0.5f, transform.position, end, new Vector3(15f, 15f, 1f), new Vector3(5.87f, 4.8f, 1f)));
 
 		mat.mainTexture = null;
 		gameObject.SetActive(false);
@@ -86,6 +87,23 @@ public class ImageViewer : MonoBehaviour
 			yield return null;
 		}
 	}
+
+    private IEnumerator ZoomAnimation(float animTime, Vector3 startPos, Vector3 endPos)
+    {
+        transform.position = startPos;
+        float t = 0;
+
+        while (t < 1)
+        {
+            t += Time.deltaTime / animTime;
+
+            float tEased = Easing.Quadratic.Out(t);
+            tEased = t;
+            transform.position = Vector3.Lerp(startPos, endPos, tEased);
+
+            yield return null;
+        }
+    }
 
     private IEnumerator InputGracePeriod()
     {
