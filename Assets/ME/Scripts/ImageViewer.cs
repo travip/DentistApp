@@ -5,7 +5,7 @@ using UnityEngine;
 // Handle viewing of image
 public class ImageViewer : MonoBehaviour {
 
-    public Texture2D image;
+    public Texture image;
 
     public bool viewingImage;
 
@@ -19,7 +19,7 @@ public class ImageViewer : MonoBehaviour {
         if (viewingImage)
         {
             Vector2 movement = InputManager.instance.Get2DMovement();
-            transform.Translate(new Vector3(movement.x/100, movement.y/100, 0));
+            transform.Translate(movement);
         }
 	}
 }

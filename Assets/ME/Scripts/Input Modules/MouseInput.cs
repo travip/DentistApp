@@ -10,6 +10,8 @@ public class MouseInput : InputManager {
     private Vector3 mouseDiff = Vector3.zero;
     private Vector3 mouseLast = Vector3.zero;
 
+    public float scrollSpeed = 1;
+
     // Grace period at start of app
     void Start()
     {
@@ -63,6 +65,6 @@ public class MouseInput : InputManager {
 
     public override Vector2 Get2DMovement()
     {
-        return mouseDiff;
+        return Vector2.ClampMagnitude(mouseDiff, 1.414f) * scrollSpeed;
     }
 }

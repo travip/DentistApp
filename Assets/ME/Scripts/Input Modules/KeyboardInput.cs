@@ -6,6 +6,8 @@ using UnityEngine.Events;
 
 public class KeyboardInput : InputManager
 {
+    public float scrollSpeed = 1f;
+
     // Update is called once per frame
     void Update()
     {
@@ -29,6 +31,9 @@ public class KeyboardInput : InputManager
 
     public override Vector2 Get2DMovement()
     {
-        return Vector2.zero;
+        
+        float horz = Input.GetAxis("Horizontal");
+        float vert = Input.GetAxis("Vertical");
+        return new Vector2(horz, vert) * scrollSpeed;
     }
 }
