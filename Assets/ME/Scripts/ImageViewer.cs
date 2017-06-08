@@ -36,15 +36,42 @@ public class ImageViewer : MonoBehaviour
 		clampLow = new Vector2(bottomLeftView.x + extent.x, bottomLeftView.y + extent.y);
 
 
-		transform.position = picContainerOffset; 
 		gameObject.SetActive(true);
         StartCoroutine(InputGracePeriod());
+		StartCoroutine(AppearAnimation(0.5f));
     }
 
 	public void HideImage()
 	{
+		viewingImage = false;
 		mat.mainTexture = null;
 		gameObject.SetActive(false);
+	}
+
+	private IEnumerator AppearAnimation(float animTime) {
+		Vector3 p = picContainerOffset;
+		p.z = 9f;
+		transform.position = p;
+
+		Vector3 startPos = p;
+		Vector3 startScale = new Vector3 (5.87f, 4.8f, 1f);
+		Vector3 endScale = new Vector3(15f, 15f, 1f);
+
+		Vector3 s = startScale;
+		transform.localScale = s;
+
+		float t = 0;
+		while (t < 1) {
+			t += Time.deltaTime / animTime;
+
+			p = Vector3.Lerp(startPos, picContainerOffset, t);
+			s = Vector3.Lerp(startScale, endScale, t);
+			transform.position = p;
+			transform.localScale = s;
+
+			yield return null;
+			//Debug.Break();
+		}
 	}
 
     private IEnumerator InputGracePeriod()
