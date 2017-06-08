@@ -29,15 +29,19 @@ namespace CylinderMenu
 			menuItems = belowRow.selectedItem.subMenuItems;
 			gameObject.SetActive(true);
 
-			// Need to track index for proper positioning
-			for (int i = 0; i < menuItems.Count; i++)
-            {
-                // Some of this might be able to be done in MenuItem or set beforehand
-                menuItems[i].transform.SetParent(transform);
-                menuItems[i].transform.localPosition = Vector3.zero;
-                menuItems[i].transform.localRotation = Quaternion.Euler(new Vector3(0, 0, -45f * i));
-            }
+			PositionMenuItems();
         }
+
+		public void PositionMenuItems() {
+			// Need to track index for proper positioning
+			for (int i = 0; i < menuItems.Count; i++) {
+				// Some of this might be able to be done in MenuItem or set beforehand
+				menuItems[i].transform.SetParent(transform);
+				menuItems[i].transform.localPosition = Vector3.zero;
+				menuItems[i].transform.localRotation = Quaternion.Euler(new Vector3(0, 45f * i, 0));
+				menuItems[i].gameObject.SetActive(true);
+			}
+		}
 
         // Remove menu items - put them in the faraway land where they wont get in our way
         public void TerminateMenu(Transform container)
@@ -75,7 +79,7 @@ namespace CylinderMenu
 			if (movement != null)
 				StopCoroutine(movement);
 
-			Quaternion quart = Quaternion.Euler(90f, 0f, 45f * (selectedIndex));
+			Quaternion quart = Quaternion.Euler(0f, -45f * (selectedIndex), 0f);
 
 			movement = SmoothRotation(quart);
 			StartCoroutine(movement);

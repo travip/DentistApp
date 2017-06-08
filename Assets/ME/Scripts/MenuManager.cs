@@ -36,9 +36,13 @@ namespace CylinderMenu
 			currentRow = transform.Find("First Row").GetComponent<MenuRow>();
 
 			for (int i = 0; i < currentRow.transform.childCount; i++) {
-				currentRow.menuItems.Add(currentRow.transform.GetChild(i).GetComponent<MenuItem>());
+				MenuItem m = currentRow.transform.GetChild(i).GetComponent<MenuItem>();
+				if (m != null) {
+					currentRow.menuItems.Add(m);
+				}
 			}
 
+			currentRow.PositionMenuItems();
 			/*
 			// Generate starting MenuRow
 			currentRow = Instantiate(NewMenuRow, transform).GetComponent<MenuRow>();
