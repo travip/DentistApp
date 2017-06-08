@@ -30,7 +30,7 @@ namespace CylinderMenu
         {
             InputManager.instance.goRight.AddListener(MoveMenuRight);
             InputManager.instance.goLeft.AddListener(MoveMenuLeft);
-            InputManager.instance.goUp.AddListener(MoveMenuUp);
+            InputManager.instance.goUp.AddListener(SelectMenuItem);
 			InputManager.instance.goDown.AddListener(MoveMenuDown);
 
 			currentRow = transform.Find("First Row").GetComponent<MenuRow>();
@@ -48,6 +48,12 @@ namespace CylinderMenu
 			currentRow = Instantiate(NewMenuRow, transform).GetComponent<MenuRow>();
 			currentRow.FillMenuItems(transform . find menu items);
 			*/
+
+			// Set up menu actions
+			MenuAction.subMenu = MoveMenuUp;
+			MenuAction.imageView = ImageView;
+			MenuAction.webcam = StartWebcam;
+
 		}
 
 		public void MoveMenuRight()
@@ -59,6 +65,20 @@ namespace CylinderMenu
         {
             currentRow.MoveLeft();
         }
+
+
+
+		public void SelectMenuItem() {
+			MenuAction.GetDelegate(currentRow.selectedItem.selectAction)();
+		}
+
+		public void ImageView() {
+			Debug.Log("Viewing Image");
+		}
+
+		public void StartWebcam() {
+			Debug.Log("Starting Webcam");
+		}
 
         public void MoveMenuUp()
         {
