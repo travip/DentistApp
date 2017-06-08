@@ -3,6 +3,14 @@ using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
+// Packet container
+internal class Packet
+{
+    internal byte packetType;
+    internal int size;
+    internal byte[] body;
+}
+
 public class ServerManager : MonoBehaviour {
 
 
@@ -73,13 +81,27 @@ public class ServerManager : MonoBehaviour {
 
     public void ReadPacket()
     {
+        Packet p = new Packet();
         byte[] buf = new byte[5];
 
         if (stream.Read(buf, 0, 5) != 5){
             throw new NetworkException("Failed to read packet header");
         }
 
-        NetworkHelper.PacketType pType = (NetworkHelper.PacketType) buf[0];
-        int pSize = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buf, 1));
+        p.packetType = buf[0];
+        p.size = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buf, 1));
+        p.body = new byte[p.size];
+
+        if(stream.Read(p.body, 0, p.size) != p.size)
+        {
+            throw new NetworkException("Failed to read packet body");
+        }
+
+        switch (p.packetType)
+        {
+            case PacketType.CameraStream:
+                Debug.Log("Camera Stream Packet");
+                break;
+        }
     }
 }

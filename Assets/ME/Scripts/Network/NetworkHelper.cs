@@ -5,8 +5,6 @@ using System.Net.NetworkInformation;
 
 public static class NetworkHelper
 {
-    public enum PacketType : byte { CameraStream };
-
     public static string GetLocalIPAddress()
     {
         if (NetworkInterface.GetIsNetworkAvailable())
@@ -65,4 +63,9 @@ public class NetworkException : Exception
     {
     }
     
+}
+
+public static class PacketType
+{
+    public const byte CameraStream = 0x01;
 }
