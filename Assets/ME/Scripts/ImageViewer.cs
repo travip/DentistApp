@@ -63,6 +63,13 @@ public class ImageViewer : MonoBehaviour
 		gameObject.SetActive(false);
 		transform.localScale = new Vector3(15f, 15f, 1f);
 	}
+	
+	private IEnumerator DeactivateAfter(float t)
+	{
+		yield return new WaitForSeconds(t);
+		mat.mainTexture = null;
+		gameObject.SetActive(false);
+	}
 
 	private IEnumerator ZoomAnimation(float animTime, Vector3 startPos, Vector3 endPos, Vector3 startScale, Vector3 endScale)
 	{

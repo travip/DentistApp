@@ -100,7 +100,8 @@ namespace CylinderMenu
 
 			// Move up to empty space
 			Vector3 newPosition = transform.position;
-			newPosition.y -= rowGap * 1.5f;
+			newPosition.y -= rowGap*1.5f;
+
 			StartCoroutine(SmoothMovement(newPosition));
 
 			// Show the full sized pic
@@ -123,6 +124,7 @@ namespace CylinderMenu
 			// Move back to the row we came from
 			Vector3 newPosition = transform.position;
 			newPosition.y = -currentRow.transform.localPosition.y;
+
 			StartCoroutine(SmoothMovement(newPosition));
 
 			// Hide image
