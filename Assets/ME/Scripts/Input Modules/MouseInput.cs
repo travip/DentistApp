@@ -65,6 +65,7 @@ public class MouseInput : InputManager {
 
     public override Vector2 Get2DMovement()
     {
-        return Vector2.ClampMagnitude(mouseDiff, 1.414f) * scrollSpeed;
-    }
+        //return Vector2.ClampMagnitude(mouseDiff, 1.414f) * scrollSpeed;
+		return mouseDiff * scrollSpeed;
+	}
 }
