@@ -41,13 +41,15 @@ public class ImageViewer : MonoBehaviour
 
 		Vector3 start = picContainerOffset;
 		start.z = 9f;
-		StartCoroutine(ZoomAnimation(0.5f, start, picContainerOffset, new Vector3(5.87f, 4.8f, 1f), new Vector3(15f, 15f, 1f)));
+		//StartCoroutine(ZoomAnimation(0.5f, start, picContainerOffset, new Vector3(5.87f, 4.8f, 1f), new Vector3(15f, 15f, 1f)));
+		transform.position = new Vector3(0f, 15f, 5f);
     }
 
 	public void HideImage()
 	{
 		viewingImage = false;
-		StartCoroutine(HideAnimation());
+		//StartCoroutine(HideAnimation());
+		DeactivateAfter(0.5f);
 	}
 
 	private IEnumerator HideAnimation() {
@@ -58,6 +60,13 @@ public class ImageViewer : MonoBehaviour
 		mat.mainTexture = null;
 		gameObject.SetActive(false);
 		transform.localScale = new Vector3(15f, 15f, 1f);
+	}
+	
+	private IEnumerator DeactivateAfter(float t)
+	{
+		yield return new WaitForSeconds(t);
+		mat.mainTexture = null;
+		gameObject.SetActive(false);
 	}
 
 	private IEnumerator ZoomAnimation(float animTime, Vector3 startPos, Vector3 endPos, Vector3 startScale, Vector3 endScale)
