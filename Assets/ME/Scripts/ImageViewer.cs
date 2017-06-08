@@ -29,9 +29,6 @@ public class ImageViewer : MonoBehaviour
         topRightView = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 5f));
         extent = GetComponent<Renderer>().bounds.extents;
 
-        test1.transform.position = bottomLeftView;
-        test2.transform.position = topRightView;
-
         transform.position = picContainerOffset; 
 		gameObject.SetActive(true);
         StartCoroutine(InputGracePeriod());
