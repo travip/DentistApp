@@ -44,10 +44,10 @@ public class ImageViewer : MonoBehaviour
 	public void HideImage()
 	{
 		viewingImage = false;
-        StartCoroutine(ChangeActiveAfterSeconds(0.5f));
+        StartCoroutine(ToggleActiveAfterSeconds(0.5f));
     }
 
-    private IEnumerator ChangeActiveAfterSeconds(float t)
+    private IEnumerator ToggleActiveAfterSeconds(float t)
     {
         yield return new WaitForSeconds(t);
         gameObject.SetActive(!gameObject.activeSelf);
