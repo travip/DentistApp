@@ -3,22 +3,42 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Handle viewing of image
-public class ImageViewer : MonoBehaviour {
+public class ImageViewer : MonoBehaviour
+{
+	public Vector3 picContainerOffset;
 
-    public Texture image;
-
-    public bool viewingImage;
+	private bool viewingImage;
+	private Material mat;
 
 	// Use this for initialization
-	void Start () {
-		
+	void Awake ()
+	{
+		mat = GetComponent<Renderer>().material;
+		gameObject.SetActive(false);
+	}
+
+	public void ViewImage(Texture image)
+	{
+		mat.mainTexture = image;
+		viewingImage = true;
+
+		transform.position = picContainerOffset; 
+		gameObject.SetActive(true);
+	}
+
+	public void HideImage()
+	{
+		mat.mainTexture = null;
+		gameObject.SetActive(false);
 	}
 
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
         if (viewingImage)
         {
-            Vector2 movement = InputManager.instance.Get2DMovement();
+            Vector2 inputMovement = InputManager.instance.Get2DMovement();
+			Vector3 movement = new Vector3(0f, -inputMovement.x, inputMovement.y);
             transform.Translate(movement);
         }
 	}

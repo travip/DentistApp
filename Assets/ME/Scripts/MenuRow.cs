@@ -13,7 +13,7 @@ namespace CylinderMenu
         public MenuRow belowRow;
 
         public float rotateTime = 0.1f;
-        private bool isRotating = false;
+        public bool canRotate = true;
 
 		IEnumerator movement;
 
@@ -58,6 +58,9 @@ namespace CylinderMenu
 
         public void MoveRight()
         {
+			if (!canRotate)
+				return;
+
 			if (selectedIndex < menuItems.Count - 1)
             {
                 selectedIndex++;
@@ -67,7 +70,10 @@ namespace CylinderMenu
 
         public void MoveLeft()
         {
-            if (selectedIndex > 0)
+			if (!canRotate)
+				return;
+
+			if (selectedIndex > 0)
             {
                 selectedIndex--;
 				MoveToSelectedItem();
@@ -83,12 +89,11 @@ namespace CylinderMenu
 
 			movement = SmoothRotation(quart);
 			StartCoroutine(movement);
+			StartCoroutine(setCanRotate(rotateTime * 0.6f));
 		}
 
         private IEnumerator SmoothRotation(Quaternion end)
         {
-            isRotating = true;
-
 			Quaternion startRot = transform.rotation;
 			float t = 0;
 
@@ -100,8 +105,12 @@ namespace CylinderMenu
 				transform.rotation = Quaternion.Lerp(startRot, end, Easing.Quadratic.InOut(t));
                 yield return null;
             }
-
-			isRotating = false;
         }
+
+		private IEnumerator setCanRotate(float t) {
+			canRotate = false;
+			yield return new WaitForSeconds(t);
+			canRotate = true;
+		}
     }
 }

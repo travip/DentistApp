@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 public class KeyboardInput : InputManager
 {
-    public float scrollSpeed = 1f;
+    public float scrollSpeed = 0.05f;
 
     // Update is called once per frame
     void Update()

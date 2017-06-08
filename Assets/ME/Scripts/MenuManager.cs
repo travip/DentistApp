@@ -20,12 +20,11 @@ namespace CylinderMenu
 
         public MenuRow currentRow;
         public Transform spentMenuContainer;
+		public ImageViewer imageViewer;
 
 		public float rowGap = 10f;
         public float moveTime = 0.1f;
-        private bool isMoving = false;
-
-		
+        private bool canMove = true;
 
 
 		private void Awake() {
@@ -89,9 +88,47 @@ namespace CylinderMenu
 			}
 		}
 
-
 		public void ImageView() {
-			Debug.Log("Viewing Image");
+			// Remove menu navigation listeners
+			InputManager.instance.goDown.RemoveListener(MoveMenuDown);
+			InputManager.instance.goUp.RemoveListener(SelectMenuItem);
+			InputManager.instance.goRight.RemoveListener(MoveMenuRight);
+			InputManager.instance.goLeft.RemoveListener(MoveMenuLeft);
+
+			// Add back listener
+			InputManager.instance.goDown.AddListener(ExitImageView);
+
+			// Move up to empty space
+			//Vector3 newPosition = transform.position;
+			//newPosition.y -= rowGap;
+
+			//StartCoroutine(SmoothMovement(newPosition));
+
+			// Show the full sized pic
+			imageViewer.ViewImage(currentRow.selectedItem.FullSizedPic);
+		}
+
+		public void ExitImageView()
+		{
+			// remove pic container?
+
+			// Remove back listener
+			InputManager.instance.goDown.RemoveListener(ExitImageView);
+
+			// Add menu navigation listeners
+			InputManager.instance.goRight.AddListener(MoveMenuRight);
+			InputManager.instance.goLeft.AddListener(MoveMenuLeft);
+			InputManager.instance.goUp.AddListener(SelectMenuItem);
+			InputManager.instance.goDown.AddListener(MoveMenuDown);
+
+			// Move back to the row we came from
+			//Vector3 newPosition = transform.position;
+			//newPosition.y = -currentRow.transform.localPosition.y;
+
+			//StartCoroutine(SmoothMovement(newPosition));
+
+			// Hide image
+			imageViewer.HideImage();
 		}
 
 		public void StartWebcam() {
@@ -100,7 +137,7 @@ namespace CylinderMenu
 
         public void MoveMenuUp()
         {
-			if (isMoving)
+			if (canMove == false || currentRow.canRotate == false)
 				return;
 
             // Maybe simplify this somehow
@@ -119,11 +156,12 @@ namespace CylinderMenu
 			newPosition.y = -currentRow.transform.localPosition.y;
 
 			StartCoroutine(SmoothMovement(newPosition));
-        }
+			StartCoroutine(setCanMove(moveTime * 0.7f));
+		}
 
 		public void MoveMenuDown()
 		{
-			if (isMoving)
+			if (canMove == false || currentRow.canRotate == false)
 				return;
 
 			if (currentRow.belowRow == null)
@@ -134,7 +172,9 @@ namespace CylinderMenu
 
 			MenuRow prevRow = currentRow;
             currentRow = currentRow.belowRow;
+
 			StartCoroutine(BackMenu(newPosition, prevRow));
+			StartCoroutine(setCanMove(moveTime * 0.7f));
 		}
 
         
@@ -146,8 +186,6 @@ namespace CylinderMenu
 
         private IEnumerator SmoothMovement(Vector3 end)
         {
-            isMoving = true;
-
 			Vector3 startPos = transform.position;
 			float t = 0;
 
@@ -160,7 +198,16 @@ namespace CylinderMenu
 				yield return null;
             }
 
-            isMoving = false;
+			
+			currentRow.canRotate = true;
         }
-    }
+
+		private IEnumerator setCanMove (float t) {
+			currentRow.canRotate = false;
+			canMove = false;
+			yield return new WaitForSeconds(t);
+			canMove = true;
+			currentRow.canRotate = true;
+		}
+	}
 }

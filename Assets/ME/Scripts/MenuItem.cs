@@ -22,6 +22,9 @@ namespace CylinderMenu {
 
 		private GameObject pic;
 
+		[HideInInspector]
+		public Texture FullSizedPic;
+
         // Initialize List
         private void Awake()
         {
