@@ -53,7 +53,8 @@ public class ImageViewer : MonoBehaviour
         gameObject.SetActive(!gameObject.activeSelf);
     }
 
-	private IEnumerator HideAnimation() {
+	private IEnumerator HideAnimation()
+    {
 		Vector3 end = picContainerOffset;
 		end.z = 9f;
 		yield return StartCoroutine(ZoomAnimation(0.5f, transform.position, end, new Vector3(15f, 15f, 1f), new Vector3(5.87f, 4.8f, 1f)));
