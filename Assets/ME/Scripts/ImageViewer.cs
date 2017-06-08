@@ -55,7 +55,6 @@ public class ImageViewer : MonoBehaviour
 		end.z = 9f;
 		yield return StartCoroutine(ZoomAnimation(0.5f, picContainerOffset, end, new Vector3(15f, 15f, 1f), new Vector3(5.87f, 4.8f, 1f)));
 
-		Debug.Log("1");
 		mat.mainTexture = null;
 		gameObject.SetActive(false);
 		transform.localScale = new Vector3(15f, 15f, 1f);
@@ -65,8 +64,8 @@ public class ImageViewer : MonoBehaviour
 	{
 		transform.position = startPos;
 		transform.localScale = startScale;
-		Debug.Break();
 		float t = 0;
+
 		while (t < 1) {
 			t += Time.deltaTime / animTime;
 
