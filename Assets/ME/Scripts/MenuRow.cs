@@ -6,7 +6,7 @@ namespace CylinderMenu
 {
     public class MenuRow : MonoBehaviour
     {
-
+		public float turnTick = 35f;
 		public List<MenuItem> menuItems;
         private int selectedIndex = 0;
 
@@ -38,7 +38,7 @@ namespace CylinderMenu
 				// Some of this might be able to be done in MenuItem or set beforehand
 				menuItems[i].transform.SetParent(transform);
 				menuItems[i].transform.localPosition = Vector3.zero;
-				menuItems[i].transform.localRotation = Quaternion.Euler(new Vector3(0, 45f * i, 0));
+				menuItems[i].transform.localRotation = Quaternion.Euler(new Vector3(0, turnTick * i, 0));
 				menuItems[i].gameObject.SetActive(true);
 			}
 		}
@@ -85,7 +85,7 @@ namespace CylinderMenu
 			if (movement != null)
 				StopCoroutine(movement);
 
-			Quaternion quart = Quaternion.Euler(0f, -45f * (selectedIndex), 0f);
+			Quaternion quart = Quaternion.Euler(0f, -turnTick * (selectedIndex), 0f);
 
 			movement = SmoothRotation(quart);
 			StartCoroutine(movement);
