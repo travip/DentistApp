@@ -39,7 +39,7 @@ namespace CylinderMenu
 
 		public void PositionMenuItems() {
 			// Need to track index for proper positioning
-			float startRot = Mathf.Floor(menuItems.Count / 2) * -turnTick;
+			float startRot = (Mathf.Ceil(menuItems.Count / 2f) - 1) * -turnTick;
 
 			for (int i = 0; i < menuItems.Count; i++) {
 				// Some of this might be able to be done in MenuItem or set beforehand
