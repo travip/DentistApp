@@ -9,9 +9,9 @@ namespace CylinderMenu {
 		private float currentTime = 0f;
 		public MenuItem parentMenuItem;
 
-		public Transform insideImage;
-		public float minSize = 1f;
-		public float maxSize = 3.1f;
+		public Transform scalingImage;
+		public float minScale = 1f;
+		public float maxScale = 3.1f;
 
 		public float reduceTimeMultiplier = 1f;
 
@@ -38,8 +38,8 @@ namespace CylinderMenu {
 		}
 
 		private void setInsideSize(float percent) {
-			float newScale = minSize + (percent * (maxSize - minSize));
-			insideImage.localScale = new Vector3(newScale, newScale, newScale);
+			float newScale = minScale + (percent * (maxScale - minScale));
+			scalingImage.localScale = new Vector3(newScale, newScale, newScale);
 		}
 
 		void Update() {
