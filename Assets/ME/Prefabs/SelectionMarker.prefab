@@ -114,9 +114,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalTime: 1
   parentMenuItem: {fileID: 0}
-  insideImage: {fileID: 4925313376366968}
-  minSize: 1
-  maxSize: 3.1
+  scalingImage: {fileID: 4925313376366968}
+  minScale: 1
+  maxScale: 3.1
   reduceTimeMultiplier: 1
 --- !u!135 &135348556172088816
 SphereCollider:
