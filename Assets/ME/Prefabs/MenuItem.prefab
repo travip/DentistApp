@@ -54,6 +54,8 @@ MonoBehaviour:
   subMenuItems: []
   menuOnSelect: {fileID: 0}
   PicPrefab: {fileID: 1411488683033002, guid: 565d7499698977949bd7ecb620f0fb76, type: 2}
+  SelectorPrefab: {fileID: 1655467071807828, guid: aec8cb979b403ad4485f380693c3cbb2,
+    type: 2}
   itemName: 22
   menuPic: {fileID: 2800000, guid: 3c6ee1ff254a4f847a5d89de95b862f2, type: 3}
   selectAction: 0

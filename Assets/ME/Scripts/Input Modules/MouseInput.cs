@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,24 +8,36 @@ public class MouseInput : InputManager {
     private bool canTrigger = false;
 
     public float mouseMoveThreshold = 50;
+
+	private Camera cam;
     private Vector3 mouseDiff = Vector3.zero;
-    private Vector3 mouseLast = Vector3.zero;
+    //private Vector3 mouseLast = Vector3.zero;
 
     public float scrollSpeed = 1;
+
+	private float yaw = 0f;
+	private float pitch = 0f;
+
+	private bool mouseRotation = true;
 
     // Grace period at start of app
     void Start()
     {
-        StartCoroutine(PreventMultipleInput());
+		cam = Camera.main;
+
+		StartCoroutine(PreventMultipleInput());
     }
 
 	// Update is called once per frame
 	void Update () {
 
-        mouseDiff = Input.mousePosition - mouseLast;
-        mouseLast = Input.mousePosition;
+		//mouseDiff = Input.mousePosition - mouseLast;
+		//mouseLast = Input.mousePosition;
 
-        if (canTrigger)
+		mouseDiff.x = Input.GetAxis("Mouse X");
+		mouseDiff.y = Input.GetAxis("Mouse Y");
+		
+		if (canTrigger)
         {
             if (mouseDiff.x > mouseMoveThreshold)
             {
@@ -40,7 +53,7 @@ public class MouseInput : InputManager {
                 StartCoroutine(PreventMultipleInput());
             }
 
-            else if (mouseDiff.y > mouseMoveThreshold)
+            /*else if (mouseDiff.y > mouseMoveThreshold)
             {
                 Debug.Log("Up");
                 goUp.Invoke();
@@ -52,9 +65,16 @@ public class MouseInput : InputManager {
                 Debug.Log("Down");
                 goDown.Invoke();
                 StartCoroutine(PreventMultipleInput());
-            }
+            }*/
         }
-    }
+
+		if (mouseRotation) {
+			yaw += mouseDiff.x * scrollSpeed;
+			pitch -= mouseDiff.y * scrollSpeed;
+			cam.transform.eulerAngles = new Vector3(pitch, yaw, 0f);
+		}
+
+	}
 
     IEnumerator PreventMultipleInput()
     {
@@ -63,7 +83,12 @@ public class MouseInput : InputManager {
         canTrigger = true;
     }
 
-    public override Vector2 Get2DMovement()
+	public override void ToggleViewMode () {
+		mouseRotation = !mouseRotation;
+		cam.transform.rotation = Quaternion.identity;
+	}
+
+	public override Vector2 Get2DMovement()
     {
         //return Vector2.ClampMagnitude(mouseDiff, 1.414f) * scrollSpeed;
 		return mouseDiff * scrollSpeed;

@@ -36,4 +36,8 @@ public class KeyboardInput : InputManager
         float vert = Input.GetAxis("Vertical");
         return new Vector2(horz, vert) * scrollSpeed;
     }
+
+	public override void ToggleViewMode () {
+		throw new NotImplementedException();
+	}
 }

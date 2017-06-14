@@ -6,9 +6,9 @@ namespace CylinderMenu
 {
     public class MenuRow : MonoBehaviour
     {
-		public float turnTick = 35f;
+		private float turnTick = 10f;
 		public List<MenuItem> menuItems;
-        private int selectedIndex = 0;
+        //private int selectedIndex = 0;
 
         public MenuRow belowRow;
 
@@ -17,10 +17,15 @@ namespace CylinderMenu
 
 		IEnumerator movement;
 
-        public MenuItem selectedItem
-        {
-            get { return menuItems[selectedIndex]; }
-        }
+		
+		//public MenuItem selectedItem
+		//{
+		//	get { return menuItems[selectedIndex]; }
+		//}
+		
+
+		[HideInInspector]
+		public MenuItem selectedItem;
 
         // Dynamic creation of menu
         public void InitializeMenu(MenuRow parentRow)
@@ -34,11 +39,13 @@ namespace CylinderMenu
 
 		public void PositionMenuItems() {
 			// Need to track index for proper positioning
+			float startRot = Mathf.Floor(menuItems.Count / 2) * -turnTick;
+
 			for (int i = 0; i < menuItems.Count; i++) {
 				// Some of this might be able to be done in MenuItem or set beforehand
 				menuItems[i].transform.SetParent(transform);
 				menuItems[i].transform.localPosition = Vector3.zero;
-				menuItems[i].transform.localRotation = Quaternion.Euler(new Vector3(0, turnTick * i, 0));
+				menuItems[i].transform.localRotation = Quaternion.Euler(new Vector3(0, startRot + turnTick * i, 0));
 				menuItems[i].gameObject.SetActive(true);
 			}
 		}
@@ -61,11 +68,12 @@ namespace CylinderMenu
 			if (!canRotate)
 				return;
 
-			if (selectedIndex < menuItems.Count - 1)
-            {
-                selectedIndex++;
-				MoveToSelectedItem();
-            }
+			//if (selectedIndex < menuItems.Count - 1)
+			//{
+			//    selectedIndex++;
+			//	MoveToSelectedItem();
+			//}
+			RotateView(-turnTick);
         }
 
         public void MoveLeft()
@@ -73,14 +81,28 @@ namespace CylinderMenu
 			if (!canRotate)
 				return;
 
-			if (selectedIndex > 0)
-            {
-                selectedIndex--;
-				MoveToSelectedItem();
-			}
-        }
+			//if (selectedIndex > 0)
+            //{
+            //    selectedIndex--;
+			//	MoveToSelectedItem();
+			//}
 
-		private void MoveToSelectedItem() {
+			RotateView(turnTick);
+		}
+
+		private void RotateView(float degrees) {
+			if (movement != null)
+				StopCoroutine(movement);
+
+			//Quaternion quart = Quaternion.Euler(0f, -turnTick * (selectedIndex), 0f);
+			Quaternion quart = transform.rotation * Quaternion.Euler(Vector3.up * degrees);
+			
+			movement = SmoothRotation(quart);
+			StartCoroutine(movement);
+			StartCoroutine(setCanRotate(rotateTime * 0.6f));
+		}
+
+		/*private void MoveToSelectedItem() {
 
 			if (movement != null)
 				StopCoroutine(movement);
@@ -90,7 +112,7 @@ namespace CylinderMenu
 			movement = SmoothRotation(quart);
 			StartCoroutine(movement);
 			StartCoroutine(setCanRotate(rotateTime * 0.6f));
-		}
+		}*/
 
         private IEnumerator SmoothRotation(Quaternion end)
         {

@@ -18,14 +18,17 @@ namespace CylinderMenu
 
 		public GameObject MenuRowPrefab;
 
+		
         public MenuRow currentRow;
         public Transform spentMenuContainer;
 		public ImageViewer imageViewer;
+
 
 		public float rowGap = 10f;
         public float moveTime = 0.1f;
         private bool canMove = true;
 
+		private Camera cam;
 
 		private void Awake() {
             if (instance == null || instance == this)
@@ -37,11 +40,15 @@ namespace CylinderMenu
         // Use this for initialization
         void Start()
         {
-            InputManager.instance.goRight.AddListener(MoveMenuRight);
-            InputManager.instance.goLeft.AddListener(MoveMenuLeft);
-            InputManager.instance.goUp.AddListener(SelectMenuItem);
-			InputManager.instance.goDown.AddListener(MoveMenuDown);
+			cam = Camera.main;
 
+			InputManager.instance.goRight.AddListener(MoveMenuRight);
+            InputManager.instance.goLeft.AddListener(MoveMenuLeft);
+            //InputManager.instance.goUp.AddListener(SelectMenuItem);
+			//InputManager.instance.goDown.AddListener(MoveMenuDown);
+
+
+			/*
 			currentRow = transform.Find("First Row").GetComponent<MenuRow>();
 
 			for (int i = 0; i < currentRow.transform.childCount; i++) {
@@ -52,12 +59,35 @@ namespace CylinderMenu
 			}
 
 			currentRow.PositionMenuItems();
-			/*
-			// Generate starting MenuRow
-			currentRow = Instantiate(NewMenuRow, transform).GetComponent<MenuRow>();
-			currentRow.FillMenuItems(transform . find menu items);
 			*/
 
+			// Generate starting MenuRow
+			currentRow = Instantiate(MenuRowPrefab, transform).GetComponent<MenuRow>();
+
+			for (int i = 0; i < transform.childCount; i++) {
+				MenuItem m = transform.GetChild(i).GetComponent<MenuItem>();
+				if (m != null) {
+					currentRow.menuItems.Add(m);
+				}
+			}
+			
+			currentRow.PositionMenuItems();
+		}
+
+		void Update() {
+			// Cast a ray from the middle of the camera into the scene to test if it hit hits any menu selectors
+
+			RaycastHit hit;
+			Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width/2f, Screen.height/2f));
+
+			if (Physics.Raycast(ray, out hit)) {
+				MenuSelector menuHit = hit.transform.gameObject.GetComponent<MenuSelector>();
+
+				if (menuHit.LookAt()) {
+					SelectMenuItem(menuHit.parentMenuItem);
+				}
+			}
+			Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red);
 		}
 
 		public void MoveMenuRight()
@@ -71,9 +101,10 @@ namespace CylinderMenu
         }
 
 
-		public void SelectMenuItem()
+		public void SelectMenuItem(MenuItem selected)
 		{
-			switch (currentRow.selectedItem.selectAction) {
+			currentRow.selectedItem = selected;
+			switch (selected.selectAction) {
 				case MenuManager.SelectAction.subMenu:
 					MoveMenuUp();
 					break;
@@ -90,8 +121,8 @@ namespace CylinderMenu
 
 		public void ImageView() {
 			// Remove menu navigation listeners
-			InputManager.instance.goDown.RemoveListener(MoveMenuDown);
-			InputManager.instance.goUp.RemoveListener(SelectMenuItem);
+			//InputManager.instance.goDown.RemoveListener(MoveMenuDown);
+			//InputManager.instance.goUp.RemoveListener(SelectMenuItem);
 			InputManager.instance.goRight.RemoveListener(MoveMenuRight);
 			InputManager.instance.goLeft.RemoveListener(MoveMenuLeft);
 
@@ -118,8 +149,8 @@ namespace CylinderMenu
 			// Add menu navigation listeners
 			InputManager.instance.goRight.AddListener(MoveMenuRight);
 			InputManager.instance.goLeft.AddListener(MoveMenuLeft);
-			InputManager.instance.goUp.AddListener(SelectMenuItem);
-			InputManager.instance.goDown.AddListener(MoveMenuDown);
+			//InputManager.instance.goUp.AddListener(SelectMenuItem);
+			//InputManager.instance.goDown.AddListener(MoveMenuDown);
 
 			// Move back to the row we came from
 			Vector3 newPosition = transform.position;

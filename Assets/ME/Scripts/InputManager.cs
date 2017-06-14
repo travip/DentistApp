@@ -19,5 +19,7 @@ public abstract class InputManager : MonoBehaviour
             Destroy(this);
     }
 
+	public abstract void ToggleViewMode ();
+
     public abstract Vector2 Get2DMovement();
 }

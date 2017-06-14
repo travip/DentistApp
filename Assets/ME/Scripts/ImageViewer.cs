@@ -25,6 +25,8 @@ public class ImageViewer : MonoBehaviour
 
 	public void ViewImage(Texture image)
 	{
+		InputManager.instance.ToggleViewMode();
+
 		mat.mainTexture = image;
 
 		// Set up image clamp so the user cannot scroll beyond the boundary of the image
@@ -35,7 +37,7 @@ public class ImageViewer : MonoBehaviour
 		clampHigh = new Vector2(topRightView.x - extent.x, topRightView.y - extent.y);
 		clampLow = new Vector2(bottomLeftView.x + extent.x, bottomLeftView.y + extent.y);
 
-        transform.position = new Vector3(0, 15f, 5f);
+        transform.position = new Vector3(0, 15f, 20f);
 
 		gameObject.SetActive(true);
         StartCoroutine(InputGracePeriod());
@@ -43,6 +45,7 @@ public class ImageViewer : MonoBehaviour
 
 	public void HideImage()
 	{
+		InputManager.instance.ToggleViewMode();
 		viewingImage = false;
         StartCoroutine(ToggleActiveAfterSeconds(0.5f));
     }
@@ -117,7 +120,7 @@ public class ImageViewer : MonoBehaviour
         if (viewingImage)
         {
 			// Scroll around the image when the looking around
-            Vector3 inputMovement = InputManager.instance.Get2DMovement();
+            Vector3 inputMovement = InputManager.instance.Get2DMovement() * 0.2f;
             Vector3 nextMove = transform.position + inputMovement;
 
 			nextMove.x = Mathf.Clamp(nextMove.x, clampHigh.x, clampLow.x);
