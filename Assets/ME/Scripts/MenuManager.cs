@@ -42,8 +42,8 @@ namespace CylinderMenu
         {
 			cam = Camera.main;
 
-			InputManager.instance.goRight.AddListener(MoveMenuRight);
-            InputManager.instance.goLeft.AddListener(MoveMenuLeft);
+			//InputManager.instance.goRight.AddListener(MoveMenuRight);
+            //InputManager.instance.goLeft.AddListener(MoveMenuLeft);
             //InputManager.instance.goUp.AddListener(SelectMenuItem);
 			//InputManager.instance.goDown.AddListener(MoveMenuDown);
 
@@ -63,6 +63,7 @@ namespace CylinderMenu
 
 			// Generate starting MenuRow
 			currentRow = Instantiate(MenuRowPrefab, transform).GetComponent<MenuRow>();
+			currentRow.maxRows = 1;
 
 			for (int i = 0; i < transform.childCount; i++) {
 				MenuItem m = transform.GetChild(i).GetComponent<MenuItem>();
@@ -123,8 +124,8 @@ namespace CylinderMenu
 			// Remove menu navigation listeners
 			//InputManager.instance.goDown.RemoveListener(MoveMenuDown);
 			//InputManager.instance.goUp.RemoveListener(SelectMenuItem);
-			InputManager.instance.goRight.RemoveListener(MoveMenuRight);
-			InputManager.instance.goLeft.RemoveListener(MoveMenuLeft);
+			//InputManager.instance.goRight.RemoveListener(MoveMenuRight);
+			//InputManager.instance.goLeft.RemoveListener(MoveMenuLeft);
 
 			// Add back listener
 			InputManager.instance.goDown.AddListener(ExitImageView);
@@ -147,8 +148,8 @@ namespace CylinderMenu
 			InputManager.instance.goDown.RemoveListener(ExitImageView);
 
 			// Add menu navigation listeners
-			InputManager.instance.goRight.AddListener(MoveMenuRight);
-			InputManager.instance.goLeft.AddListener(MoveMenuLeft);
+			//InputManager.instance.goRight.AddListener(MoveMenuRight);
+			//InputManager.instance.goLeft.AddListener(MoveMenuLeft);
 			//InputManager.instance.goUp.AddListener(SelectMenuItem);
 			//InputManager.instance.goDown.AddListener(MoveMenuDown);
 

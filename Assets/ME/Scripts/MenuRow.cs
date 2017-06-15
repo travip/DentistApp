@@ -7,6 +7,8 @@ namespace CylinderMenu
     public class MenuRow : MonoBehaviour
     {
 		private float turnTick = 10f;
+		private float picSpacingX = 5f;
+		private float picSpacingY = 4f;
 		public List<MenuItem> menuItems;
         //private int selectedIndex = 0;
 
@@ -14,6 +16,9 @@ namespace CylinderMenu
 
         public float rotateTime = 0.1f;
         public bool canRotate = true;
+
+		public int maxRows = 2;
+		public int maxColumns = 6;
 
 		IEnumerator movement;
 
@@ -39,14 +44,41 @@ namespace CylinderMenu
 
 		public void PositionMenuItems() {
 			// Need to track index for proper positioning
-			float startRot = (Mathf.Ceil(menuItems.Count / 2f) - 1) * -turnTick;
 
+			// Calculate the number of columns required
+			int numRows = maxRows;
+			int numColumns = Mathf.CeilToInt((float)menuItems.Count / (float)numRows);
+
+			if (numColumns > maxColumns) {
+				// Only display a certain amount of columns
+			}
+
+
+			// The columns are centered based on how many columns there are. 
+			// The first column's rotation therefore depends on how many columns there are
+			float startRotY = ((numColumns / 2f) - 0.5f) * -picSpacingX;
+			float startRotX = ((numRows / 2f) - 0.5f) * -picSpacingY;
+
+			float yDif = -2f;
+
+			int col = 0, row = 0;
 			for (int i = 0; i < menuItems.Count; i++) {
 				// Some of this might be able to be done in MenuItem or set beforehand
 				menuItems[i].transform.SetParent(transform);
 				menuItems[i].transform.localPosition = Vector3.zero;
-				menuItems[i].transform.localRotation = Quaternion.Euler(new Vector3(0, startRot + turnTick * i, 0));
+				menuItems[i].transform.localRotation = Quaternion.Euler(new Vector3(startRotX + picSpacingY * row, startRotY + picSpacingX * col, 0));
 				menuItems[i].gameObject.SetActive(true);
+
+				row++;
+				
+
+				if (row >= numRows)
+				{
+					row = 0;
+					col++;
+				}
+					
+				
 			}
 		}
 
