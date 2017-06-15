@@ -8,7 +8,9 @@ namespace CylinderMenu
     {
 		private float turnTick = 10f;
 		private float picSpacingX = 5f;
-		private float picSpacingY = 4f;
+		private float picSpacingY = 5f;
+
+		public GameObject BackSelectorPrefab, NextPageSelectorPrefab, PreviousPageSelectorPrefab;
 		public List<MenuItem> menuItems;
         //private int selectedIndex = 0;
 
@@ -18,10 +20,17 @@ namespace CylinderMenu
         public bool canRotate = true;
 
 		public int maxRows = 2;
-		public int maxColumns = 6;
+		public int maxColumns = 5;
+
+		private float radius;
+		private float imageSize;
 
 		IEnumerator movement;
 
+		private int pages = 1;
+		//private int currentPage = 0;
+
+		private Transform navButtons;
 		
 		//public MenuItem selectedItem
 		//{
@@ -33,13 +42,25 @@ namespace CylinderMenu
 		public MenuItem selectedItem;
 
         // Dynamic creation of menu
-        public void InitializeMenu(MenuRow parentRow)
+        public void InitializeMenu(MenuRow parentRow, float _radius, float _imageSize)
         {
-			belowRow = parentRow;
-			menuItems = belowRow.selectedItem.subMenuItems;
+			radius = _radius;
+			imageSize = _imageSize;
+			transform.Find("mesh").localScale = new Vector3(radius+1f, radius+1f, 2.5f);
+
 			gameObject.SetActive(true);
 
-			PositionMenuItems();
+			if (parentRow != null)
+			{
+				belowRow = parentRow;
+				menuItems = belowRow.selectedItem.subMenuItems;
+				PositionMenuItems();
+				CreateMainButtons();
+			} else
+			{
+				PositionMenuItems();
+			}
+			
         }
 
 		public void PositionMenuItems() {
@@ -49,7 +70,13 @@ namespace CylinderMenu
 			int numRows = maxRows;
 			int numColumns = Mathf.CeilToInt((float)menuItems.Count / (float)numRows);
 
+			pages = Mathf.CeilToInt((float)menuItems.Count / (float)(maxColumns * maxRows));
+
+			if (pages == 0)
+				pages = 1;
+			
 			if (numColumns > maxColumns) {
+				numColumns = maxColumns;
 				// Only display a certain amount of columns
 			}
 
@@ -59,27 +86,41 @@ namespace CylinderMenu
 			float startRotY = ((numColumns / 2f) - 0.5f) * -picSpacingX;
 			float startRotX = ((numRows / 2f) - 0.5f) * -picSpacingY;
 
-			float yDif = -2f;
-
 			int col = 0, row = 0;
 			for (int i = 0; i < menuItems.Count; i++) {
 				// Some of this might be able to be done in MenuItem or set beforehand
-				menuItems[i].transform.SetParent(transform);
-				menuItems[i].transform.localPosition = Vector3.zero;
-				menuItems[i].transform.localRotation = Quaternion.Euler(new Vector3(startRotX + picSpacingY * row, startRotY + picSpacingX * col, 0));
-				menuItems[i].gameObject.SetActive(true);
+
+				menuItems[i].AddToMenuRow(transform, radius, Quaternion.Euler(new Vector3(startRotX + picSpacingY * row, startRotY + picSpacingX * col, 0f)), imageSize);
 
 				row++;
 				
-
 				if (row >= numRows)
 				{
 					row = 0;
 					col++;
+					if (col >= numColumns)
+					{
+						break;
+					}
 				}
 					
 				
 			}
+		}
+
+		private void CreateMainButtons() {
+			// Create back button and navigation buttons (left/right)
+			navButtons = new GameObject().transform;
+			navButtons.parent = MenuManager.instance.transform;
+			navButtons.transform.position = new Vector3(0f, transform.position.y - 2f, radius);
+
+			Instantiate(BackSelectorPrefab, navButtons);
+			if (pages > 1)
+			{
+				Instantiate(NextPageSelectorPrefab, navButtons).transform.localPosition = new Vector3(2f, 0f, 0f);
+				Instantiate(PreviousPageSelectorPrefab, navButtons).transform.localPosition = new Vector3(-2f, 0f, 0f);
+			}
+			
 		}
 
         // Remove menu items - put them in the faraway land where they wont get in our way
@@ -92,6 +133,7 @@ namespace CylinderMenu
 
 			menuItems = null;
 
+			Destroy(navButtons.gameObject);
 			Destroy(gameObject);
         }
 

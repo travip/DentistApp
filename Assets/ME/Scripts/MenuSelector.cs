@@ -5,6 +5,16 @@ namespace CylinderMenu {
 
 	public class MenuSelector : MonoBehaviour {
 
+		public enum SelectionType
+		{
+			select,
+			back,
+			nextPage,
+			previousPage
+		}
+
+
+		public SelectionType selectionType;
 		public float totalTime = 1f;
 		private float currentTime = 0f;
 		public MenuItem parentMenuItem;

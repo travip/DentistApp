@@ -53,7 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   subMenuItems: []
   menuOnSelect: {fileID: 0}
-  PicPrefab: {fileID: 1411488683033002, guid: 565d7499698977949bd7ecb620f0fb76, type: 2}
+  PicPrefab: {fileID: 1203379546126720, guid: cc79b914e69ff3b4688107c792c1d16c, type: 2}
   SelectorPrefab: {fileID: 1655467071807828, guid: aec8cb979b403ad4485f380693c3cbb2,
     type: 2}
   itemName: 22

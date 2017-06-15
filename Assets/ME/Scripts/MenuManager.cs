@@ -18,6 +18,8 @@ namespace CylinderMenu
 
 		public GameObject MenuRowPrefab;
 
+		public float menuItemViewDistance = 20f;
+		public float menuItemImageSize = 8f;
 		
         public MenuRow currentRow;
         public Transform spentMenuContainer;
@@ -63,7 +65,10 @@ namespace CylinderMenu
 
 			// Generate starting MenuRow
 			currentRow = Instantiate(MenuRowPrefab, transform).GetComponent<MenuRow>();
+			
 			currentRow.maxRows = 1;
+			currentRow.maxColumns = 5;
+			currentRow.name = "Main Row";
 
 			for (int i = 0; i < transform.childCount; i++) {
 				MenuItem m = transform.GetChild(i).GetComponent<MenuItem>();
@@ -71,8 +76,8 @@ namespace CylinderMenu
 					currentRow.menuItems.Add(m);
 				}
 			}
-			
-			currentRow.PositionMenuItems();
+
+			currentRow.InitializeMenu(null, menuItemViewDistance, menuItemImageSize);
 		}
 
 		void Update() {
@@ -81,13 +86,33 @@ namespace CylinderMenu
 			RaycastHit hit;
 			Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width/2f, Screen.height/2f));
 
-			if (Physics.Raycast(ray, out hit)) {
+			if (Physics.Raycast(ray, out hit))
+			{
 				MenuSelector menuHit = hit.transform.gameObject.GetComponent<MenuSelector>();
 
-				if (menuHit.LookAt()) {
-					SelectMenuItem(menuHit.parentMenuItem);
+				// If hitting a menu selector, check with the selector if it's pressed yet
+				if (menuHit.LookAt())
+				{
+					switch (menuHit.selectionType)
+					{
+						case MenuSelector.SelectionType.select:
+							SelectMenuItem(menuHit.parentMenuItem);
+							break;
+						case MenuSelector.SelectionType.back:
+							MoveMenuDown();
+							break;
+						case MenuSelector.SelectionType.nextPage:
+							MoveMenuRight();
+							break;
+						case MenuSelector.SelectionType.previousPage:
+							MoveMenuLeft();
+							break;
+						default:
+							break;
+					}
 				}
 			}
+
 			Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red);
 		}
 
@@ -182,7 +207,7 @@ namespace CylinderMenu
 			currentRow = Instantiate(MenuRowPrefab, transform).GetComponent<MenuRow>();
 			currentRow.transform.position = new Vector3(prevRow.transform.position.x, prevRow.transform.position.y + rowGap, prevRow.transform.position.z);
 
-			currentRow.InitializeMenu(prevRow);
+			currentRow.InitializeMenu(prevRow, menuItemViewDistance, menuItemImageSize);
 
 			Vector3 newPosition = transform.position;
 			newPosition.y = -currentRow.transform.localPosition.y;

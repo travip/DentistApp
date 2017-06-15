@@ -41,14 +41,29 @@ namespace CylinderMenu {
                 subMenuItems.Add(sub.GetComponent<MenuItem>());
             }
 
+			// Instantiate the mesh that holds the menu picture
 			pic = Instantiate(PicPrefab, transform).gameObject;
-			pic.GetComponent<Renderer>().material.mainTexture = menuPic;
+			pic.transform.Find("mesh").GetComponent<Renderer>().material.mainTexture = menuPic;
 
+			// Instantiate selector
 			selector = Instantiate(SelectorPrefab, transform).gameObject;
-			Vector3 p = selector.transform.position;
-			p.z = pic.transform.position.z;
-			selector.transform.position = p;
+
 			gameObject.SetActive(false);
         }
+
+		public void AddToMenuRow(Transform row, float distance, Quaternion rotation, float size)
+		{
+			transform.SetParent(row);
+			transform.localPosition = Vector3.zero;
+			transform.localRotation = rotation;
+
+			pic.transform.localPosition = new Vector3(0f, 0f, distance);
+			pic.transform.localScale = new Vector3(size, size, size);
+
+			// slight magic number for the y position of the selector
+			selector.transform.localPosition = new Vector3(0f, pic.transform.localScale.z / -16f, distance);
+
+			gameObject.SetActive(true);
+		}
     }
 }
