@@ -7,8 +7,8 @@ namespace CylinderMenu
     public class MenuRow : MonoBehaviour
     {
 		private float turnTick = 10f;
-		private float picSpacingX = 5f;
-		private float picSpacingY = 5f;
+		public float picSpacingX = 12f;
+		public float picSpacingY = 12f;
 
 		public GameObject BackSelectorPrefab, NextPageSelectorPrefab, PreviousPageSelectorPrefab;
 		public List<MenuItem> menuItems;
@@ -46,7 +46,7 @@ namespace CylinderMenu
         {
 			radius = _radius;
 			imageSize = _imageSize;
-			transform.Find("mesh").localScale = new Vector3(radius+1f, radius+1f, 2.5f);
+			transform.Find("mesh").localScale = new Vector3(radius+1f, radius+1f, 3f);
 
 			gameObject.SetActive(true);
 

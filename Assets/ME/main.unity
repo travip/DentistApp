@@ -1109,7 +1109,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MenuRowPrefab: {fileID: 1537506794370098, guid: 22db83619dd267f438a8f23aebd4d1da,
     type: 2}
-  viewDistance: 20
+  menuItemViewDistance: 20
+  menuItemImageSize: 20
   currentRow: {fileID: 0}
   spentMenuContainer: {fileID: 342870991}
   imageViewer: {fileID: 364464890}
