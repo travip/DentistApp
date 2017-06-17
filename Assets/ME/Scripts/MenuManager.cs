@@ -26,7 +26,7 @@ namespace CylinderMenu
 		private bool canMove = true;
 		[HideInInspector]
 		public MenuRow currentRow;
-		private MenuItem hoverItem;
+		private RayCaster raycaster;
 
 		// Parameters of the menu system
 		[Header("Between Rows")]
@@ -74,44 +74,19 @@ namespace CylinderMenu
 			}
 
 			currentRow.InitializeMenu(null, circleRadius, maxRows, maxColumns, itemSize, gapBetweenItems);
+
+			raycaster = new RayCaster();
+			raycaster.OnRayEnter += RayEnterHandler;
+			raycaster.OnRayStay += RayStayHandler;
+			raycaster.OnRayExit += RayExitHandler;
+			raycaster.looker = cam.transform;
 		}
 
 		void Update() {
 			// Cast a ray from the middle of the camera into the scene to test if it hit hits any menu selectors
+			raycaster.CastForward();
 
-			RaycastHit hit;
-			Ray ray = cam.ScreenPointToRay(new Vector3(Screen.width/2f, Screen.height/2f));
-
-			if (Physics.Raycast(ray, out hit))
-			{
-				switch (hit.transform.tag) {
-					case "Selector":
-						LookAtSelector(hit.transform.gameObject.GetComponent<MenuSelector>());
-						break;
-					case "MenuItem":
-						MenuItem item = hit.transform.gameObject.GetComponent<MenuItem>();
-						if (item == hoverItem) {
-							// do nothing if this is the same one already being looked at
-						} else {
-							if (hoverItem != null) {
-								hoverItem.LookAway();
-							}
-							hoverItem = hit.transform.gameObject.GetComponent<MenuItem>();
-							hoverItem.LookAt();
-						}
-
-						break;
-					default:
-						break;
-				}
-			} else {
-				// nothing hit. Make any forward picture go back
-				if (hoverItem != null) {
-					hoverItem.LookAway();
-					hoverItem = null;
-				}
-			}
-
+			
 			//////////////////////////////////////////////////////////////////////////////////////////////////////
 			//////////////////////////////////////////////////////////////////////////////////////////////////////
 			////////////////////////////////      DEBUG STUFF      ///////////////////////////////////////////////
@@ -120,7 +95,7 @@ namespace CylinderMenu
 			//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if UNITY_EDITOR
-			Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red);
+			//Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red);
 
 			if (prevR != circleRadius || prevRows != maxRows || prevCols != maxColumns || prevSize != itemSize || prevGap != gapBetweenItems) {
 				// recalculate row
@@ -141,6 +116,46 @@ namespace CylinderMenu
 		private float prevR=0, prevRows=0, prevCols=0, prevSize=0, prevGap=0;
 #endif
 		//////////////////////////////// END DEBUG STUFF ///////////////////////////////////////////////
+
+		public void RayEnterHandler(GameObject hit) {
+			switch (hit.transform.tag) {
+				case "Selector":
+					LookAtSelector(hit.transform.gameObject.GetComponent<MenuSelector>());
+					break;
+				case "MenuItem":
+					hit.transform.gameObject.GetComponent<MenuItem>().LookAt();
+					break;
+				default:
+					break;
+			}
+		}
+
+		public void RayStayHandler (GameObject hit) {
+			switch (hit.transform.tag) {
+				case "Selector":
+					LookAtSelector(hit.transform.gameObject.GetComponent<MenuSelector>());
+					break;
+				case "MenuItem":
+					//hit.transform.gameObject.GetComponent<MenuItem>().LookAt();
+					break;
+				default:
+					break;
+			}
+		}
+
+		public void RayExitHandler(GameObject hit) {
+			switch (hit.transform.tag) {
+				case "Selector":
+					//LookAtSelector(hit.transform.gameObject.GetComponent<MenuSelector>());
+					break;
+				case "MenuItem":
+					hit.transform.gameObject.GetComponent<MenuItem>().LookAway();
+					break;
+				default:
+					break;
+			}
+		}
+		
 
 		private void LookAtSelector(MenuSelector menuHit)
 		{

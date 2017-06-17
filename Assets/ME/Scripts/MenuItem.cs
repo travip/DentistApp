@@ -54,6 +54,7 @@ namespace CylinderMenu {
 			// Instantiate selector
 			selector = Instantiate(SelectorPrefab, transform).transform;
 
+			selector.gameObject.SetActive(false);
 			gameObject.SetActive(false);
         }
 
@@ -82,11 +83,13 @@ namespace CylinderMenu {
 		public void LookAt()
 		{
 			StartCoroutine(SmoothMovement(new Vector3(0f, 0f, zDistanceHovering)));
+			selector.gameObject.SetActive(true);
 		}
 
 		public void LookAway()
 		{
 			StartCoroutine(SmoothMovement(new Vector3(0f, 0f, zDistance)));
+			selector.gameObject.SetActive(false);
 		}
 
 		private IEnumerator SmoothMovement (Vector3 end)
@@ -105,7 +108,7 @@ namespace CylinderMenu {
 				yield return null;
 			}
 
-			Debug.Log("end");
+			//Debug.Log("end");
 		}
 	}
 }
