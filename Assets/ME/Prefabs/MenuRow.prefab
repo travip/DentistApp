@@ -121,8 +121,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7117498765443e848a6a5fcd0fa88e36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  picSpacingX: 12
-  picSpacingY: 12
   BackSelectorPrefab: {fileID: 1655467071807828, guid: 29266c9a92824e94b9df1080d3623604,
     type: 2}
   NextPageSelectorPrefab: {fileID: 1655467071807828, guid: d67900793a81cc6499a535f786dc1fd5,
@@ -134,5 +132,7 @@ MonoBehaviour:
   rotateTime: 0.5
   canRotate: 1
   maxRows: 1
-  maxColumns: 5
+  maxColumns: 50
+  itemSize: 20
+  gapBetweenItems: 1
   selectedItem: {fileID: 0}

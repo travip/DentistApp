@@ -7,8 +7,6 @@ namespace CylinderMenu
     public class MenuRow : MonoBehaviour
     {
 		private float turnTick = 10f;
-		public float picSpacingX = 12f;
-		public float picSpacingY = 12f;
 
 		public GameObject BackSelectorPrefab, NextPageSelectorPrefab, PreviousPageSelectorPrefab;
 		public List<MenuItem> menuItems;
@@ -21,9 +19,11 @@ namespace CylinderMenu
 
 		public int maxRows = 2;
 		public int maxColumns = 5;
+		public float itemSize = 20f;
+		public float gapBetweenItems = 1f;
 
 		private float radius;
-		private float imageSize;
+		
 
 		IEnumerator movement;
 
@@ -42,10 +42,14 @@ namespace CylinderMenu
 		public MenuItem selectedItem;
 
         // Dynamic creation of menu
-        public void InitializeMenu(MenuRow parentRow, float _radius, float _imageSize)
+        public void InitializeMenu(MenuRow parentRow, float _radius, int _rows, int _columns, float _itemSize, float _gapBetweenItems)
         {
 			radius = _radius;
-			imageSize = _imageSize;
+			maxRows = _rows;
+			maxColumns = _columns;
+			itemSize = _itemSize;
+			gapBetweenItems = _gapBetweenItems;
+
 			transform.Find("mesh").localScale = new Vector3(radius+1f, radius+1f, 3f);
 
 			gameObject.SetActive(true);
@@ -62,6 +66,23 @@ namespace CylinderMenu
 			}
 			
         }
+
+		public void RecalculateRow(float _radius, int _rows, int _columns, float _itemSize, float _gapBetweenItems) {
+			radius = _radius;
+			maxRows = _rows;
+			maxColumns = _columns;
+			itemSize = _itemSize;
+			gapBetweenItems = _gapBetweenItems;
+
+			transform.Find("mesh").localScale = new Vector3(radius + 1f, radius + 1f, 3f);
+
+			PositionMenuItems();
+
+			if (belowRow != null) {
+				Destroy(navButtons.gameObject);
+				CreateMainButtons();
+			}
+		}
 
 		public void PositionMenuItems() {
 			// Need to track index for proper positioning
@@ -80,17 +101,25 @@ namespace CylinderMenu
 				// Only display a certain amount of columns
 			}
 
+			// Calculate how far many degrees around the circle each image appears after the last.
+
+			float degreesPerUnit = 360f / (2f * Mathf.PI * radius);
+			float picRotDiffX = degreesPerUnit * itemSize;
+			float picRotDiffY = picRotDiffX * 0.981f; // 0.981 is 'y' dimension from blender
+			
+			picRotDiffX += degreesPerUnit * gapBetweenItems;
+			picRotDiffY += degreesPerUnit * gapBetweenItems;
 
 			// The columns are centered based on how many columns there are. 
 			// The first column's rotation therefore depends on how many columns there are
-			float startRotY = ((numColumns / 2f) - 0.5f) * -picSpacingX;
-			float startRotX = ((numRows / 2f) - 0.5f) * -picSpacingY;
+			float startRotY = ((numColumns / 2f) - 0.5f) * -picRotDiffY;
+			float startRotX = ((numRows / 2f) - 0.5f) * -picRotDiffX;
 
 			int col = 0, row = 0;
 			for (int i = 0; i < menuItems.Count; i++) {
 				// Some of this might be able to be done in MenuItem or set beforehand
 
-				menuItems[i].AddToMenuRow(transform, radius, Quaternion.Euler(new Vector3(startRotX + picSpacingY * row, startRotY + picSpacingX * col, 0f)), imageSize);
+				menuItems[i].AddToMenuRow(transform, radius, Quaternion.Euler(new Vector3(startRotX + picRotDiffX * row, startRotY + picRotDiffY * col, 0f)), itemSize);
 
 				row++;
 				

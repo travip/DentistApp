@@ -6,7 +6,7 @@ namespace CylinderMenu
 {
     public class MenuManager : MonoBehaviour
     {
-
+		// 
         public static MenuManager instance { get; private set; }
 
 		public enum SelectAction {
@@ -15,22 +15,32 @@ namespace CylinderMenu
 			webcam
 		}
 
-
+		// Object links
 		public GameObject MenuRowPrefab;
-
-		public float menuItemViewDistance = 20f;
-		public float menuItemImageSize = 8f;
-		
-        public MenuRow currentRow;
         public Transform spentMenuContainer;
 		public ImageViewer imageViewer;
 
-
-		public float rowGap = 10f;
-        public float moveTime = 0.1f;
-        private bool canMove = true;
-
 		private Camera cam;
+
+		// Runtime variables
+		private bool canMove = true;
+		[HideInInspector]
+		public MenuRow currentRow;
+		private MenuItem hoverItem;
+
+		// Parameters of the menu system
+		[Header("Between Rows")]
+		public float rowGap = 10f;
+		public float moveTime = 0.1f;
+		[Header("Rows")]
+		public float circleRadius = 20f;
+		public int maxRows = 1;
+		public int maxColumns = 50;
+		public float itemSize = 4f;
+		public float gapBetweenItems = 0.5f;
+
+
+
 
 		private void Awake() {
             if (instance == null || instance == this)
@@ -49,20 +59,6 @@ namespace CylinderMenu
             //InputManager.instance.goUp.AddListener(SelectMenuItem);
 			//InputManager.instance.goDown.AddListener(MoveMenuDown);
 
-
-			/*
-			currentRow = transform.Find("First Row").GetComponent<MenuRow>();
-
-			for (int i = 0; i < currentRow.transform.childCount; i++) {
-				MenuItem m = currentRow.transform.GetChild(i).GetComponent<MenuItem>();
-				if (m != null) {
-					currentRow.menuItems.Add(m);
-				}
-			}
-
-			currentRow.PositionMenuItems();
-			*/
-
 			// Generate starting MenuRow
 			currentRow = Instantiate(MenuRowPrefab, transform).GetComponent<MenuRow>();
 			
@@ -77,7 +73,7 @@ namespace CylinderMenu
 				}
 			}
 
-			currentRow.InitializeMenu(null, menuItemViewDistance, menuItemImageSize);
+			currentRow.InitializeMenu(null, circleRadius, maxRows, maxColumns, itemSize, gapBetweenItems);
 		}
 
 		void Update() {
@@ -88,33 +84,87 @@ namespace CylinderMenu
 
 			if (Physics.Raycast(ray, out hit))
 			{
-				MenuSelector menuHit = hit.transform.gameObject.GetComponent<MenuSelector>();
+				switch (hit.transform.tag) {
+					case "Selector":
+						LookAtSelector(hit.transform.gameObject.GetComponent<MenuSelector>());
+						break;
+					case "MenuItem":
+						MenuItem item = hit.transform.gameObject.GetComponent<MenuItem>();
+						if (item == hoverItem) {
+							// do nothing if this is the same one already being looked at
+						} else {
+							if (hoverItem != null) {
+								hoverItem.LookAway();
+							}
+							hoverItem = hit.transform.gameObject.GetComponent<MenuItem>();
+							hoverItem.LookAt();
+						}
 
-				// If hitting a menu selector, check with the selector if it's pressed yet
-				if (menuHit.LookAt())
-				{
-					switch (menuHit.selectionType)
-					{
-						case MenuSelector.SelectionType.select:
-							SelectMenuItem(menuHit.parentMenuItem);
-							break;
-						case MenuSelector.SelectionType.back:
-							MoveMenuDown();
-							break;
-						case MenuSelector.SelectionType.nextPage:
-							MoveMenuRight();
-							break;
-						case MenuSelector.SelectionType.previousPage:
-							MoveMenuLeft();
-							break;
-						default:
-							break;
-					}
+						break;
+					default:
+						break;
+				}
+			} else {
+				// nothing hit. Make any forward picture go back
+				if (hoverItem != null) {
+					hoverItem.LookAway();
+					hoverItem = null;
 				}
 			}
 
+			//////////////////////////////////////////////////////////////////////////////////////////////////////
+			//////////////////////////////////////////////////////////////////////////////////////////////////////
+			////////////////////////////////      DEBUG STUFF      ///////////////////////////////////////////////
+			//////////////////////////////// REMOVE FOR PRODUCTION ///////////////////////////////////////////////
+			//////////////////////////////////////////////////////////////////////////////////////////////////////
+			//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#if UNITY_EDITOR
 			Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red);
+
+			if (prevR != circleRadius || prevRows != maxRows || prevCols != maxColumns || prevSize != itemSize || prevGap != gapBetweenItems) {
+				// recalculate row
+				currentRow.RecalculateRow(circleRadius, maxRows, maxColumns, itemSize, gapBetweenItems);
+			}
+			prevR = circleRadius;
+			prevRows = maxRows;
+			prevCols = maxColumns;
+			prevSize = itemSize;
+			prevGap = gapBetweenItems;
+
+
+#endif
+
 		}
+
+#if UNITY_EDITOR
+		private float prevR=0, prevRows=0, prevCols=0, prevSize=0, prevGap=0;
+#endif
+		//////////////////////////////// END DEBUG STUFF ///////////////////////////////////////////////
+
+		private void LookAtSelector(MenuSelector menuHit)
+		{
+			// If hitting a menu selector, check with the selector if it's pressed yet
+			if (menuHit.LookAt()) {
+				switch (menuHit.selectionType) {
+					case MenuSelector.SelectionType.select:
+						SelectMenuItem(menuHit.parentMenuItem);
+						break;
+					case MenuSelector.SelectionType.back:
+						MoveMenuDown();
+						break;
+					case MenuSelector.SelectionType.nextPage:
+						MoveMenuRight();
+						break;
+					case MenuSelector.SelectionType.previousPage:
+						MoveMenuLeft();
+						break;
+					default:
+						break;
+				}
+			}
+		}
+
 
 		public void MoveMenuRight()
         {
@@ -207,7 +257,7 @@ namespace CylinderMenu
 			currentRow = Instantiate(MenuRowPrefab, transform).GetComponent<MenuRow>();
 			currentRow.transform.position = new Vector3(prevRow.transform.position.x, prevRow.transform.position.y + rowGap, prevRow.transform.position.z);
 
-			currentRow.InitializeMenu(prevRow, menuItemViewDistance, menuItemImageSize);
+			currentRow.InitializeMenu(prevRow, circleRadius, maxRows, maxColumns, itemSize, gapBetweenItems);
 
 			Vector3 newPosition = transform.position;
 			newPosition.y = -currentRow.transform.localPosition.y;
@@ -254,9 +304,6 @@ namespace CylinderMenu
 				transform.position = Vector3.Lerp(startPos, end, Easing.Quadratic.InOut(t));
 				yield return null;
             }
-
-			
-			currentRow.canRotate = true;
         }
 
 		private IEnumerator setCanMove (float t) {

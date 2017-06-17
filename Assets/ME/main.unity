@@ -341,6 +341,10 @@ Prefab:
       propertyPath: selectAction
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_RootOrder
+      value: 12
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58, type: 2}
   m_IsPrefabParent: 0
@@ -1109,13 +1113,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MenuRowPrefab: {fileID: 1537506794370098, guid: 22db83619dd267f438a8f23aebd4d1da,
     type: 2}
-  menuItemViewDistance: 20
-  menuItemImageSize: 20
-  currentRow: {fileID: 0}
   spentMenuContainer: {fileID: 342870991}
   imageViewer: {fileID: 364464890}
+  currentRow: {fileID: 0}
   rowGap: 10
   moveTime: 0.5
+  circleRadius: 20
+  maxRows: 1
+  maxColumns: 50
+  itemSize: 4
+  gapBetweenItems: 0.5
 --- !u!4 &1306488830
 Transform:
   m_ObjectHideFlags: 0
