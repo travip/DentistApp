@@ -6,8 +6,6 @@
 #include <gdiplus.h>
 
 #include <iostream>
-#include <boost/asio.hpp>
-#include <boost/array.hpp>
 
 using namespace Gdiplus;
 #pragma comment (lib, "Gdiplus.lib")
@@ -85,28 +83,6 @@ void CaptureScreen()
 	ReleaseDC(hDesktopWnd, hDesktopDC);
 	DeleteDC(hCaptureDC);
 	DeleteObject(hCaptureBitmap);
-}
-
-using boost::asio::ip::tcp;
-
-boost::asio::io_service io_service;
-
-void BeginServer() {
-	boost::asio::io_service io_service;
-	tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), 54321));
-	printf("Began listening\n");
-
-	tcp::socket socket(io_service);
-	acceptor.accept(socket);
-
-	printf("Connected");
-	boost::array<char, 128> buf;
-	boost::system::error_code error;
-
-	size_t len = socket.write_some(boost::asio::buffer(buf), error);
-	std::cout.write(buf.data(), len);
-
-	CaptureScreen();
 }
 
 int main() {

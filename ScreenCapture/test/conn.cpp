@@ -1,19 +1,21 @@
 #undef UNICODE
 
-#include "screencap.h"
-
+#include <winsock2.h>
+#include <windows.h>
+#include <ws2tcpip.h>
+#include <stdlib.h>
+#include <stdio.h>
 #pragma comment (lib, "Ws2_32.lib")
 
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "54321"
 
-Connection::Connection()
-{
+SOCKET listenSocket = INVALID_SOCKET;
+SOCKET clientSocket = INVALID_SOCKET;
+
+void BeginListening(){
 	WSADATA wsaData;
 	int iResult;
-
-	listenSocket = INVALID_SOCKET;
-	clientSocket = INVALID_SOCKET;
 
 	struct addrinfo *result = NULL;
 	struct addrinfo hints;
@@ -68,7 +70,7 @@ Connection::Connection()
 		exit(1);
 	}
 }
-void Connection::WaitForConnection()
+void WaitForConnection()
 {
 	int iResult;
 
