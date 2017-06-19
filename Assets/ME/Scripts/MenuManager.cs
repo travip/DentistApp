@@ -30,7 +30,8 @@ namespace CylinderMenu
 
 		// Parameters of the menu system
 		[Header("Navigation")]
-		public float turnThreshold;
+		public float turnThresholdMin;
+		public float turnThresholdMax;
 		[Header("Between Rows")]
 		public float rowGap = 10f;
 		public float moveTime = 0.1f;
@@ -93,11 +94,14 @@ namespace CylinderMenu
 			if (yRot > 180f) {
 				yRot = yRot - 360f;
 			}
-			//Debug.Log(yRot);
-			if (yRot > turnThreshold) {
-				currentRow.TurnRight();
-			} else if (yRot < -turnThreshold) {
-				currentRow.TurnLeft();
+			
+
+			if (yRot > turnThresholdMin) {
+				float percent = (yRot - turnThresholdMin) / (turnThresholdMax - turnThresholdMin);
+				currentRow.TurnRight(Mathf.Clamp01(percent));
+			} else if (yRot < -turnThresholdMin) {
+				float percent = (-yRot - turnThresholdMin) / (turnThresholdMax - turnThresholdMin);
+				currentRow.TurnLeft(Mathf.Clamp01(percent));
 			}
 			
 			//////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CylinderMenu
 {
@@ -17,7 +18,7 @@ namespace CylinderMenu
 		public float turnTick = 10f;
 		public float rotateTime = 0.1f;
 		public float turnAccel;
-		public float turnMax;
+		public float turnRateMax;
 		public float turnFriction;
 		
 		[Header("Image layout")]
@@ -35,6 +36,8 @@ namespace CylinderMenu
 		[HideInInspector]
 		public bool canRotate = true;
 		private float turnRate = 0f;
+		private float targetTurnRate = 0f;
+		private bool turning = false;
 		
 		//private int currentPage = 0;
 
@@ -72,15 +75,22 @@ namespace CylinderMenu
 			{
 				PositionMenuItems();
 			}
-			
+
+			T = GameObject.Find("Canvas").transform.Find("Text").GetComponent<Text>();
         }
 
-
+		public Text T;
+		
 		void Update() {
-			Debug.Log(turnRate);
+			T.text = targetTurnRate.ToString();
 			if (turnRate != 0f) {
-				turnRate *= turnFriction;
+				if (!turning) {
+					turnRate *= turnFriction;
+				}
+				
 				transform.Rotate(0f, turnRate, 0f);
+
+				turning = false;
 			}
 		}
 
@@ -186,14 +196,30 @@ namespace CylinderMenu
 			Destroy(gameObject);
         }
 
-		public void TurnLeft() {
-			turnRate += turnAccel * Time.deltaTime;
-			Mathf.Clamp(turnRate, -turnMax, turnMax);
+		public void TurnLeft(float percent) {
+			targetTurnRate = percent * turnRateMax;
+			
+			Turn();
 		}
 
-		public void TurnRight () {
-			turnRate -= turnAccel * Time.deltaTime;
-			Mathf.Clamp(turnRate, -turnMax, turnMax);
+		public void TurnRight (float percent) {
+			targetTurnRate = percent * -turnRateMax;
+
+			Turn();
+		}
+
+		private void Turn() {
+			if (turnRate > targetTurnRate) {
+				turnRate -= turnAccel * Time.deltaTime;
+				if (turnRate < targetTurnRate)
+					turnRate = targetTurnRate;
+			} else {
+				turnRate += turnAccel * Time.deltaTime;
+				if (turnRate > targetTurnRate)
+					turnRate = targetTurnRate;
+			}
+
+			turning = true;
 		}
 
 		public void MoveRight()

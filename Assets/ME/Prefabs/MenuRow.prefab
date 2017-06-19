@@ -130,8 +130,8 @@ MonoBehaviour:
   menuItems: []
   turnTick: 10
   rotateTime: 0.5
-  turnAccel: 0.8
-  turnMax: 2
+  turnAccel: 0.5
+  turnRateMax: 0.3
   turnFriction: 0.96
   maxRows: 1
   maxColumns: 50
@@ -140,3 +140,4 @@ MonoBehaviour:
   belowRow: {fileID: 0}
   canRotate: 1
   selectedItem: {fileID: 0}
+  T: {fileID: 0}
