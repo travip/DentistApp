@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Handle viewing of image
-namespace CylinderMenu {
-	public class ImageViewer : MonoBehaviour {
+namespace CylinderMenu
+{
+	public class ImageViewer : MonoBehaviour
+	{
 		//public Vector3 picContainerOffset;
 
 		public float[] zoomLevels;
@@ -21,12 +23,14 @@ namespace CylinderMenu {
 		private int currentZoom = 0;
 
 		// Use this for initialization
-		void Awake () {
+		void Awake ()
+		{
 			mat = GetComponent<Renderer>().material;
 			gameObject.SetActive(false);
 		}
 
-		void Update () {
+		void Update ()
+		{
 			if (viewingImage) {
 				// Scroll around the image when the looking around
 				Vector3 inputMovement = InputManager.instance.Get2DMovement() * 0.2f;
@@ -40,14 +44,22 @@ namespace CylinderMenu {
 		}
 
 
-		public void ViewImage (Texture image) {
+		public void ViewImage (Texture image)
+		{
+			LoadImage(image);
+
 			InputManager.instance.ToggleViewMode();
 			InputManager.instance.goDown.AddListener(ZoomOut);
 			InputManager.instance.goUp.AddListener(ZoomIn);
+			InputManager.instance.goLeft.AddListener(PreviousImage);
+			InputManager.instance.goRight.AddListener(NextImage);
+		}
 
+		public void LoadImage(Texture image) {
 			mat.mainTexture = image;
 
 			transform.position = new Vector3(0f, 15f, 0f);
+			currentZoom = 0;
 			SetZoomLevel();
 
 
@@ -55,7 +67,8 @@ namespace CylinderMenu {
 			StartCoroutine(InputGracePeriod());
 		}
 
-		public void SetZoomLevel () {
+		public void SetZoomLevel ()
+		{
 			transform.position = new Vector3(transform.position.x, transform.position.y, Camera.main.transform.position.z + zoomLevels[currentZoom]);
 
 			// Set up image clamp so the user cannot scroll beyond the boundary of the image
@@ -67,30 +80,47 @@ namespace CylinderMenu {
 			clampLow = new Vector2(bottomLeftView.x + extent.x, bottomLeftView.y + extent.y);
 		}
 
-		public void ZoomOut () {
+		private void ZoomOut ()
+		{
 			currentZoom--;
-			if (currentZoom < 0) {
+			if (currentZoom < 0)
+			{
 				currentZoom = 0;
 				HideImage();
-			} else {
+			} else
+			{
 				SetZoomLevel();
 			}
 		}
 
-		public void ZoomIn () {
+		private void ZoomIn ()
+		{
 			currentZoom++;
 			if (currentZoom >= zoomLevels.Length) {
 				currentZoom = zoomLevels.Length - 1;
 			} else {
 				SetZoomLevel();
 			}
-
 		}
 
-		private void HideImage () {
+		private void NextImage()
+		{
+			LoadImage(MenuManager.instance.ImageViewerNext());
+		}
+
+		private void PreviousImage()
+		{
+			LoadImage(MenuManager.instance.ImageViewerPrevious());
+		}
+
+		private void HideImage ()
+		{
 			InputManager.instance.ToggleViewMode();
 			InputManager.instance.goDown.RemoveListener(ZoomOut);
 			InputManager.instance.goUp.RemoveListener(ZoomIn);
+			InputManager.instance.goLeft.RemoveListener(PreviousImage);
+			InputManager.instance.goRight.RemoveListener(NextImage);
+
 			viewingImage = false;
 			StartCoroutine(ToggleActiveAfterSeconds(0.5f));
 
@@ -98,12 +128,14 @@ namespace CylinderMenu {
 		}
 
 
-		private IEnumerator ToggleActiveAfterSeconds (float t) {
+		private IEnumerator ToggleActiveAfterSeconds (float t)
+		{
 			yield return new WaitForSeconds(t);
 			gameObject.SetActive(!gameObject.activeSelf);
 		}
 
-		private IEnumerator InputGracePeriod () {
+		private IEnumerator InputGracePeriod ()
+		{
 			yield return new WaitForSeconds(0.5f);
 			viewingImage = true;
 		}

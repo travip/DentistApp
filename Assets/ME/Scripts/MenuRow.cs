@@ -194,6 +194,48 @@ namespace CylinderMenu
 			Destroy(gameObject);
         }
 
+
+		public MenuItem NextImage() {
+			// Return the next viewable image in the list of menu items
+			int current = menuItems.IndexOf(selectedItem);
+
+			do {
+				current++;
+				if (current >= menuItems.Count) {
+					current = 0;
+				}
+				selectedItem = menuItems[current];
+			} while (selectedItem.selectAction != MenuManager.SelectAction.imageView);
+
+			// Also make sure the row is rotated to that item
+			RotateToSelectedItem();
+
+			return selectedItem;
+		}
+
+		public MenuItem PreviousImage () {
+			// Return the next viewable image in the list of menu items
+			int current = menuItems.IndexOf(selectedItem);
+
+			do {
+				current--;
+				if (current <= 0) {
+					current = menuItems.Count - 1;
+				}
+				selectedItem = menuItems[current];
+			} while (selectedItem.selectAction != MenuManager.SelectAction.imageView);
+
+			// Also make sure the row is rotated to that item
+			RotateToSelectedItem();
+			
+			return selectedItem;
+		}
+
+		private void RotateToSelectedItem() {
+			transform.rotation = Quaternion.Euler(0f, -selectedItem.transform.localRotation.eulerAngles.y, 0f);
+		}
+
+
 		public void TurnLeft(float percent) {
 			targetTurnRate = percent * turnRateMax;
 			

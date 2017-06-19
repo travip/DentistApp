@@ -242,6 +242,14 @@ namespace CylinderMenu
 			imageViewer.ViewImage(currentRow.selectedItem.FullSizedPic);
         }
 
+		public Texture ImageViewerNext() {
+			return currentRow.NextImage().FullSizedPic;
+		}
+
+		public Texture ImageViewerPrevious () {
+			return currentRow.PreviousImage().FullSizedPic; ;
+		}
+
 		public void ExitImageView()
 		{
 			// remove pic container?

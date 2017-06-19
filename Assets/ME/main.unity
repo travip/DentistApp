@@ -151,7 +151,7 @@ Prefab:
         type: 2}
       propertyPath: menuPic
       value: 
-      objectReference: {fileID: 2800000, guid: daed170c8c12f684586c880375287926, type: 3}
+      objectReference: {fileID: 2800000, guid: ceb7f614a2fd78949abf19b047e629e2, type: 3}
     - target: {fileID: 114907919349176632, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58,
         type: 2}
       propertyPath: selectAction
@@ -161,7 +161,7 @@ Prefab:
         type: 2}
       propertyPath: FullSizedPic
       value: 
-      objectReference: {fileID: 2800000, guid: 8d35bedd9f8be744c863e98ed79be716, type: 3}
+      objectReference: {fileID: 2800000, guid: ceb7f614a2fd78949abf19b047e629e2, type: 3}
     - target: {fileID: 1234711191850694, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58, type: 2}
       propertyPath: m_Name
       value: MenuItem (9)
@@ -274,7 +274,7 @@ Prefab:
         type: 2}
       propertyPath: menuPic
       value: 
-      objectReference: {fileID: 2800000, guid: daed170c8c12f684586c880375287926, type: 3}
+      objectReference: {fileID: 2800000, guid: cac83e991cf998845a27331a292571d2, type: 3}
     - target: {fileID: 114907919349176632, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58,
         type: 2}
       propertyPath: selectAction
@@ -284,7 +284,7 @@ Prefab:
         type: 2}
       propertyPath: FullSizedPic
       value: 
-      objectReference: {fileID: 2800000, guid: 8d35bedd9f8be744c863e98ed79be716, type: 3}
+      objectReference: {fileID: 2800000, guid: cac83e991cf998845a27331a292571d2, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58, type: 2}
   m_IsPrefabParent: 0
@@ -457,7 +457,7 @@ Prefab:
         type: 2}
       propertyPath: menuPic
       value: 
-      objectReference: {fileID: 2800000, guid: daed170c8c12f684586c880375287926, type: 3}
+      objectReference: {fileID: 2800000, guid: ef6fa357daf173a4ca7aed88115d4ae4, type: 3}
     - target: {fileID: 114907919349176632, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58,
         type: 2}
       propertyPath: selectAction
@@ -467,7 +467,7 @@ Prefab:
         type: 2}
       propertyPath: FullSizedPic
       value: 
-      objectReference: {fileID: 2800000, guid: 8d35bedd9f8be744c863e98ed79be716, type: 3}
+      objectReference: {fileID: 2800000, guid: d8b13148216131e4d932f923b8166e58, type: 3}
     - target: {fileID: 1234711191850694, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58, type: 2}
       propertyPath: m_Name
       value: MenuItem (5)
@@ -532,7 +532,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf72919956e8ff43a8c608aa7e1ee8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  picContainerOffset: {x: 0, y: 0, z: 5}
+  zoomLevels:
+  - 7
+  - 4
+  - 2
 --- !u!23 &364464891
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -879,7 +882,7 @@ Prefab:
         type: 2}
       propertyPath: menuPic
       value: 
-      objectReference: {fileID: 2800000, guid: daed170c8c12f684586c880375287926, type: 3}
+      objectReference: {fileID: 2800000, guid: 3162d5395c847694da4eaa5d57a9af99, type: 3}
     - target: {fileID: 114907919349176632, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58,
         type: 2}
       propertyPath: selectAction
@@ -889,7 +892,7 @@ Prefab:
         type: 2}
       propertyPath: FullSizedPic
       value: 
-      objectReference: {fileID: 2800000, guid: 8d35bedd9f8be744c863e98ed79be716, type: 3}
+      objectReference: {fileID: 2800000, guid: 3162d5395c847694da4eaa5d57a9af99, type: 3}
     - target: {fileID: 1234711191850694, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58, type: 2}
       propertyPath: m_Name
       value: MenuItem (6)
@@ -1005,7 +1008,7 @@ Prefab:
         type: 2}
       propertyPath: menuPic
       value: 
-      objectReference: {fileID: 2800000, guid: daed170c8c12f684586c880375287926, type: 3}
+      objectReference: {fileID: 2800000, guid: 4319994ad95ee5a40a97feadb5f17e71, type: 3}
     - target: {fileID: 114907919349176632, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58,
         type: 2}
       propertyPath: selectAction
@@ -1015,7 +1018,7 @@ Prefab:
         type: 2}
       propertyPath: FullSizedPic
       value: 
-      objectReference: {fileID: 2800000, guid: 8d35bedd9f8be744c863e98ed79be716, type: 3}
+      objectReference: {fileID: 2800000, guid: 4319994ad95ee5a40a97feadb5f17e71, type: 3}
     - target: {fileID: 1234711191850694, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58, type: 2}
       propertyPath: m_Name
       value: MenuItem (2)
@@ -1247,7 +1250,7 @@ Prefab:
         type: 2}
       propertyPath: menuPic
       value: 
-      objectReference: {fileID: 2800000, guid: ef6fa357daf173a4ca7aed88115d4ae4, type: 3}
+      objectReference: {fileID: 2800000, guid: 54e2bbc1f52310f4da6864164544dcfe, type: 3}
     - target: {fileID: 114907919349176632, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58,
         type: 2}
       propertyPath: selectAction
@@ -1257,7 +1260,7 @@ Prefab:
         type: 2}
       propertyPath: FullSizedPic
       value: 
-      objectReference: {fileID: 2800000, guid: d8b13148216131e4d932f923b8166e58, type: 3}
+      objectReference: {fileID: 2800000, guid: 54e2bbc1f52310f4da6864164544dcfe, type: 3}
     - target: {fileID: 1234711191850694, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58, type: 2}
       propertyPath: m_Name
       value: MenuItem (10)
@@ -1400,7 +1403,7 @@ Prefab:
         type: 2}
       propertyPath: menuPic
       value: 
-      objectReference: {fileID: 2800000, guid: daed170c8c12f684586c880375287926, type: 3}
+      objectReference: {fileID: 2800000, guid: 667e4bb36b54efa44a3930c648319894, type: 3}
     - target: {fileID: 114907919349176632, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58,
         type: 2}
       propertyPath: selectAction
@@ -1410,7 +1413,7 @@ Prefab:
         type: 2}
       propertyPath: FullSizedPic
       value: 
-      objectReference: {fileID: 2800000, guid: 8d35bedd9f8be744c863e98ed79be716, type: 3}
+      objectReference: {fileID: 2800000, guid: 667e4bb36b54efa44a3930c648319894, type: 3}
     - target: {fileID: 1234711191850694, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58, type: 2}
       propertyPath: m_Name
       value: MenuItem (7)
@@ -1461,7 +1464,7 @@ Prefab:
         type: 2}
       propertyPath: menuPic
       value: 
-      objectReference: {fileID: 2800000, guid: daed170c8c12f684586c880375287926, type: 3}
+      objectReference: {fileID: 2800000, guid: ae0cdb969bf9abe4abe9b6acf4165bc2, type: 3}
     - target: {fileID: 114907919349176632, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58,
         type: 2}
       propertyPath: selectAction
@@ -1471,7 +1474,7 @@ Prefab:
         type: 2}
       propertyPath: FullSizedPic
       value: 
-      objectReference: {fileID: 2800000, guid: 8d35bedd9f8be744c863e98ed79be716, type: 3}
+      objectReference: {fileID: 2800000, guid: ae0cdb969bf9abe4abe9b6acf4165bc2, type: 3}
     - target: {fileID: 1234711191850694, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58, type: 2}
       propertyPath: m_Name
       value: MenuItem (8)
@@ -1583,7 +1586,7 @@ Prefab:
         type: 2}
       propertyPath: menuPic
       value: 
-      objectReference: {fileID: 2800000, guid: daed170c8c12f684586c880375287926, type: 3}
+      objectReference: {fileID: 2800000, guid: ee5c47323b6a61548a1b872188562da8, type: 3}
     - target: {fileID: 114907919349176632, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58,
         type: 2}
       propertyPath: selectAction
@@ -1593,7 +1596,7 @@ Prefab:
         type: 2}
       propertyPath: FullSizedPic
       value: 
-      objectReference: {fileID: 2800000, guid: 8d35bedd9f8be744c863e98ed79be716, type: 3}
+      objectReference: {fileID: 2800000, guid: ee5c47323b6a61548a1b872188562da8, type: 3}
     - target: {fileID: 1234711191850694, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58, type: 2}
       propertyPath: m_Name
       value: MenuItem (1)
@@ -1644,7 +1647,7 @@ Prefab:
         type: 2}
       propertyPath: menuPic
       value: 
-      objectReference: {fileID: 2800000, guid: daed170c8c12f684586c880375287926, type: 3}
+      objectReference: {fileID: 2800000, guid: 5955d7aa58ec58249b440a45822bd4f1, type: 3}
     - target: {fileID: 114907919349176632, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58,
         type: 2}
       propertyPath: selectAction
@@ -1654,7 +1657,7 @@ Prefab:
         type: 2}
       propertyPath: FullSizedPic
       value: 
-      objectReference: {fileID: 2800000, guid: 8d35bedd9f8be744c863e98ed79be716, type: 3}
+      objectReference: {fileID: 2800000, guid: 5955d7aa58ec58249b440a45822bd4f1, type: 3}
     - target: {fileID: 1234711191850694, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58, type: 2}
       propertyPath: m_Name
       value: MenuItem (3)
