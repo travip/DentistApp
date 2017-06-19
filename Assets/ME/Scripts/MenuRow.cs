@@ -76,13 +76,11 @@ namespace CylinderMenu
 				PositionMenuItems();
 			}
 
-			T = GameObject.Find("Canvas").transform.Find("Text").GetComponent<Text>();
         }
 
-		public Text T;
 		
 		void Update() {
-			T.text = targetTurnRate.ToString();
+
 			if (turnRate != 0f) {
 				if (!turning) {
 					turnRate *= turnFriction;
