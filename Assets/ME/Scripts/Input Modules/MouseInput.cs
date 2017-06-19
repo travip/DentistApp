@@ -53,7 +53,7 @@ public class MouseInput : InputManager {
                 StartCoroutine(PreventMultipleInput());
             }
 
-            /*else if (mouseDiff.y > mouseMoveThreshold)
+            else if (mouseDiff.y > mouseMoveThreshold)
             {
                 Debug.Log("Up");
                 goUp.Invoke();
@@ -65,7 +65,7 @@ public class MouseInput : InputManager {
                 Debug.Log("Down");
                 goDown.Invoke();
                 StartCoroutine(PreventMultipleInput());
-            }*/
+            }
         }
 
 		if (mouseRotation) {

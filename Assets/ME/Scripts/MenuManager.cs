@@ -232,9 +232,6 @@ namespace CylinderMenu
 			//InputManager.instance.goRight.RemoveListener(MoveMenuRight);
 			//InputManager.instance.goLeft.RemoveListener(MoveMenuLeft);
 
-			// Add back listener
-			InputManager.instance.goDown.AddListener(ExitImageView);
-
 			// Move up to empty space
 			Vector3 newPosition = transform.position;
 			newPosition.y -= rowGap*1.5f;
@@ -263,9 +260,6 @@ namespace CylinderMenu
 			newPosition.y = -currentRow.transform.localPosition.y;
 
 			StartCoroutine(SmoothMovement(newPosition));
-
-			// Hide image
-			imageViewer.HideImage();
 		}
 
 		public void StartWebcam() {
