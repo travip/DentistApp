@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using UnityEngine;
 
 // Packet container
@@ -22,11 +23,14 @@ public class ServerManager : MonoBehaviour {
     private TcpClient client = null;
     private NetworkStream stream = null;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    private void Awake()
+    {
         GetIPAddress();
-	}
-	
+        client = new TcpClient("192.168.1.115", 54321);
+        stream = client.GetStream();
+    }
+
     private bool GetIPAddress()
     {
         try
@@ -60,6 +64,7 @@ public class ServerManager : MonoBehaviour {
 
         listener = new TcpListener(localAddr, myPort);
         listener.Start();
+        Debug.Log("Began listening.");
     }
 
     // Accept a pending connection request
@@ -67,6 +72,7 @@ public class ServerManager : MonoBehaviour {
     {
         client = listener.AcceptTcpClient();
         stream = client.GetStream();
+        Debug.Log("Accepted a connection");
     }
 
     public void CloseConnection()
@@ -81,6 +87,7 @@ public class ServerManager : MonoBehaviour {
 
     public void ReadPacket()
     {
+        /*
         Packet p = new Packet();
         byte[] buf = new byte[5];
 
@@ -104,4 +111,30 @@ public class ServerManager : MonoBehaviour {
                 break;
         }
     }
+    */
+
+        byte[] buf = new byte[1000000];
+        int numBytes = stream.Read(buf, 0, 1000000);
+        Debug.Log("Read " + numBytes + " bytes!");
+    }
+
+    public void WriteData()
+    {
+        byte[] buf = Encoding.ASCII.GetBytes("1234567890");
+        stream.Write(buf, 0, buf.Length);
+    }
+
+    /*
+    private void Update()
+    {
+        if (stream != null)
+        {
+            if (stream.DataAvailable)
+            {
+                Debug.Log("Read a packet!");
+                ReadPacket();
+            }
+        }
+    }
+    */
 }
