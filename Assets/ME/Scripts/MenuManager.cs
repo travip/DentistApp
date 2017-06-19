@@ -29,6 +29,8 @@ namespace CylinderMenu
 		private RayCaster raycaster;
 
 		// Parameters of the menu system
+		[Header("Navigation")]
+		public float turnThreshold;
 		[Header("Between Rows")]
 		public float rowGap = 10f;
 		public float moveTime = 0.1f;
@@ -55,8 +57,8 @@ namespace CylinderMenu
 			cam = Camera.main;
 
 			//InputManager.instance.goRight.AddListener(MoveMenuRight);
-            //InputManager.instance.goLeft.AddListener(MoveMenuLeft);
-            //InputManager.instance.goUp.AddListener(SelectMenuItem);
+			//InputManager.instance.goLeft.AddListener(MoveMenuLeft);
+			//InputManager.instance.goUp.AddListener(SelectMenuItem);
 			//InputManager.instance.goDown.AddListener(MoveMenuDown);
 
 			// Generate starting MenuRow
@@ -87,35 +89,44 @@ namespace CylinderMenu
 			raycaster.CastForward();
 
 			
-			//////////////////////////////////////////////////////////////////////////////////////////////////////
+			float yRot = cam.transform.rotation.eulerAngles.y;
+			if (yRot > 180f) {
+				yRot = yRot - 360f;
+			}
+			//Debug.Log(yRot);
+			if (yRot > turnThreshold) {
+				currentRow.TurnRight();
+			} else if (yRot < -turnThreshold) {
+				currentRow.TurnLeft();
+			}
+			
 			//////////////////////////////////////////////////////////////////////////////////////////////////////
 			////////////////////////////////      DEBUG STUFF      ///////////////////////////////////////////////
 			//////////////////////////////// REMOVE FOR PRODUCTION ///////////////////////////////////////////////
 			//////////////////////////////////////////////////////////////////////////////////////////////////////
-			//////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if UNITY_EDITOR
-			//Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red);
+			#if UNITY_EDITOR
 
-			if (prevR != circleRadius || prevRows != maxRows || prevCols != maxColumns || prevSize != itemSize || prevGap != gapBetweenItems) {
-				// recalculate row
-				currentRow.RecalculateRow(circleRadius, maxRows, maxColumns, itemSize, gapBetweenItems);
-			}
-			prevR = circleRadius;
-			prevRows = maxRows;
-			prevCols = maxColumns;
-			prevSize = itemSize;
-			prevGap = gapBetweenItems;
+				if (prevR != circleRadius || prevRows != maxRows || prevCols != maxColumns || prevSize != itemSize || prevGap != gapBetweenItems) {
+					// recalculate row
+					currentRow.RecalculateRow(circleRadius, maxRows, maxColumns, itemSize, gapBetweenItems);
+				}
+				prevR = circleRadius;
+				prevRows = maxRows;
+				prevCols = maxColumns;
+				prevSize = itemSize;
+				prevGap = gapBetweenItems;
 
-
-#endif
+			#endif
 
 		}
 
-#if UNITY_EDITOR
-		private float prevR=0, prevRows=0, prevCols=0, prevSize=0, prevGap=0;
-#endif
+		#if UNITY_EDITOR
+			private float prevR=0, prevRows=0, prevCols=0, prevSize=0, prevGap=0;
+		#endif
+		////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////// END DEBUG STUFF ///////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////
 
 		public void RayEnterHandler(GameObject hit) {
 			switch (hit.transform.tag) {

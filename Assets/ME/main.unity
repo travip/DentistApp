@@ -1116,6 +1116,7 @@ MonoBehaviour:
   spentMenuContainer: {fileID: 342870991}
   imageViewer: {fileID: 364464890}
   currentRow: {fileID: 0}
+  turnThreshold: 14
   rowGap: 10
   moveTime: 0.5
   circleRadius: 20

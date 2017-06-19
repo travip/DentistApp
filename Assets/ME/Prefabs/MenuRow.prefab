@@ -128,11 +128,15 @@ MonoBehaviour:
   PreviousPageSelectorPrefab: {fileID: 1655467071807828, guid: 65ddc4f3792ccb34990ecd1da23555c8,
     type: 2}
   menuItems: []
-  belowRow: {fileID: 0}
+  turnTick: 10
   rotateTime: 0.5
-  canRotate: 1
+  turnAccel: 0.8
+  turnMax: 2
+  turnFriction: 0.96
   maxRows: 1
   maxColumns: 50
   itemSize: 20
   gapBetweenItems: 1
+  belowRow: {fileID: 0}
+  canRotate: 1
   selectedItem: {fileID: 0}

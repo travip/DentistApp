@@ -6,32 +6,40 @@ namespace CylinderMenu
 {
     public class MenuRow : MonoBehaviour
     {
-		private float turnTick = 10f;
-
+		// Object links
 		public GameObject BackSelectorPrefab, NextPageSelectorPrefab, PreviousPageSelectorPrefab;
 		public List<MenuItem> menuItems;
-        //private int selectedIndex = 0;
+		private Transform navButtons;
 
-        public MenuRow belowRow;
+		// Parameters
 
-        public float rotateTime = 0.1f;
-        public bool canRotate = true;
-
+		[Header("Navigation")]
+		public float turnTick = 10f;
+		public float rotateTime = 0.1f;
+		public float turnAccel;
+		public float turnMax;
+		public float turnFriction;
+		
+		[Header("Image layout")]
 		public int maxRows = 2;
 		public int maxColumns = 5;
 		public float itemSize = 20f;
 		public float gapBetweenItems = 1f;
-
 		private float radius;
+		private int pages = 1;
+
+
+		// Runtime variables
+		[HideInInspector]
+		public MenuRow belowRow;
+		[HideInInspector]
+		public bool canRotate = true;
+		private float turnRate = 0f;
 		
+		//private int currentPage = 0;
 
 		IEnumerator movement;
 
-		private int pages = 1;
-		//private int currentPage = 0;
-
-		private Transform navButtons;
-		
 		//public MenuItem selectedItem
 		//{
 		//	get { return menuItems[selectedIndex]; }
@@ -66,6 +74,18 @@ namespace CylinderMenu
 			}
 			
         }
+
+
+		void Update() {
+			Debug.Log(turnRate);
+			if (turnRate != 0f) {
+				turnRate *= turnFriction;
+				transform.Rotate(0f, turnRate, 0f);
+			}
+		}
+
+
+
 
 		public void RecalculateRow(float _radius, int _rows, int _columns, float _itemSize, float _gapBetweenItems) {
 			radius = _radius;
@@ -166,16 +186,21 @@ namespace CylinderMenu
 			Destroy(gameObject);
         }
 
-        public void MoveRight()
+		public void TurnLeft() {
+			turnRate += turnAccel * Time.deltaTime;
+			Mathf.Clamp(turnRate, -turnMax, turnMax);
+		}
+
+		public void TurnRight () {
+			turnRate -= turnAccel * Time.deltaTime;
+			Mathf.Clamp(turnRate, -turnMax, turnMax);
+		}
+
+		public void MoveRight()
         {
 			if (!canRotate)
 				return;
 
-			//if (selectedIndex < menuItems.Count - 1)
-			//{
-			//    selectedIndex++;
-			//	MoveToSelectedItem();
-			//}
 			RotateView(-turnTick);
         }
 
@@ -183,12 +208,6 @@ namespace CylinderMenu
         {
 			if (!canRotate)
 				return;
-
-			//if (selectedIndex > 0)
-            //{
-            //    selectedIndex--;
-			//	MoveToSelectedItem();
-			//}
 
 			RotateView(turnTick);
 		}
@@ -204,18 +223,6 @@ namespace CylinderMenu
 			StartCoroutine(movement);
 			StartCoroutine(setCanRotate(rotateTime * 0.6f));
 		}
-
-		/*private void MoveToSelectedItem() {
-
-			if (movement != null)
-				StopCoroutine(movement);
-
-			Quaternion quart = Quaternion.Euler(0f, -turnTick * (selectedIndex), 0f);
-
-			movement = SmoothRotation(quart);
-			StartCoroutine(movement);
-			StartCoroutine(setCanRotate(rotateTime * 0.6f));
-		}*/
 
         private IEnumerator SmoothRotation(Quaternion end)
         {
