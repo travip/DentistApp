@@ -1,37 +1,48 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CylinderMenu
 {
     public class MenuRow : MonoBehaviour
     {
-		private float turnTick = 10f;
-
+		// Object links
 		public GameObject BackSelectorPrefab, NextPageSelectorPrefab, PreviousPageSelectorPrefab;
 		public List<MenuItem> menuItems;
-        //private int selectedIndex = 0;
+		private Transform navButtons;
 
-        public MenuRow belowRow;
+		// Parameters
 
-        public float rotateTime = 0.1f;
-        public bool canRotate = true;
-
+		[Header("Navigation")]
+		public float turnTick = 10f;
+		public float rotateTime = 0.1f;
+		public float turnAccel;
+		public float turnRateMax;
+		public float turnFriction;
+		
+		[Header("Image layout")]
 		public int maxRows = 2;
 		public int maxColumns = 5;
 		public float itemSize = 20f;
 		public float gapBetweenItems = 1f;
-
 		private float radius;
+		private int pages = 1;
+
+
+		// Runtime variables
+		[HideInInspector]
+		public MenuRow belowRow;
+		[HideInInspector]
+		public bool canRotate = true;
+		private float turnRate = 0f;
+		private float targetTurnRate = 0f;
+		private bool turning = false;
 		
+		//private int currentPage = 0;
 
 		IEnumerator movement;
 
-		private int pages = 1;
-		//private int currentPage = 0;
-
-		private Transform navButtons;
-		
 		//public MenuItem selectedItem
 		//{
 		//	get { return menuItems[selectedIndex]; }
@@ -64,8 +75,25 @@ namespace CylinderMenu
 			{
 				PositionMenuItems();
 			}
-			
+
         }
+
+		
+		void Update() {
+
+			if (turnRate != 0f) {
+				if (!turning) {
+					turnRate *= turnFriction;
+				}
+				
+				transform.Rotate(0f, turnRate, 0f);
+
+				turning = false;
+			}
+		}
+
+
+
 
 		public void RecalculateRow(float _radius, int _rows, int _columns, float _itemSize, float _gapBetweenItems) {
 			radius = _radius;
@@ -166,16 +194,79 @@ namespace CylinderMenu
 			Destroy(gameObject);
         }
 
-        public void MoveRight()
+
+		public MenuItem NextImage() {
+			// Return the next viewable image in the list of menu items
+			int current = menuItems.IndexOf(selectedItem);
+
+			do {
+				current++;
+				if (current >= menuItems.Count) {
+					current = 0;
+				}
+				selectedItem = menuItems[current];
+			} while (selectedItem.selectAction != MenuManager.SelectAction.imageView);
+
+			// Also make sure the row is rotated to that item
+			RotateToSelectedItem();
+
+			return selectedItem;
+		}
+
+		public MenuItem PreviousImage () {
+			// Return the next viewable image in the list of menu items
+			int current = menuItems.IndexOf(selectedItem);
+
+			do {
+				current--;
+				if (current <= 0) {
+					current = menuItems.Count - 1;
+				}
+				selectedItem = menuItems[current];
+			} while (selectedItem.selectAction != MenuManager.SelectAction.imageView);
+
+			// Also make sure the row is rotated to that item
+			RotateToSelectedItem();
+			
+			return selectedItem;
+		}
+
+		private void RotateToSelectedItem() {
+			transform.rotation = Quaternion.Euler(0f, -selectedItem.transform.localRotation.eulerAngles.y, 0f);
+		}
+
+
+		public void TurnLeft(float percent) {
+			targetTurnRate = percent * turnRateMax;
+			
+			Turn();
+		}
+
+		public void TurnRight (float percent) {
+			targetTurnRate = percent * -turnRateMax;
+
+			Turn();
+		}
+
+		private void Turn() {
+			if (turnRate > targetTurnRate) {
+				turnRate -= turnAccel * Time.deltaTime;
+				if (turnRate < targetTurnRate)
+					turnRate = targetTurnRate;
+			} else {
+				turnRate += turnAccel * Time.deltaTime;
+				if (turnRate > targetTurnRate)
+					turnRate = targetTurnRate;
+			}
+
+			turning = true;
+		}
+
+		public void MoveRight()
         {
 			if (!canRotate)
 				return;
 
-			//if (selectedIndex < menuItems.Count - 1)
-			//{
-			//    selectedIndex++;
-			//	MoveToSelectedItem();
-			//}
 			RotateView(-turnTick);
         }
 
@@ -183,12 +274,6 @@ namespace CylinderMenu
         {
 			if (!canRotate)
 				return;
-
-			//if (selectedIndex > 0)
-            //{
-            //    selectedIndex--;
-			//	MoveToSelectedItem();
-			//}
 
 			RotateView(turnTick);
 		}
@@ -204,18 +289,6 @@ namespace CylinderMenu
 			StartCoroutine(movement);
 			StartCoroutine(setCanRotate(rotateTime * 0.6f));
 		}
-
-		/*private void MoveToSelectedItem() {
-
-			if (movement != null)
-				StopCoroutine(movement);
-
-			Quaternion quart = Quaternion.Euler(0f, -turnTick * (selectedIndex), 0f);
-
-			movement = SmoothRotation(quart);
-			StartCoroutine(movement);
-			StartCoroutine(setCanRotate(rotateTime * 0.6f));
-		}*/
 
         private IEnumerator SmoothRotation(Quaternion end)
         {

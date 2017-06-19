@@ -29,6 +29,9 @@ namespace CylinderMenu
 		private RayCaster raycaster;
 
 		// Parameters of the menu system
+		[Header("Navigation")]
+		public float turnThresholdMin;
+		public float turnThresholdMax;
 		[Header("Between Rows")]
 		public float rowGap = 10f;
 		public float moveTime = 0.1f;
@@ -55,8 +58,8 @@ namespace CylinderMenu
 			cam = Camera.main;
 
 			//InputManager.instance.goRight.AddListener(MoveMenuRight);
-            //InputManager.instance.goLeft.AddListener(MoveMenuLeft);
-            //InputManager.instance.goUp.AddListener(SelectMenuItem);
+			//InputManager.instance.goLeft.AddListener(MoveMenuLeft);
+			//InputManager.instance.goUp.AddListener(SelectMenuItem);
 			//InputManager.instance.goDown.AddListener(MoveMenuDown);
 
 			// Generate starting MenuRow
@@ -87,35 +90,47 @@ namespace CylinderMenu
 			raycaster.CastForward();
 
 			
-			//////////////////////////////////////////////////////////////////////////////////////////////////////
+			float yRot = cam.transform.rotation.eulerAngles.y;
+			if (yRot > 180f) {
+				yRot = yRot - 360f;
+			}
+			
+
+			if (yRot > turnThresholdMin) {
+				float percent = (yRot - turnThresholdMin) / (turnThresholdMax - turnThresholdMin);
+				currentRow.TurnRight(Mathf.Clamp01(percent));
+			} else if (yRot < -turnThresholdMin) {
+				float percent = (-yRot - turnThresholdMin) / (turnThresholdMax - turnThresholdMin);
+				currentRow.TurnLeft(Mathf.Clamp01(percent));
+			}
+			
 			//////////////////////////////////////////////////////////////////////////////////////////////////////
 			////////////////////////////////      DEBUG STUFF      ///////////////////////////////////////////////
 			//////////////////////////////// REMOVE FOR PRODUCTION ///////////////////////////////////////////////
 			//////////////////////////////////////////////////////////////////////////////////////////////////////
-			//////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if UNITY_EDITOR
-			//Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red);
+			#if UNITY_EDITOR
 
-			if (prevR != circleRadius || prevRows != maxRows || prevCols != maxColumns || prevSize != itemSize || prevGap != gapBetweenItems) {
-				// recalculate row
-				currentRow.RecalculateRow(circleRadius, maxRows, maxColumns, itemSize, gapBetweenItems);
-			}
-			prevR = circleRadius;
-			prevRows = maxRows;
-			prevCols = maxColumns;
-			prevSize = itemSize;
-			prevGap = gapBetweenItems;
+				if (prevR != circleRadius || prevRows != maxRows || prevCols != maxColumns || prevSize != itemSize || prevGap != gapBetweenItems) {
+					// recalculate row
+					currentRow.RecalculateRow(circleRadius, maxRows, maxColumns, itemSize, gapBetweenItems);
+				}
+				prevR = circleRadius;
+				prevRows = maxRows;
+				prevCols = maxColumns;
+				prevSize = itemSize;
+				prevGap = gapBetweenItems;
 
-
-#endif
+			#endif
 
 		}
 
-#if UNITY_EDITOR
-		private float prevR=0, prevRows=0, prevCols=0, prevSize=0, prevGap=0;
-#endif
+		#if UNITY_EDITOR
+			private float prevR=0, prevRows=0, prevCols=0, prevSize=0, prevGap=0;
+		#endif
+		////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////// END DEBUG STUFF ///////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////
 
 		public void RayEnterHandler(GameObject hit) {
 			switch (hit.transform.tag) {
@@ -217,9 +232,6 @@ namespace CylinderMenu
 			//InputManager.instance.goRight.RemoveListener(MoveMenuRight);
 			//InputManager.instance.goLeft.RemoveListener(MoveMenuLeft);
 
-			// Add back listener
-			InputManager.instance.goDown.AddListener(ExitImageView);
-
 			// Move up to empty space
 			Vector3 newPosition = transform.position;
 			newPosition.y -= rowGap*1.5f;
@@ -229,6 +241,14 @@ namespace CylinderMenu
 			// Show the full sized pic
 			imageViewer.ViewImage(currentRow.selectedItem.FullSizedPic);
         }
+
+		public Texture ImageViewerNext() {
+			return currentRow.NextImage().FullSizedPic;
+		}
+
+		public Texture ImageViewerPrevious () {
+			return currentRow.PreviousImage().FullSizedPic; ;
+		}
 
 		public void ExitImageView()
 		{
@@ -248,9 +268,6 @@ namespace CylinderMenu
 			newPosition.y = -currentRow.transform.localPosition.y;
 
 			StartCoroutine(SmoothMovement(newPosition));
-
-			// Hide image
-			imageViewer.HideImage();
 		}
 
 		public void StartWebcam() {

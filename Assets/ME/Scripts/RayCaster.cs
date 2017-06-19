@@ -4,20 +4,20 @@ using UnityEngine;
 
 public class RayCaster {
 
-	public List<RayCasterHit> currentHits;
-
 	public Transform looker;
 
 	public event Action<GameObject> OnRayEnter;
 	public event Action<GameObject> OnRayStay;
 	public event Action<GameObject> OnRayExit;
 
+	private List<RayCasterHit> currentHits;
+
 	public RayCaster() {
 		currentHits = new List<RayCasterHit>();
 	}
 
-	public void CastForward()
-	{
+	public void CastForward() {
+
 		// Reset 'checked' flag
 		currentHits.ForEach(h => { h.checkedYet = false; });
 
@@ -52,9 +52,9 @@ public class RayCaster {
 			}
 		}
 
-#if UNITY_EDITOR
-		Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red);
-#endif
+		#if UNITY_EDITOR
+			Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red);
+		#endif
 	}
 
 	RayCasterHit LookForMatch (GameObject obj) {
