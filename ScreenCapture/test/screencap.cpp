@@ -2,9 +2,11 @@
 #include <atlbase.h>
 #include <string.h>
 
+#include <windows.h>
 #include <objidl.h>
 #include <gdiplus.h>
 
+#include <fstream>
 #include <iostream>
 
 using namespace Gdiplus;
@@ -45,9 +47,7 @@ void CaptureScreen()
 	ULONG_PTR gdiplusToken;
 	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
-	HGLOBAL hMem = ::GlobalAlloc(GMEM_MOVEABLE, 1000000);
-	LPVOID pImage = ::GlobalLock(hMem);
-		::GlobalUnlock(hMem);
+	HGLOBAL hMem = ::GlobalAlloc(GMEM_FIXED, 1000000);
 	CComPtr<IStream> spStream;
 	HRESULT hr = ::CreateStreamOnHGlobal(hMem, FALSE, &spStream);
 
@@ -69,13 +69,23 @@ void CaptureScreen()
 		int retVal = GetEncoderClsid(L"image/png", &myClsId);
 
 		image->Save(spStream, &myClsId, NULL);
-		char * buf = (char *)malloc(100);
+
+		ULARGE_INTEGER pEnd;
+		spStream->Seek({ 0,0 }, STREAM_SEEK_CUR, &pEnd);
+		printf("Bytes: ");
+		std::cout << pEnd.QuadPart << std::endl;
+
+		std::ofstream fout;
+		fout.open("file.png", std::ios::binary | std::ios::out);
+		fout.write((const char*)hMem, pEnd.QuadPart);
+
+	/*	char * buf = (char *)malloc(100);
 		spStream->Seek({ 0,0 }, STREAM_SEEK_SET, NULL);
 		ULONG bytesRead = 0;
 		spStream->Read(buf, 100, &bytesRead);
 		printf("Bytes Read: %i\n", bytesRead);
 		printf(buf);
-
+		*/
 		delete image;
 	}
 
