@@ -177,7 +177,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 42414957}
-  - component: {fileID: 42414959}
+  - component: {fileID: 42414958}
   m_Layer: 0
   m_Name: InputManager
   m_TagString: Untagged
@@ -198,7 +198,7 @@ Transform:
   m_Father: {fileID: 1551765649}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &42414959
+--- !u!114 &42414958
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -206,7 +206,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 42414956}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 316dcebff36d0ae47b628809829344c2, type: 3}
+  m_Script: {fileID: 11500000, guid: b49484a431b288c45819b76ca38e9436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   goRight:
@@ -229,7 +229,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  mouseMoveThreshold: 2
+  moveThreshold: 5
   scrollSpeed: 1
 --- !u!1001 &145323566
 Prefab:

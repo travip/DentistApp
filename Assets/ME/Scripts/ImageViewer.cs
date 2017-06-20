@@ -33,7 +33,11 @@ namespace CylinderMenu
 		{
 			if (viewingImage) {
 				// Scroll around the image when the looking around
-				Vector3 inputMovement = InputManager.instance.Get2DMovement() * 0.2f;
+				Vector3 inputMovement = new Vector3();
+				inputMovement.x = InputManager.instance.Get2DMovement().y;
+				inputMovement.y = -InputManager.instance.Get2DMovement().x;
+				inputMovement *= 0.2f;
+
 				Vector3 nextMove = transform.position + inputMovement;
 
 				nextMove.x = Mathf.Clamp(nextMove.x, clampHigh.x, clampLow.x);

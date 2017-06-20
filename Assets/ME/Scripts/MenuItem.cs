@@ -37,15 +37,11 @@ namespace CylinderMenu {
         private void Awake()
         {
             subMenuItems = new List<MenuItem>();
-        }
 
-        private void Start()
-        {
-            // Get each MenuItem from the SubMenu container
-            foreach(Transform sub in transform)
-            {
-                subMenuItems.Add(sub.GetComponent<MenuItem>());
-            }
+			// Get each MenuItem from the SubMenu container
+			foreach (Transform sub in transform) {
+				subMenuItems.Add(sub.GetComponent<MenuItem>());
+			}
 
 			// Instantiate the mesh that holds the menu picture
 			pic = Instantiate(PicPrefab, transform).transform;
@@ -56,6 +52,11 @@ namespace CylinderMenu {
 
 			selector.gameObject.SetActive(false);
 			gameObject.SetActive(false);
+		}
+
+        private void Start()
+        {
+            
         }
 
 		public void AddToMenuRow(Transform row, float distance, Quaternion rotation, float size)
