@@ -29,7 +29,7 @@ public class ServerManager : MonoBehaviour {
     private void Awake()
     {
         GetIPAddress();
-        client = new TcpClient("192.168.1.115", 54321);
+        client = new TcpClient(myIpString, 54321);
         stream = client.GetStream();
     }
 
