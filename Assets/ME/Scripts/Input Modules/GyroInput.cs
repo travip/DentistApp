@@ -7,13 +7,11 @@ public class GyroInput : InputManager {
 
 	private bool canTrigger = false;
 
-	public float moveThreshold = 50;
-
 	private Camera cam;
 	private Vector3 rotDiff = Vector3.zero;
 	//private Vector3 mouseLast = Vector3.zero;
 
-	public float scrollSpeed = 1;
+	public float scrollSpeed = 1f;
 
 	private float yaw = 0f;
 	private float pitch = 0f;

@@ -6,7 +6,9 @@ public abstract class InputManager : MonoBehaviour
 {
     public static InputManager instance { get; private set; }
 
-    public UnityEvent goRight;
+	public float moveThreshold = 5f;
+
+	public UnityEvent goRight;
     public UnityEvent goLeft;
     public UnityEvent goUp;
     public UnityEvent goDown;

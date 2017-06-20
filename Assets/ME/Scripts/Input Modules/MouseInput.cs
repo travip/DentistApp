@@ -7,13 +7,11 @@ public class MouseInput : InputManager {
 
     private bool canTrigger = false;
 
-    public float mouseMoveThreshold = 50;
-
 	private Camera cam;
     private Vector3 mouseDiff = Vector3.zero;
     //private Vector3 mouseLast = Vector3.zero;
 
-    public float scrollSpeed = 1;
+    public float scrollSpeed = 1f;
 
 	private float yaw = 0f;
 	private float pitch = 0f;
@@ -39,28 +37,28 @@ public class MouseInput : InputManager {
 		
 		if (canTrigger)
         {
-            if (mouseDiff.x > mouseMoveThreshold)
+            if (mouseDiff.x > moveThreshold)
             {
                 Debug.Log("Right");
                 goRight.Invoke();
                 StartCoroutine(PreventMultipleInput());
             }
 
-            else if (mouseDiff.x < -mouseMoveThreshold)
+            else if (mouseDiff.x < -moveThreshold)
             {
                 Debug.Log("Left");
                 goLeft.Invoke();
                 StartCoroutine(PreventMultipleInput());
             }
 
-            else if (mouseDiff.y > mouseMoveThreshold)
+            else if (mouseDiff.y > moveThreshold)
             {
                 Debug.Log("Up");
                 goUp.Invoke();
                 StartCoroutine(PreventMultipleInput());
             }
 
-            else if (mouseDiff.y < -mouseMoveThreshold)
+            else if (mouseDiff.y < -moveThreshold)
             {
                 Debug.Log("Down");
                 goDown.Invoke();
@@ -90,7 +88,9 @@ public class MouseInput : InputManager {
 
 	public override Vector2 Get2DMovement()
     {
-        //return Vector2.ClampMagnitude(mouseDiff, 1.414f) * scrollSpeed;
-		return mouseDiff * scrollSpeed;
+		//return Vector2.ClampMagnitude(mouseDiff, 1.414f) * scrollSpeed;
+		Vector2 mov = mouseDiff * scrollSpeed;
+		
+		return new Vector2(mov.y, -mov.x);
 	}
 }
