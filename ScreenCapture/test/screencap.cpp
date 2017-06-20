@@ -68,24 +68,18 @@ void CaptureScreen()
 		CLSID myClsId;
 		int retVal = GetEncoderClsid(L"image/png", &myClsId);
 
+		spStream->Seek({ 0,0 }, STREAM_SEEK_SET, NULL);
 		image->Save(spStream, &myClsId, NULL);
 
 		ULARGE_INTEGER pEnd;
 		spStream->Seek({ 0,0 }, STREAM_SEEK_CUR, &pEnd);
+
 		printf("Bytes: ");
 		std::cout << pEnd.QuadPart << std::endl;
 
 		std::ofstream fout;
 		fout.open("file.png", std::ios::binary | std::ios::out);
 		fout.write((const char*)hMem, pEnd.QuadPart);
-
-	/*	char * buf = (char *)malloc(100);
-		spStream->Seek({ 0,0 }, STREAM_SEEK_SET, NULL);
-		ULONG bytesRead = 0;
-		spStream->Read(buf, 100, &bytesRead);
-		printf("Bytes Read: %i\n", bytesRead);
-		printf(buf);
-		*/
 		delete image;
 	}
 
