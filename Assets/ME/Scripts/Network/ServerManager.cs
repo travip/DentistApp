@@ -23,6 +23,8 @@ public class ServerManager : MonoBehaviour {
     private TcpClient client = null;
     private NetworkStream stream = null;
 
+    public Texture2D myImage;
+
     // Use this for initialization
     private void Awake()
     {
@@ -87,35 +89,38 @@ public class ServerManager : MonoBehaviour {
 
     public void ReadPacket()
     {
-        /*
-        Packet p = new Packet();
-        byte[] buf = new byte[5];
-
-        if (stream.Read(buf, 0, 5) != 5){
-            throw new NetworkException("Failed to read packet header");
-        }
-
-        p.packetType = buf[0];
-        p.size = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buf, 1));
-        p.body = new byte[p.size];
-
-        if(stream.Read(p.body, 0, p.size) != p.size)
-        {
-            throw new NetworkException("Failed to read packet body");
-        }
-
-        switch (p.packetType)
-        {
-            case PacketType.CameraStream:
-                Debug.Log("Camera Stream Packet");
-                break;
-        }
-    }
-    */
-
-        byte[] buf = new byte[1000000];
-        int numBytes = stream.Read(buf, 0, 1000000);
+        Debug.Log("Reading packet!");
+        byte[] buf = new byte[4];
+        int numBytes = stream.Read(buf, 0, 4);
         Debug.Log("Read " + numBytes + " bytes!");
+        if (numBytes != 4)
+        {
+            Debug.Log("Failed to read packet header");
+        }
+        if (BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(buf);
+        }
+        int picSize = (int)BitConverter.ToUInt32(buf, 0);
+        Debug.Log("Picture Size is " + picSize);
+        byte[] pic = new byte[picSize];
+        if (picSize < 5000000)
+        {
+            numBytes = stream.Read(pic, 0, picSize);
+            Debug.Log("Read " + numBytes + " bytes");
+            myImage.LoadImage(pic);
+        }
+        else
+        {
+            Debug.Log("Picsize error");
+            pic = null;
+            var buffer = new byte[1000000];
+            while (stream.DataAvailable)
+            {
+                int x = stream.Read(buffer, 0, buffer.Length);
+                Debug.Log("Clearing stream of " + x + " bytes");
+            }
+        }        
     }
 
     public void WriteData()
@@ -124,7 +129,7 @@ public class ServerManager : MonoBehaviour {
         stream.Write(buf, 0, buf.Length);
     }
 
-    /*
+    
     private void Update()
     {
         if (stream != null)
@@ -136,5 +141,5 @@ public class ServerManager : MonoBehaviour {
             }
         }
     }
-    */
+    
 }

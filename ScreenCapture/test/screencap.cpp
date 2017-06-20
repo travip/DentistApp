@@ -9,6 +9,8 @@
 #include <fstream>
 #include <iostream>
 
+#include "conn.hpp"
+
 using namespace Gdiplus;
 #pragma comment (lib, "Gdiplus.lib")
 
@@ -58,15 +60,17 @@ void CaptureScreen()
 	HDC hCaptureDC = CreateCompatibleDC(hDesktopDC);
 	HBITMAP hCaptureBitmap = CreateCompatibleBitmap(hDesktopDC,
 		nScreenWidth, nScreenHeight);
+	SelectObject(hCaptureDC, hCaptureBitmap);
 
-	while (getchar() != 's') {
-		SelectObject(hCaptureDC, hCaptureBitmap);
+	CLSID myClsId;
+	int retVal = GetEncoderClsid(L"image/png", &myClsId);
+
+
+	while (getchar() != 's') 
+	{
 		BitBlt(hCaptureDC, 0, 0, nScreenWidth, nScreenHeight,
 			hDesktopDC, 0, 0, SRCCOPY | CAPTUREBLT);
-
 		Bitmap *image = new Bitmap(hCaptureBitmap, NULL);
-		CLSID myClsId;
-		int retVal = GetEncoderClsid(L"image/png", &myClsId);
 
 		spStream->Seek({ 0,0 }, STREAM_SEEK_SET, NULL);
 		image->Save(spStream, &myClsId, NULL);
@@ -76,10 +80,8 @@ void CaptureScreen()
 
 		printf("Bytes: ");
 		std::cout << pEnd.QuadPart << std::endl;
-
-		std::ofstream fout;
-		fout.open("file.png", std::ios::binary | std::ios::out);
-		fout.write((const char*)hMem, pEnd.QuadPart);
+		SendMessage((char*)hMem, pEnd.QuadPart);
+	
 		delete image;
 	}
 
@@ -89,6 +91,10 @@ void CaptureScreen()
 	DeleteObject(hCaptureBitmap);
 }
 
-int main() {
+int main() 
+{
+	BeginListening();
+	WaitForConnection();
 	CaptureScreen();
+	EndConnection();
 }
