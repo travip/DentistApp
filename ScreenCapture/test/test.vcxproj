@@ -152,6 +152,9 @@
     <ClCompile Include="conn.cpp" />
     <ClCompile Include="screencap.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="conn.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
