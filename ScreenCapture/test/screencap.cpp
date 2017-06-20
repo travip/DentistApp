@@ -63,7 +63,7 @@ void CaptureScreen()
 	SelectObject(hCaptureDC, hCaptureBitmap);
 
 	CLSID myClsId;
-	int retVal = GetEncoderClsid(L"image/png", &myClsId);
+	int retVal = GetEncoderClsid(L"image/jpeg", &myClsId);
 
 
 	while (getchar() != 's') 

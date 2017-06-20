@@ -25,10 +25,13 @@ public class ServerManager : MonoBehaviour {
 
     public Texture2D myImage;
 
+    private byte[] pic;
+
     // Use this for initialization
     private void Awake()
     {
         GetIPAddress();
+        pic = new byte[4];
         client = new TcpClient("192.168.1.115", 54321);
         stream = client.GetStream();
     }
@@ -103,7 +106,7 @@ public class ServerManager : MonoBehaviour {
         }
         int picSize = (int)BitConverter.ToUInt32(buf, 0);
         Debug.Log("Picture Size is " + picSize);
-        byte[] pic = new byte[picSize];
+        Array.Resize(ref pic, picSize);
         if (picSize < 5000000)
         {
             numBytes = stream.Read(pic, 0, picSize);
