@@ -32,7 +32,7 @@ public class ServerManager : MonoBehaviour {
     {
         GetIPAddress();
         pic = new byte[4];
-        client = new TcpClient("192.168.1.115", 54321);
+        client = new TcpClient(myIpString, 54321);
         stream = client.GetStream();
     }
 
@@ -46,7 +46,6 @@ public class ServerManager : MonoBehaviour {
         {
             Debug.Log(e);
             return false;
-
         }
         localAddr = IPAddress.Parse(myIpString);
         return true;
