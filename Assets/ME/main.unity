@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -177,7 +177,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 42414957}
-  - component: {fileID: 42414959}
+  - component: {fileID: 42414960}
   - component: {fileID: 42414958}
   m_Layer: 0
   m_Name: InputManager
@@ -207,14 +207,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 42414956}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c4f63009b31488438f88a9f6c608eea, type: 3}
+  m_Script: {fileID: 11500000, guid: ccf4b5a6e72fdba4ea19ee3d43baeca2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   horizontal: {fileID: 1458253611}
   vertical: {fileID: 489775988}
   colorNormal: {r: 1, g: 1, b: 1, a: 1}
   colorActivated: {r: 1, g: 0, b: 0, a: 1}
---- !u!114 &42414959
+--- !u!114 &42414960
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -222,10 +222,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 42414956}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e28f37d6ae226e4f9d98049afc80827, type: 3}
+  m_Script: {fileID: 11500000, guid: 316dcebff36d0ae47b628809829344c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveThreshold: 3
+  moveThreshold: {x: 5, y: 4}
   goRight:
     m_PersistentCalls:
       m_Calls: []
@@ -246,7 +246,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  scrollSpeed: 2
+  scrollSpeed: 1
 --- !u!1001 &145323566
 Prefab:
   m_ObjectHideFlags: 0
@@ -543,7 +543,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 364464889}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ddf72919956e8ff43a8c608aa7e1ee8c, type: 3}
   m_Name: 
@@ -759,6 +759,7 @@ RectTransform:
   m_Children:
   - {fileID: 716822386}
   - {fileID: 1986428440}
+  - {fileID: 1993423344}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1246,6 +1247,8 @@ MonoBehaviour:
     type: 2}
   spentMenuContainer: {fileID: 342870991}
   imageViewer: {fileID: 364464890}
+  webcamViewer: {fileID: 1993423347}
+  server: {fileID: 516281291}
   currentRow: {fileID: 0}
   turnThresholdMin: 25
   turnThresholdMax: 50
@@ -1932,3 +1935,82 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1986428439}
+--- !u!1 &1993423343
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1993423344}
+  - component: {fileID: 1993423346}
+  - component: {fileID: 1993423345}
+  - component: {fileID: 1993423347}
+  m_Layer: 5
+  m_Name: Webcam Viewer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1993423344
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1993423343}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 499376996}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1993423345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1993423343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -98529514, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Texture: {fileID: 2800000, guid: 62d2720e2612796488a7bfbebc46e424, type: 3}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+--- !u!222 &1993423346
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1993423343}
+--- !u!114 &1993423347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1993423343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22f5472af8e15bc4db4910d68af1b287, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

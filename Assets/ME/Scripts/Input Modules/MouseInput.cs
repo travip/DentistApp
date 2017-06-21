@@ -37,28 +37,28 @@ public class MouseInput : InputManager {
 		
 		if (canTrigger)
         {
-            if (mouseDiff.x > moveThreshold)
+            if (mouseDiff.x > moveThreshold.x)
             {
                 Debug.Log("Right");
                 goRight.Invoke();
                 StartCoroutine(PreventMultipleInput());
             }
 
-            else if (mouseDiff.x < -moveThreshold)
+            else if (mouseDiff.x < -moveThreshold.x)
             {
                 Debug.Log("Left");
                 goLeft.Invoke();
                 StartCoroutine(PreventMultipleInput());
             }
 
-            else if (mouseDiff.y > moveThreshold)
+            else if (mouseDiff.y > moveThreshold.y)
             {
                 Debug.Log("Up");
                 goUp.Invoke();
                 StartCoroutine(PreventMultipleInput());
             }
 
-            else if (mouseDiff.y < -moveThreshold)
+            else if (mouseDiff.y < -moveThreshold.y)
             {
                 Debug.Log("Down");
                 goDown.Invoke();

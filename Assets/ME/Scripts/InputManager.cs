@@ -6,12 +6,16 @@ public abstract class InputManager : MonoBehaviour
 {
     public static InputManager instance { get; private set; }
 
-	public float moveThreshold = 5f;
+	public Vector2 moveThreshold = new Vector2(5f, 5f);
 
+	[HideInInspector]
 	public UnityEvent goRight;
-    public UnityEvent goLeft;
-    public UnityEvent goUp;
-    public UnityEvent goDown;
+	[HideInInspector]
+	public UnityEvent goLeft;
+	[HideInInspector]
+	public UnityEvent goUp;
+	[HideInInspector]
+	public UnityEvent goDown;
 
     private void Awake()
     {

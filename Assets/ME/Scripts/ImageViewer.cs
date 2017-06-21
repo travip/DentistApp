@@ -17,7 +17,7 @@ namespace CylinderMenu
 		private Vector2 clampHigh;
 		private Vector2 clampLow;
 
-		private bool viewingImage;
+		private bool viewingImage = false;
 		private Material mat;
 
 		private int currentZoom = 0;
@@ -29,9 +29,9 @@ namespace CylinderMenu
 			gameObject.SetActive(false);
 		}
 
-		void Update ()
-		{
-			if (viewingImage) {
+		private IEnumerator ViewerUpdate () {
+
+			while (viewingImage) {
 				// Scroll around the image when the looking around
 				Vector3 inputMovement = new Vector3();
 				inputMovement.x = InputManager.instance.Get2DMovement().y;
@@ -44,6 +44,8 @@ namespace CylinderMenu
 				nextMove.y = Mathf.Clamp(nextMove.y, clampHigh.y, clampLow.y);
 
 				transform.position = nextMove;
+
+				yield return null;
 			}
 		}
 
@@ -142,6 +144,7 @@ namespace CylinderMenu
 		{
 			yield return new WaitForSeconds(0.5f);
 			viewingImage = true;
+			StartCoroutine(ViewerUpdate());
 		}
 
 

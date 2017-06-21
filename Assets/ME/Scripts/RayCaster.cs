@@ -53,7 +53,7 @@ public class RayCaster {
 		}
 
 		#if UNITY_EDITOR
-			Debug.DrawRay(ray.origin, ray.direction * 20f, Color.red);
+			Debug.DrawRay(ray.origin, ray.direction * 5f, Color.red);
 		#endif
 	}
 

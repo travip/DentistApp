@@ -5,13 +5,14 @@ using System.Text;
 using UnityEngine;
 
 // Packet container
+/*
 internal class Packet
 {
     internal byte packetType;
     internal int size;
     internal byte[] body;
 }
-
+*/
 public class ServerManager : MonoBehaviour {
 
 

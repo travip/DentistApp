@@ -24,8 +24,8 @@ public class GestureVisualiser : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		Vector2 mov = InputManager.instance.Get2DMovement();
-		gestureSize.y = mov.x / InputManager.instance.moveThreshold;
-		gestureSize.x = -mov.y / InputManager.instance.moveThreshold;
+		gestureSize.y = mov.x / InputManager.instance.moveThreshold.y;
+		gestureSize.x = -mov.y / InputManager.instance.moveThreshold.x;
 
 		SetImageScales();
 	}

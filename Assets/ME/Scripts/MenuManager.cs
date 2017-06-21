@@ -6,7 +6,6 @@ namespace CylinderMenu
 {
     public class MenuManager : MonoBehaviour
     {
-		// 
         public static MenuManager instance { get; private set; }
 
 		public enum SelectAction {
@@ -19,8 +18,11 @@ namespace CylinderMenu
 		public GameObject MenuRowPrefab;
         public Transform spentMenuContainer;
 		public ImageViewer imageViewer;
+		public WebcamViewer webcamViewer;
+		public ServerManager server;
 
 		private Camera cam;
+		
 
 		// Runtime variables
 		private bool canMove = true;
@@ -226,11 +228,6 @@ namespace CylinderMenu
 		}
 
 		public void ImageView() {
-			// Remove menu navigation listeners
-			//InputManager.instance.goDown.RemoveListener(MoveMenuDown);
-			//InputManager.instance.goUp.RemoveListener(SelectMenuItem);
-			//InputManager.instance.goRight.RemoveListener(MoveMenuRight);
-			//InputManager.instance.goLeft.RemoveListener(MoveMenuLeft);
 
 			// Move up to empty space
 			Vector3 newPosition = transform.position;
@@ -252,17 +249,6 @@ namespace CylinderMenu
 
 		public void ExitImageView()
 		{
-			// remove pic container?
-
-			// Remove back listener
-			InputManager.instance.goDown.RemoveListener(ExitImageView);
-
-			// Add menu navigation listeners
-			//InputManager.instance.goRight.AddListener(MoveMenuRight);
-			//InputManager.instance.goLeft.AddListener(MoveMenuLeft);
-			//InputManager.instance.goUp.AddListener(SelectMenuItem);
-			//InputManager.instance.goDown.AddListener(MoveMenuDown);
-
 			// Move back to the row we came from
 			Vector3 newPosition = transform.position;
 			newPosition.y = -currentRow.transform.localPosition.y;
@@ -272,9 +258,19 @@ namespace CylinderMenu
 
 		public void StartWebcam() {
 			Debug.Log("Starting Webcam");
+
+			// Move up to empty space
+			Vector3 newPosition = transform.position;
+			newPosition.y -= rowGap * 1.5f;
+
+			StartCoroutine(SmoothMovement(newPosition));
+
+			// Start the server and the webcam viewer
+			server.gameObject.SetActive(true);
+			webcamViewer.ViewWebcam(server.myImage);
 		}
 
-        public void MoveMenuUp()
+		public void MoveMenuUp()
         {
 			if (canMove == false || currentRow.canRotate == false)
 				return;

@@ -49,25 +49,25 @@ public class GyroInput : InputManager {
 
 
 		if (canTrigger) {
-			if (rotDiff.y < -moveThreshold) {
+			if (rotDiff.y < -moveThreshold.x) {
 				Debug.Log("Right");
 				goRight.Invoke();
 				StartCoroutine(PreventMultipleInput());
 			}
 
-			else if (rotDiff.y > moveThreshold) {
+			else if (rotDiff.y > moveThreshold.x) {
 				Debug.Log("Left");
 				goLeft.Invoke();
 				StartCoroutine(PreventMultipleInput());
 			}
 
-			else if (rotDiff.x > moveThreshold) {
+			else if (rotDiff.x > moveThreshold.y) {
 				Debug.Log("Up");
 				goUp.Invoke();
 				StartCoroutine(PreventMultipleInput());
 			}
 
-			else if (rotDiff.x < -moveThreshold) {
+			else if (rotDiff.x < -moveThreshold.y) {
 				Debug.Log("Down");
 				goDown.Invoke();
 				StartCoroutine(PreventMultipleInput());
