@@ -62,11 +62,11 @@ void CaptureScreen(Server* server)
 		nScreenWidth, nScreenHeight);
 	SelectObject(hCaptureDC, hCaptureBitmap);
 
-	CLSID myClsId;
+	CLSID myClsId;	
 	int retVal = GetEncoderClsid(L"image/jpeg", &myClsId);
 
 
-	while (getchar() != 's') 
+	while (TRUE) 
 	{
 		BitBlt(hCaptureDC, 0, 0, nScreenWidth, nScreenHeight,
 			hDesktopDC, 0, 0, SRCCOPY | CAPTUREBLT);
@@ -81,6 +81,7 @@ void CaptureScreen(Server* server)
 		printf("Bytes: ");
 		std::cout << pEnd.QuadPart << std::endl;
 		server->TCPSend((const char*)hMem, pEnd.QuadPart, PTYPE_IMAGECAPTURE);
+		Sleep(50);
 	
 		delete image;
 	}

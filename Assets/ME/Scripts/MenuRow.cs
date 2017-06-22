@@ -253,9 +253,9 @@ namespace CylinderMenu
 		}
 
 		private IEnumerator Fade(float startAlpha, float endAlpha, float startScale, float endScale, float totalTime) {
-			Material mat = transform.Find("mesh").GetComponent<Renderer>().material;
-			Color col = mat.color;
-			col.a = startAlpha;
+			//Material mat = transform.Find("mesh").GetComponent<Renderer>().material;
+			//Color col = mat.color;
+			//col.a = startAlpha;
 			float newScale = startScale;
 
 			float t = 0;
@@ -265,8 +265,8 @@ namespace CylinderMenu
 				t += Time.deltaTime;
 				currentT = Easing.Quadratic.Out(t / totalTime);
 
-				col.a = Mathf.Lerp(startAlpha, endAlpha, currentT);
-				mat.color = col;
+				//col.a = Mathf.Lerp(startAlpha, endAlpha, currentT);
+				//mat.color = col;
 				newScale = Mathf.Lerp(startScale, endScale, currentT);
 				transform.localScale = new Vector3(newScale, newScale, newScale);
 				yield return null;
