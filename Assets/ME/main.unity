@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -206,25 +206,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 42414956}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 569993716af94ff40aa7fbd96e3e3085, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  horizontal: {fileID: 1458253611}
-  vertical: {fileID: 489775988}
-  colorNormal: {r: 1, g: 1, b: 1, a: 1}
-  colorActivated: {r: 1, g: 0, b: 0, a: 1}
---- !u!114 &42414960
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 42414956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 316dcebff36d0ae47b628809829344c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveThreshold: {x: 5, y: 2.5}
+  moveThreshold: {x: 5, y: 5}
   goRight:
     m_PersistentCalls:
       m_Calls: []
@@ -245,7 +230,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  scrollSpeed: 0.05
+  scrollSpeed: 1
 --- !u!1001 &145323566
 Prefab:
   m_ObjectHideFlags: 0
@@ -466,7 +451,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 243475634}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d51eb20d24ef4341a5462daa4d50930, type: 3}
+  m_Script: {fileID: 11500000, guid: 078137b6501183a49864bb19d3b56d92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   instance: {fileID: 0}
@@ -474,7 +459,7 @@ MonoBehaviour:
   discoverPort: 52524
   dataPort: 56567
   myIpString: 
-  myImage: {fileID: 2800000, guid: 6fcebe776e7c8804cb8fd7a63858e11a, type: 3}
+  myImage: {fileID: 2800000, guid: 62d2720e2612796488a7bfbebc46e424, type: 3}
 --- !u!1 &258223390
 GameObject:
   m_ObjectHideFlags: 0
@@ -2074,6 +2059,7 @@ GameObject:
   - component: {fileID: 1986428440}
   - component: {fileID: 1986428442}
   - component: {fileID: 1986428441}
+  - component: {fileID: 1986428443}
   m_Layer: 5
   m_Name: GestureVisualiser
   m_TagString: Untagged
@@ -2134,6 +2120,21 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1986428439}
+--- !u!114 &1986428443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1986428439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccf4b5a6e72fdba4ea19ee3d43baeca2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  horizontal: {fileID: 1458253611}
+  vertical: {fileID: 489775988}
+  colorNormal: {r: 1, g: 1, b: 1, a: 1}
+  colorActivated: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &1993423343
 GameObject:
   m_ObjectHideFlags: 0
