@@ -20,7 +20,7 @@ namespace CylinderMenu
         public Transform spentMenuContainer;
 		public ImageViewer imageViewer;
 		public WebcamViewer webcamViewer;
-		public ServerManager server;
+		public NetworkManager server;
 
 		private Camera cam;
 		
