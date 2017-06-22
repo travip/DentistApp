@@ -67,5 +67,7 @@ public class NetworkException : Exception
 
 public static class PacketType
 {
-    public const byte CameraStream = 0x01;
+    public const byte DISCOVERY = 0x01;
+    public const byte DISCONNECT = 0x02;
+    public const byte IMAGE_CAPTURE = 0x05;
 }

@@ -38,10 +38,12 @@ private:
 	int sLen = sizeof(clientAddr);
 	WSADATA wsaData;
 	bool connected;
+
+	int CreateTCPSocket();
 };
 
 typedef char PACKETTYPE;
 
-#define DISCOVERY_PACKET 0x01
-#define DISCONNECT_PACKET 0x02
-#define IMAGE_PACKET 0x05
+#define PTYPE_DISCOVERY 0x01
+#define PTYPE_DISCONNECT 0x02
+#define PTYPE_IMAGECAPTURE 0x05

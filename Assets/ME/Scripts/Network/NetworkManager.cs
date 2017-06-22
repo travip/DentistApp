@@ -5,21 +5,12 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
-
 public class UdpState
 {
     public IPEndPoint e;
     public UdpClient u;
 }
-// Packet container
-/*
-internal class Packet
-{
-    internal byte packetType;
-    internal int size;
-    internal byte[] body;
-}
-*/
+
 public class NetworkManager : MonoBehaviour {
 
     public NetworkManager instance;
@@ -60,7 +51,7 @@ public class NetworkManager : MonoBehaviour {
         pic = new byte[4];
         udpClient = new UdpClient(myPort);
         udpClient.EnableBroadcast = true;
-        broadcastAddr = new IPEndPoint(IPAddress.Parse("192.168.1.255"), discoverPort);
+        broadcastAddr = new IPEndPoint(IPAddress.Parse("255.255.255.255"), discoverPort);
     }
 
     private bool GetIPAddress()
@@ -124,8 +115,7 @@ public class NetworkManager : MonoBehaviour {
 
         switch (pType[0])
         {
-            case 0x05:
-                Debug.Log("Got an image!");
+            case PacketType.IMAGE_CAPTURE:
                 Array.Resize(ref pic, size);
                 if (0 < size && size < 5000000)
                 {

@@ -57,7 +57,7 @@ Server::Server()
 	iResult = bind(udpSocket, (struct sockaddr *)&servAddr, sizeof(servAddr));
 	if (iResult != 0) 
 	{
-		printf("Server: bind failed with error: %d\n", iResult);
+		printf("Server: udp bind failed with error: %d\n", iResult);
 		WSACleanup();
 		exit(EXIT_FAILURE);
 	}
@@ -66,6 +66,7 @@ Server::Server()
 // Destructor - Close the server socket and cleanup
 Server::~Server() {
 	if (connected) {
+		TCPSend(NULL, 0, PTYPE_DISCONNECT);
 	}
 	closesocket(udpSocket);
 	closesocket(tcpListenSocket);
@@ -111,7 +112,8 @@ int Server::WaitForConnection()
 	return -1;
 }
 
-int Server::EstablishTCPConnection() 
+// Create a TCP listening Socket (stored to tcpListenSocket) and being listening
+int Server::CreateTCPSocket() 
 {
 	int iResult;
 	addrinfo *result = NULL;
@@ -127,21 +129,21 @@ int Server::EstablishTCPConnection()
 	// Get server information
 	iResult = getaddrinfo(NULL, TCP_PORT, &hints, &result);
 	if (iResult != 0) {
-		printf("EstablishTCPConnection: getaddrinfo failed with error: %d\n", iResult);
+		printf("CreateTCPSocket: getaddrinfo failed with error: %d\n", iResult);
 		return 1;
 	}
 
 	// Create a socket for listening
 	tcpListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 	if (tcpListenSocket == INVALID_SOCKET) {
-		printf("EstablishTCPConnection: socket failed with error: %ld\n", WSAGetLastError());
+		printf("CreateTCPSocket: socket failed with error: %ld\n", WSAGetLastError());
 		freeaddrinfo(result);
 		return 1;
 	}
 
 	iResult = bind(tcpListenSocket, result->ai_addr, (int)result->ai_addrlen);
 	if (iResult == SOCKET_ERROR) {
-		printf("EstablishTCPConnection: bind failed with error: %d\n", WSAGetLastError());
+		printf("CreateTCPSocket: bind failed with error: %d\n", WSAGetLastError());
 		freeaddrinfo(result);
 		closesocket(tcpListenSocket);
 		return 1;
@@ -159,11 +161,16 @@ int Server::EstablishTCPConnection()
 	DWORD nTrue = 1;
 	setsockopt(tcpListenSocket, SOL_SOCKET, SO_CONDITIONAL_ACCEPT, (char*)&nTrue, sizeof(nTrue));
 
+	return 0;
+}
+
+// Accept a pending connection request on TCP
+int Server::EstablishTCPConnection() 
+{
 	printf("Waiting for client to connect..\n");
 	tcpClientSocket = WSAAccept(tcpListenSocket, (sockaddr*)&clientAddr, &sLen, &CheckValidConnection, (DWORD_PTR)this);
 	if (tcpClientSocket == INVALID_SOCKET) {
 		printf("EstablishTCPConnection: accept failed with error: %d\n", WSAGetLastError());
-		closesocket(tcpListenSocket);
 		return 1;
 	}
 	printf("Connected!\n");
@@ -230,7 +237,7 @@ int Server::TCPSend(const char* msg, long size, char packetType)
 int Server::EndConnection()
 {
 	if (connected) {
-		TCPSend(NULL, 0, DISCONNECT_PACKET);
+		TCPSend(NULL, 0, PTYPE_DISCONNECT);
 		ZeroMemory(&clientAddr, sizeof(clientAddr));
 		connected = false;
 		return 0;
