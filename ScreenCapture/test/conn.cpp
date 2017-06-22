@@ -182,6 +182,7 @@ int Server::EstablishTCPConnection()
 
 	// No longer need server socket
 	closesocket(tcpListenSocket);
+	connected = true;
 	return 0;
 }
 

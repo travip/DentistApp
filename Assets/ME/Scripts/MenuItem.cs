@@ -123,18 +123,18 @@ namespace CylinderMenu {
 
 		private IEnumerator Fade (float startAlpha, float endAlpha, float totalTime) {
 			Material mat1 = pic.Find("mesh").GetComponent<Renderer>().materials[0];
-			Material mat2 = pic.Find("mesh").GetComponent<Renderer>().materials[1];
+		//	Material mat2 = pic.Find("mesh").GetComponent<Renderer>().materials[1];
 
 			float t = 0;
-			Color color = mat2.color;
+			//Color color = mat2.color;
 			float alpha = startAlpha;
 
 			while (t < totalTime) {
 				t += Time.deltaTime;
 				alpha = Mathf.Lerp(startAlpha, endAlpha, t / totalTime);
 				mat1.SetFloat("_Alpha", alpha);
-				color.a = alpha;
-				mat2.color = color;
+			//	color.a = alpha;
+			//	mat2.color = color;
 
 				yield return null;
 			}
