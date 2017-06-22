@@ -46,7 +46,8 @@ public class RayCaster {
 		for (int i = currentHits.Count - 1; i >= 0; --i) {
 			if (currentHits[i].checkedYet == false) {
 				// Ray Exit
-				OnExit(currentHits[i].obj);
+				if (currentHits[i].obj != null)
+					OnExit(currentHits[i].obj);
 
 				currentHits.RemoveAt(i);
 			}

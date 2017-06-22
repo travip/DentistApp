@@ -52,13 +52,13 @@ namespace CylinderMenu
 
 		public void ViewImage (Texture image)
 		{
-			LoadImage(image);
-
 			InputManager.instance.ToggleViewMode();
 			InputManager.instance.goDown.AddListener(ZoomOut);
 			InputManager.instance.goUp.AddListener(ZoomIn);
 			InputManager.instance.goLeft.AddListener(PreviousImage);
 			InputManager.instance.goRight.AddListener(NextImage);
+
+			LoadImage(image);
 		}
 
 		public void LoadImage(Texture image) {

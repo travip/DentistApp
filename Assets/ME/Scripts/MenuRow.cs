@@ -20,8 +20,13 @@ namespace CylinderMenu
 		public float turnAccel;
 		public float turnRateMax;
 		public float turnFriction;
-		
+
+		[Header("Transitions")]
+		public float transitionTime;
+		public float transitionScale;
+
 		[Header("Image layout")]
+		public bool startInMiddle = true;
 		public int maxRows = 2;
 		public int maxColumns = 5;
 		public float itemSize = 20f;
@@ -63,7 +68,7 @@ namespace CylinderMenu
 
 			transform.Find("mesh").localScale = new Vector3(radius+1f, radius+1f, 3f);
 
-			gameObject.SetActive(true);
+			gameObject.SetActive(false);
 
 			if (parentRow != null)
 			{
@@ -129,9 +134,11 @@ namespace CylinderMenu
 				// Only display a certain amount of columns
 			}
 
-			// Calculate how far many degrees around the circle each image appears after the last.
+			// Calculate how many degrees around the circle each image appears after the last.
 
 			float degreesPerUnit = 360f / (2f * Mathf.PI * radius);
+
+			
 			float picRotDiffX = degreesPerUnit * itemSize;
 			float picRotDiffY = picRotDiffX * 0.981f; // 0.981 is 'y' dimension from blender
 			
@@ -140,8 +147,14 @@ namespace CylinderMenu
 
 			// The columns are centered based on how many columns there are. 
 			// The first column's rotation therefore depends on how many columns there are
-			float startRotY = ((numColumns / 2f) - 0.5f) * -picRotDiffY;
-			float startRotX = ((numRows / 2f) - 0.5f) * -picRotDiffX;
+			float startRotY = 0f;
+			float startRotX = 0f;
+
+			if (startInMiddle) {
+				startRotY = Mathf.Floor((numColumns / 2f) - 0.5f) * -picRotDiffY;
+				startRotX = Mathf.Floor((numRows / 2f) - 0.5f) * -picRotDiffX;
+			}
+			
 
 			int col = 0, row = 0;
 			for (int i = 0; i < menuItems.Count; i++) {
@@ -169,7 +182,7 @@ namespace CylinderMenu
 			// Create back button and navigation buttons (left/right)
 			navButtons = new GameObject().transform;
 			navButtons.parent = MenuManager.instance.transform;
-			navButtons.transform.position = new Vector3(0f, transform.position.y - 2f, radius);
+			navButtons.transform.position = new Vector3(0f, transform.position.y - 2.5f, radius);
 
 			Instantiate(BackSelectorPrefab, navButtons);
 			if (pages > 1)
@@ -178,6 +191,71 @@ namespace CylinderMenu
 				Instantiate(PreviousPageSelectorPrefab, navButtons).transform.localPosition = new Vector3(-2f, 0f, 0f);
 			}
 			
+		}
+
+		public void TransitionIn() {
+			gameObject.SetActive(true);
+			StartCoroutine(TransitionInAnim());
+		}
+
+		public void TransitionOut(MenuRow newRow = null, Transform container = null) {
+			StartCoroutine(TransitionOutAnim(newRow, container));
+		}
+
+		private IEnumerator TransitionOutAnim(MenuRow newRow, Transform container) {
+			if (navButtons != null)
+				Destroy(navButtons.gameObject);
+
+			
+			// Fade alpha out. Also call each menu item to fade out as well
+			foreach (MenuItem m in menuItems) {
+				m.FadeOut(transitionTime);
+			}
+
+			yield return StartCoroutine(Fade(1f, 0f, 1f, transitionScale, transitionTime));
+
+			// New row should transition in immediately after this finishes transitioning out 
+			if (newRow != null) {
+				newRow.TransitionIn();
+			}
+			if (container != null) {
+				TerminateMenu(container);
+			} else {
+				gameObject.SetActive(false);
+			}
+		}
+
+		private IEnumerator TransitionInAnim() {
+			// Fade alpha in. Also call each menu item to fade in as well
+
+			foreach(MenuItem m in menuItems) {
+				m.FadeIn(transitionTime);
+			}
+
+			yield return StartCoroutine(Fade(0f, 1f, transitionScale, 1f, transitionTime));
+		}
+
+		private IEnumerator Fade(float startAlpha, float endAlpha, float startScale, float endScale, float totalTime) {
+			Material mat = transform.Find("mesh").GetComponent<Renderer>().material;
+			Color col = mat.color;
+			col.a = startAlpha;
+			float newScale = startScale;
+
+			float t = 0;
+			float currentT = 0;
+
+			while (t < totalTime) {
+				t += Time.deltaTime;
+				currentT = Easing.Quadratic.Out(t / totalTime);
+
+				col.a = Mathf.Lerp(startAlpha, endAlpha, currentT);
+				mat.color = col;
+				newScale = Mathf.Lerp(startScale, endScale, currentT);
+				transform.localScale = new Vector3(newScale, newScale, newScale);
+				yield return null;
+			}
+
+			transform.localScale = Vector3.one;
 		}
 
         // Remove menu items - put them in the faraway land where they wont get in our way
@@ -190,7 +268,6 @@ namespace CylinderMenu
 
 			menuItems = null;
 
-			Destroy(navButtons.gameObject);
 			Destroy(gameObject);
         }
 

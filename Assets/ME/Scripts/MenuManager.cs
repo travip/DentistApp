@@ -11,7 +11,8 @@ namespace CylinderMenu
 		public enum SelectAction {
 			subMenu,
 			imageView,
-			webcam
+			webcam,
+			PIP
 		}
 
 		// Object links
@@ -70,6 +71,7 @@ namespace CylinderMenu
 			currentRow.maxRows = 1;
 			currentRow.maxColumns = 5;
 			currentRow.name = "Main Row";
+			currentRow.startInMiddle = true;
 
 			for (int i = 0; i < transform.childCount; i++) {
 				MenuItem m = transform.GetChild(i).GetComponent<MenuItem>();
@@ -79,6 +81,7 @@ namespace CylinderMenu
 			}
 
 			currentRow.InitializeMenu(null, circleRadius, maxRows, maxColumns, itemSize, gapBetweenItems);
+			currentRow.TransitionIn();
 
 			raycaster = new RayCaster();
 			raycaster.OnRayEnter += RayEnterHandler;
@@ -176,6 +179,7 @@ namespace CylinderMenu
 
 		private void LookAtSelector(MenuSelector menuHit)
 		{
+			
 			// If hitting a menu selector, check with the selector if it's pressed yet
 			if (menuHit.LookAt()) {
 				switch (menuHit.selectionType) {
@@ -183,7 +187,7 @@ namespace CylinderMenu
 						SelectMenuItem(menuHit.parentMenuItem);
 						break;
 					case MenuSelector.SelectionType.back:
-						MoveMenuDown();
+						ToPreviousRow();
 						break;
 					case MenuSelector.SelectionType.nextPage:
 						MoveMenuRight();
@@ -214,13 +218,16 @@ namespace CylinderMenu
 			currentRow.selectedItem = selected;
 			switch (selected.selectAction) {
 				case MenuManager.SelectAction.subMenu:
-					MoveMenuUp();
+					ToNewRow();
 					break;
 				case MenuManager.SelectAction.imageView:
 					ImageView();
 					break;
 				case MenuManager.SelectAction.webcam:
 					StartWebcam();
+					break;
+				case MenuManager.SelectAction.PIP:
+					StartPIP();
 					break;
 				default:
 					break;
@@ -270,7 +277,11 @@ namespace CylinderMenu
 			webcamViewer.ViewWebcam(server.myImage);
 		}
 
-		public void MoveMenuUp()
+		public void StartPIP() {
+			Debug.Log("Starting PIP");
+		}
+
+		public void ToNewRow()
         {
 			if (canMove == false || currentRow.canRotate == false)
 				return;
@@ -283,18 +294,24 @@ namespace CylinderMenu
 
 			// Generate new MenuRow and set its list of menu items
 			currentRow = Instantiate(MenuRowPrefab, transform).GetComponent<MenuRow>();
-			currentRow.transform.position = new Vector3(prevRow.transform.position.x, prevRow.transform.position.y + rowGap, prevRow.transform.position.z);
+			//currentRow.transform.position = new Vector3(prevRow.transform.position.x, prevRow.transform.position.y + rowGap, prevRow.transform.position.z);
+			currentRow.transform.position = new Vector3(prevRow.transform.position.x, prevRow.transform.position.y, prevRow.transform.position.z);
 
 			currentRow.InitializeMenu(prevRow, circleRadius, maxRows, maxColumns, itemSize, gapBetweenItems);
 
+			// Transition to new row
+			/*
 			Vector3 newPosition = transform.position;
 			newPosition.y = -currentRow.transform.localPosition.y;
 
 			StartCoroutine(SmoothMovement(newPosition));
 			StartCoroutine(setCanMove(moveTime * 0.7f));
+			*/
+
+			prevRow.TransitionOut(currentRow);
 		}
 
-		public void MoveMenuDown()
+		public void ToPreviousRow()
 		{
 			if (canMove == false || currentRow.canRotate == false)
 				return;
@@ -302,17 +319,22 @@ namespace CylinderMenu
 			if (currentRow.belowRow == null)
 				return;
 
-			Vector3 newPosition = transform.position;
-			newPosition.y = -currentRow.belowRow.transform.localPosition.y;
-
 			MenuRow prevRow = currentRow;
             currentRow = currentRow.belowRow;
+			
+			prevRow.TransitionOut(currentRow, spentMenuContainer);
+			
 
+			// Transition to previous row
+			/*
+			Vector3 newPosition = transform.position;
+			newPosition.y = -currentRow.belowRow.transform.localPosition.y;
 			StartCoroutine(BackMenu(newPosition, prevRow));
 			StartCoroutine(setCanMove(moveTime * 0.7f));
+			*/
 		}
 
-        
+
 		private IEnumerator BackMenu(Vector3 end, MenuRow prevRow) {
 			yield return StartCoroutine(SmoothMovement(end));
 			prevRow.TerminateMenu(spentMenuContainer);       

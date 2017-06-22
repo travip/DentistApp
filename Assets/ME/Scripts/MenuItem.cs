@@ -13,6 +13,7 @@ namespace CylinderMenu {
 		// Get an explicit reference to the submenu transform so we can use it in dynamic menu creation
 		[HideInInspector]
 		public List<MenuItem> subMenuItems;
+		private Collider col;
 
 		[Space(10)]
 
@@ -36,7 +37,9 @@ namespace CylinderMenu {
         // Initialize List
         private void Awake()
         {
-            subMenuItems = new List<MenuItem>();
+			col = GetComponent<Collider>();
+
+			subMenuItems = new List<MenuItem>();
 
 			// Get each MenuItem from the SubMenu container
 			foreach (Transform sub in transform) {
@@ -53,11 +56,6 @@ namespace CylinderMenu {
 			selector.gameObject.SetActive(false);
 			gameObject.SetActive(false);
 		}
-
-        private void Start()
-        {
-            
-        }
 
 		public void AddToMenuRow(Transform row, float distance, Quaternion rotation, float size)
 		{
@@ -110,6 +108,36 @@ namespace CylinderMenu {
 			}
 
 			//Debug.Log("end");
+		}
+
+
+		public void FadeOut(float fadeTime) {
+			col.enabled = false;
+			StartCoroutine(Fade(1f, 0f, fadeTime));
+		}
+
+		public void FadeIn(float fadeTime) {
+			col.enabled = true;
+			StartCoroutine(Fade(0f, 1f, fadeTime));
+		}
+
+		private IEnumerator Fade (float startAlpha, float endAlpha, float totalTime) {
+			Material mat1 = pic.Find("mesh").GetComponent<Renderer>().materials[0];
+			Material mat2 = pic.Find("mesh").GetComponent<Renderer>().materials[1];
+
+			float t = 0;
+			Color color = mat2.color;
+			float alpha = startAlpha;
+
+			while (t < totalTime) {
+				t += Time.deltaTime;
+				alpha = Mathf.Lerp(startAlpha, endAlpha, t / totalTime);
+				mat1.SetFloat("_Alpha", alpha);
+				color.a = alpha;
+				mat2.color = color;
+
+				yield return null;
+			}
 		}
 	}
 }
