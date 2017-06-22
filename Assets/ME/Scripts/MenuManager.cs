@@ -42,7 +42,8 @@ namespace CylinderMenu
 		public float circleRadius = 20f;
 		public int maxRows = 1;
 		public int maxColumns = 50;
-		public float itemSize = 4f;
+		public Vector3 mainMenuItemScale;
+		public Vector3 itemScale;
 		public float gapBetweenItems = 0.5f;
 
 
@@ -58,6 +59,13 @@ namespace CylinderMenu
         // Use this for initialization
         void Start()
         {
+#if UNITY_EDITOR
+			prevR = circleRadius;
+			prevRows = maxRows;
+			prevCols = maxColumns;
+			prevScale = itemScale;
+			prevGap = gapBetweenItems;
+#endif
 			cam = Camera.main;
 
 			//InputManager.instance.goRight.AddListener(MoveMenuRight);
@@ -80,7 +88,7 @@ namespace CylinderMenu
 				}
 			}
 
-			currentRow.InitializeMenu(null, circleRadius, maxRows, maxColumns, itemSize, gapBetweenItems);
+			currentRow.InitializeMenu(null, circleRadius, maxRows, maxColumns, mainMenuItemScale, gapBetweenItems);
 			currentRow.TransitionIn();
 
 			raycaster = new RayCaster();
@@ -116,14 +124,14 @@ namespace CylinderMenu
 
 			#if UNITY_EDITOR
 
-				if (prevR != circleRadius || prevRows != maxRows || prevCols != maxColumns || prevSize != itemSize || prevGap != gapBetweenItems) {
+				if (prevR != circleRadius || prevRows != maxRows || prevCols != maxColumns || prevScale != itemScale || prevGap != gapBetweenItems) {
 					// recalculate row
-					currentRow.RecalculateRow(circleRadius, maxRows, maxColumns, itemSize, gapBetweenItems);
+					currentRow.RecalculateRow(circleRadius, maxRows, maxColumns, itemScale, gapBetweenItems);
 				}
 				prevR = circleRadius;
 				prevRows = maxRows;
 				prevCols = maxColumns;
-				prevSize = itemSize;
+				prevScale = itemScale;
 				prevGap = gapBetweenItems;
 
 			#endif
@@ -131,7 +139,8 @@ namespace CylinderMenu
 		}
 
 		#if UNITY_EDITOR
-			private float prevR=0, prevRows=0, prevCols=0, prevSize=0, prevGap=0;
+			private float prevR=0, prevRows=0, prevCols=0, prevGap=0;
+			private Vector3 prevScale = Vector3.zero;
 		#endif
 		////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////// END DEBUG STUFF ///////////////////////////////////////////////
@@ -297,7 +306,7 @@ namespace CylinderMenu
 			//currentRow.transform.position = new Vector3(prevRow.transform.position.x, prevRow.transform.position.y + rowGap, prevRow.transform.position.z);
 			currentRow.transform.position = new Vector3(prevRow.transform.position.x, prevRow.transform.position.y, prevRow.transform.position.z);
 
-			currentRow.InitializeMenu(prevRow, circleRadius, maxRows, maxColumns, itemSize, gapBetweenItems);
+			currentRow.InitializeMenu(prevRow, circleRadius, maxRows, maxColumns, itemScale, gapBetweenItems);
 
 			// Transition to new row
 			/*

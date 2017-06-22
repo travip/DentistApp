@@ -57,7 +57,7 @@ namespace CylinderMenu {
 			gameObject.SetActive(false);
 		}
 
-		public void AddToMenuRow(Transform row, float distance, Quaternion rotation, float size)
+		public void AddToMenuRow(Transform row, float distance, Quaternion rotation, Vector3 scale)
 		{
 			transform.SetParent(row);
 			transform.localPosition = Vector3.zero;
@@ -65,16 +65,16 @@ namespace CylinderMenu {
 
 			BoxCollider col = GetComponent<BoxCollider>();
 			col.center = new Vector3(0f, 0f, distance);
-			col.size = new Vector3(size, size, 0.1f);
+			col.size = new Vector3(scale.x, scale.y, 0.1f);
 
 			zDistance = distance;
 			zDistanceHovering = distance - hoverForward;
 
 			pic.localPosition = new Vector3(0f, 0f, zDistance);
-			pic.localScale = new Vector3(size, size, size);
+			pic.localScale = new Vector3(scale.x, scale.y, scale.z);
 
 			// slight magic number for the y position of the selector
-			selector.localPosition = new Vector3(0f, size * -0.3f, distance);
+			selector.localPosition = new Vector3(0f, scale.y * -0.3f, distance);
 
 			gameObject.SetActive(true);
 		}

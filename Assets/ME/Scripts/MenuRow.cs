@@ -29,7 +29,7 @@ namespace CylinderMenu
 		public bool startInMiddle = true;
 		public int maxRows = 2;
 		public int maxColumns = 5;
-		public float itemSize = 20f;
+		public Vector3 itemScale;
 		public float gapBetweenItems = 1f;
 		private float radius;
 		private int pages = 1;
@@ -59,12 +59,12 @@ namespace CylinderMenu
 		public MenuItem selectedItem;
 
         // Dynamic creation of menu
-        public void InitializeMenu(MenuRow parentRow, float _radius, int _rows, int _columns, float _itemSize, float _gapBetweenItems)
+        public void InitializeMenu(MenuRow parentRow, float _radius, int _rows, int _columns, Vector3 _itemScale, float _gapBetweenItems)
         {
 			radius = _radius;
 			maxRows = _rows;
 			maxColumns = _columns;
-			itemSize = _itemSize;
+			itemScale = _itemScale;
 			gapBetweenItems = _gapBetweenItems;
 
 			transform.Find("mesh").localScale = new Vector3(radius+1f, radius+1f, 3f);
@@ -113,11 +113,11 @@ namespace CylinderMenu
 
 
 
-		public void RecalculateRow(float _radius, int _rows, int _columns, float _itemSize, float _gapBetweenItems) {
+		public void RecalculateRow(float _radius, int _rows, int _columns, Vector3 _itemScale, float _gapBetweenItems) {
 			radius = _radius;
 			maxRows = _rows;
 			maxColumns = _columns;
-			itemSize = _itemSize;
+			itemScale = _itemScale;
 			gapBetweenItems = _gapBetweenItems;
 
 			transform.Find("mesh").localScale = new Vector3(radius + 1f, radius + 1f, 3f);
@@ -152,7 +152,7 @@ namespace CylinderMenu
 			float degreesPerUnit = 360f / (2f * Mathf.PI * radius);
 
 			
-			float picRotDiffX = degreesPerUnit * itemSize;
+			float picRotDiffX = degreesPerUnit * itemScale.x;
 			float picRotDiffY = picRotDiffX * 0.981f; // 0.981 is 'y' dimension from blender
 			
 			picRotDiffX += degreesPerUnit * gapBetweenItems;
@@ -173,7 +173,7 @@ namespace CylinderMenu
 			for (int i = 0; i < menuItems.Count; i++) {
 				// Some of this might be able to be done in MenuItem or set beforehand
 
-				menuItems[i].AddToMenuRow(transform, radius, Quaternion.Euler(new Vector3(startRotX + picRotDiffX * row, startRotY + picRotDiffY * col, 0f)), itemSize);
+				menuItems[i].AddToMenuRow(transform, radius, Quaternion.Euler(new Vector3(startRotX + picRotDiffX * row, startRotY + picRotDiffY * col, 0f)), itemScale);
 
 				row++;
 				
@@ -190,9 +190,6 @@ namespace CylinderMenu
 
 			rightestRotation = -startRotY;
 			leftestRotation = -(startRotY + picRotDiffY * (menuItems.Count-1));
-
-			Debug.Log("L: " + leftestRotation);
-			Debug.Log("R: " + rightestRotation);
 		}
 
 		private void CreateMainButtons() {
