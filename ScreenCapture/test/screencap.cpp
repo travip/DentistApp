@@ -1,3 +1,5 @@
+#include "conn.hpp"
+
 #include <iostream>
 #include <atlbase.h>
 #include <string.h>
@@ -8,8 +10,6 @@
 
 #include <fstream>
 #include <iostream>
-
-#include "conn.hpp"
 
 using namespace Gdiplus;
 #pragma comment (lib, "Gdiplus.lib")
@@ -43,7 +43,7 @@ int GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
 	return -1;
 }
 
-void CaptureScreen()
+void CaptureScreen(Server* server)
 {
 	GdiplusStartupInput gdiplusStartupInput;
 	ULONG_PTR gdiplusToken;
@@ -80,7 +80,7 @@ void CaptureScreen()
 
 		printf("Bytes: ");
 		std::cout << pEnd.QuadPart << std::endl;
-		SendMessage((char*)hMem, pEnd.QuadPart);
+		server->TCPSend((const char*)hMem, pEnd.QuadPart, IMAGE_PACKET);
 	
 		delete image;
 	}
@@ -93,8 +93,11 @@ void CaptureScreen()
 
 int main() 
 {
-	BeginListening();
-	WaitForConnection();
-	CaptureScreen();
-	EndConnection();
+	Server server;
+	if (server.WaitForConnection() != 0) {
+		printf("Seomthign went wrong\n");
+		exit(EXIT_FAILURE);
+	}
+	CaptureScreen(&server);
+	return 0;
 }
