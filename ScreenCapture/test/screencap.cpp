@@ -80,7 +80,7 @@ void CaptureScreen(Server* server)
 
 		printf("Bytes: ");
 		std::cout << pEnd.QuadPart << std::endl;
-		server->TCPSend((const char*)hMem, pEnd.QuadPart, IMAGE_PACKET);
+		server->TCPSend((const char*)hMem, pEnd.QuadPart, PTYPE_IMAGECAPTURE);
 	
 		delete image;
 	}

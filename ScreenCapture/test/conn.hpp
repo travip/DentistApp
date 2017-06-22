@@ -40,6 +40,7 @@ private:
 	bool connected;
 
 	int CreateTCPSocket();
+	int CreateUDPSocket();
 };
 
 typedef char PACKETTYPE;

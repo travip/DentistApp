@@ -28,8 +28,24 @@ int CALLBACK Server::CheckValidConnection(LPWSABUF lpCallerId,
 
 Server::Server()
 {
-	int iResult;
+	CreateUDPSocket();
+	CreateTCPSocket();
+}
 
+// Destructor - Close the server socket and cleanup
+Server::~Server() {
+	if (connected) {
+		TCPSend(NULL, 0, PTYPE_DISCONNECT);
+	}
+	closesocket(udpSocket);
+	closesocket(tcpListenSocket);
+	closesocket(tcpClientSocket);
+	WSACleanup();
+}
+
+int Server::CreateUDPSocket() 
+{
+	int iResult;
 	addrinfo *result = NULL;
 	addrinfo hints;
 
@@ -55,61 +71,12 @@ Server::Server()
 	servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	iResult = bind(udpSocket, (struct sockaddr *)&servAddr, sizeof(servAddr));
-	if (iResult != 0) 
+	if (iResult != 0)
 	{
 		printf("Server: udp bind failed with error: %d\n", iResult);
 		WSACleanup();
 		exit(EXIT_FAILURE);
 	}
-}
-
-// Destructor - Close the server socket and cleanup
-Server::~Server() {
-	if (connected) {
-		TCPSend(NULL, 0, PTYPE_DISCONNECT);
-	}
-	closesocket(udpSocket);
-	closesocket(tcpListenSocket);
-	closesocket(tcpClientSocket);
-	WSACleanup();
-}
-
-// Block and wait for a connection
-int Server::WaitForConnection()
-{
-	printf("Waiting for connection...\n");
-	char recvBuf[RECV_BUFLEN];
-	int recvLen;
-
-	// Try to receive some data, this is a blocking call
-	recvLen = recvfrom(udpSocket, recvBuf, RECV_BUFLEN, 0, (SOCKADDR *) &clientAddr, &sLen);
-	if (recvLen == SOCKET_ERROR)
-	{
-		printf("recvfrom failed with error: %d", WSAGetLastError());
-		exit(EXIT_FAILURE);
-	}
-	// Received message - reply with my IP Address
-	else 
-	{
-		printf("Received %i bytes from connection from: %s:%d\n", recvLen, inet_ntoa(clientAddr.sin_addr), ntohs(clientAddr.sin_port));
-		if (recvLen == 1 && recvBuf[0] == 0x01) {
-			printf("Valid connection request. Replying...\n");
-			UDPSend("HI", 2);
-			recvLen = EstablishTCPConnection();
-		}
-	}
-
-	if (recvLen == 0) {
-		printf("Connection established succesfully\n");
-		connected = true;
-		return 0;
-	}
-	else {
-		printf("Failed to establish connection\n");
-		return 1;
-	}
-
-	return -1;
 }
 
 // Create a TCP listening Socket (stored to tcpListenSocket) and being listening
@@ -130,14 +97,14 @@ int Server::CreateTCPSocket()
 	iResult = getaddrinfo(NULL, TCP_PORT, &hints, &result);
 	if (iResult != 0) {
 		printf("CreateTCPSocket: getaddrinfo failed with error: %d\n", iResult);
-		return 1;
+		exit(EXIT_FAILURE);
 	}
 
 	// Create a socket for listening
 	tcpListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 	if (tcpListenSocket == INVALID_SOCKET) {
 		printf("CreateTCPSocket: socket failed with error: %ld\n", WSAGetLastError());
-		freeaddrinfo(result);
+		exit(EXIT_FAILURE);
 		return 1;
 	}
 
@@ -155,13 +122,51 @@ int Server::CreateTCPSocket()
 	if (iResult == SOCKET_ERROR) {
 		printf("EstablishTCPConnection: listen failed with error: %d\n", WSAGetLastError());
 		closesocket(tcpListenSocket);
-		return 1;
+		exit(EXIT_FAILURE);
 	}
 
 	DWORD nTrue = 1;
 	setsockopt(tcpListenSocket, SOL_SOCKET, SO_CONDITIONAL_ACCEPT, (char*)&nTrue, sizeof(nTrue));
 
 	return 0;
+}
+
+// Block and wait for a connection
+int Server::WaitForConnection()
+{
+	printf("Waiting for connection...\n");
+	char recvBuf[RECV_BUFLEN];
+	int recvLen;
+
+	// Try to receive some data, this is a blocking call
+	recvLen = recvfrom(udpSocket, recvBuf, RECV_BUFLEN, 0, (SOCKADDR *)&clientAddr, &sLen);
+	if (recvLen == SOCKET_ERROR)
+	{
+		printf("recvfrom failed with error: %d", WSAGetLastError());
+		exit(EXIT_FAILURE);
+	}
+	// Received message - reply with my IP Address
+	else
+	{
+		printf("Received %i bytes from connection from: %s:%d\n", recvLen, inet_ntoa(clientAddr.sin_addr), ntohs(clientAddr.sin_port));
+		if (recvLen == 1 && recvBuf[0] == 0x01) {
+			printf("Valid connection request. Replying...\n");
+			UDPSend("HI", 2);
+			recvLen = EstablishTCPConnection();
+		}
+	}
+
+	if (recvLen == 0) {
+		printf("Connection established succesfully\n");
+		connected = true;
+		return 0;
+	}
+	else {
+		printf("Failed to establish connection\n");
+		return 1;
+	}
+
+	return -1;
 }
 
 // Accept a pending connection request on TCP
