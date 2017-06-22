@@ -43,6 +43,7 @@ namespace CylinderMenu
 		private float turnRate = 0f;
 		private float targetTurnRate = 0f;
 		private bool turning = false;
+		private float leftestRotation, rightestRotation;
 		
 		//private int currentPage = 0;
 
@@ -92,6 +93,18 @@ namespace CylinderMenu
 				}
 				
 				transform.Rotate(0f, turnRate, 0f);
+				float rot = transform.eulerAngles.y;
+				if (rot > 180f)
+					rot -= 360f;
+				else if (rot < -180f) {
+					rot += 360f;
+				}
+
+				if (rot <= leftestRotation) {
+					transform.rotation = Quaternion.Euler(transform.rotation.x, leftestRotation, transform.rotation.z);
+				} else if (rot >= rightestRotation) {
+					transform.rotation = Quaternion.Euler(transform.rotation.x, rightestRotation, transform.rotation.z);
+				}
 
 				turning = false;
 			}
@@ -153,8 +166,8 @@ namespace CylinderMenu
 			if (startInMiddle) {
 				startRotY = Mathf.Floor((numColumns / 2f) - 0.5f) * -picRotDiffY;
 				startRotX = Mathf.Floor((numRows / 2f) - 0.5f) * -picRotDiffX;
+				
 			}
-			
 
 			int col = 0, row = 0;
 			for (int i = 0; i < menuItems.Count; i++) {
@@ -173,9 +186,13 @@ namespace CylinderMenu
 						break;
 					}
 				}
-					
-				
 			}
+
+			rightestRotation = -startRotY;
+			leftestRotation = -(startRotY + picRotDiffY * (menuItems.Count-1));
+
+			Debug.Log("L: " + leftestRotation);
+			Debug.Log("R: " + rightestRotation);
 		}
 
 		private void CreateMainButtons() {

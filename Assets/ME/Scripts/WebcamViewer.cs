@@ -7,10 +7,6 @@ using UnityEngine.UI;
 namespace CylinderMenu {
 	public class WebcamViewer : MonoBehaviour {
 
-		void Awake() {
-			gameObject.SetActive(false);
-		}
-
 		public void ViewWebcam (Texture2D image) {
 			gameObject.SetActive(true);
 
