@@ -225,7 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 316dcebff36d0ae47b628809829344c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveThreshold: {x: 5, y: 4}
+  moveThreshold: {x: 5, y: 2.5}
   goRight:
     m_PersistentCalls:
       m_Calls: []
@@ -1729,7 +1729,7 @@ Prefab:
     - target: {fileID: 114907919349176632, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58,
         type: 2}
       propertyPath: selectAction
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1234711191850694, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58, type: 2}
       propertyPath: m_Name

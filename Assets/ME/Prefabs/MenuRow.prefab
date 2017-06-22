@@ -133,6 +133,9 @@ MonoBehaviour:
   turnAccel: 0.5
   turnRateMax: 0.3
   turnFriction: 0.96
+  transitionTime: 0.3
+  transitionScale: 1.05
+  startInMiddle: 0
   maxRows: 1
   maxColumns: 50
   itemSize: 20
@@ -140,4 +143,3 @@ MonoBehaviour:
   belowRow: {fileID: 0}
   canRotate: 1
   selectedItem: {fileID: 0}
-  T: {fileID: 0}
