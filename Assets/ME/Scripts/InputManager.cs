@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Events;
 
 
@@ -23,6 +24,11 @@ public abstract class InputManager : MonoBehaviour
             instance = this;
         else
             Destroy(this);
+    }
+
+    public void ToggleViewModeDelayed(float seconds)
+    {
+        Invoke("ToggleViewMode", seconds);
     }
 
 	public abstract void ToggleViewMode ();

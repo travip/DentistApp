@@ -27,10 +27,10 @@ public class PIPController : MonoBehaviour
 	}
 
 	private void Back() {
-		InputManager.instance.ToggleViewMode();
 		InputManager.instance.goDown.RemoveListener(Back);
 		CylinderMenu.MenuManager.instance.ExitPIP();
-	}
+        InputManager.instance.ToggleViewModeDelayed(0.5f);
+    }
 
     public void RightHanded()
     {

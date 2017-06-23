@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OverlayTransitioner : MonoBehaviour {
+public class OverlayTransitioner : MonoBehaviour
+{
 
     public OverlayTransitioner instance { get; private set; }
 
     ScreenType currentScreen = ScreenType.MainMenu;
+    public Text menuTitle;
     public List<Image> overlays;
 
     private void Awake()
@@ -18,31 +20,42 @@ public class OverlayTransitioner : MonoBehaviour {
             Destroy(this);
     }
 
-    public void TransitionTo(ScreenType newScreen)
+    public IEnumerator TransitionScreen(ScreenType newScreen)
     {
-		StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, overlays[(int)currentScreen], overlays[(int)newScreen]));
-		currentScreen = newScreen;
-	}
+        if (newScreen != ScreenType.MainMenu)
+            StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, menuTitle));      
+        yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, overlays[(int)currentScreen]));
 
-    private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime, Image imageOut, Image imageIn)
+        overlays[(int)currentScreen].gameObject.SetActive(false);
+        overlays[(int)newScreen].gameObject.SetActive(true);
+
+        if(newScreen == ScreenType.MainMenu)
+            StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime, menuTitle));
+        StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime, overlays[(int)newScreen]));
+
+        currentScreen = newScreen;
+    }
+
+    public IEnumerator TransitionMenuTitle(string title)
+    {
+        yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, menuTitle));
+        menuTitle.text = title;
+        StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime, menuTitle));
+    }
+
+    private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime, Graphic image)
     {
         float t = 0;
         float alpha = startAlpha;
-        Color col = imageOut.color;
+        Color col = image.color;
 
         while (t < totalTime)
         {
             t += Time.deltaTime;
             alpha = Mathf.Lerp(startAlpha, endAlpha, t / totalTime);
             col.a = alpha;
-            imageOut.color = col;
+            image.color = col;
             yield return null;
-        }
-        if (imageIn != null)
-        {
-            imageOut.gameObject.SetActive(false);
-            imageIn.gameObject.SetActive(true);
-            StartCoroutine(Fade(0f, 1f, 0.3f, imageIn, null));
         }
     }
 }
@@ -56,10 +69,9 @@ public interface IFadeable
 public enum ScreenType
 {
     MainMenu = 0,
-    ImageMenu = 1,
-    PIPDisplay = 2,
-    ImageViewer = 3 ,
-    CameraDisplay = 4,
-    Timer = 5,
-    Settings = 6,
+    PIPDisplay = 1,
+    ImageViewer = 2 ,
+    CameraDisplay = 3,
+    Timer = 4,
+    Settings = 5,
 }

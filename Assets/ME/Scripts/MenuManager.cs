@@ -232,7 +232,7 @@ namespace CylinderMenu
 				    StartWebcam();
 				    break;
 			    case MenuManager.SelectAction.PIP:
-				    StartPIP();
+				    StartCoroutine(StartPIP());
 				    break;
 			    default:
 				    break;
@@ -244,7 +244,7 @@ namespace CylinderMenu
 			// Show the full sized pic
 			Debug.Log("Starting Image View");
 
-			overlayTransitioner.TransitionTo(ScreenType.ImageViewer);
+            StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.ImageViewer));
 			StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime, null));
 
 			imageViewer.ViewImage(currentRow.selectedItem.FullSizedPic);
@@ -262,7 +262,7 @@ namespace CylinderMenu
 
 	    public void ExitImageView()
 	    {
-			overlayTransitioner.TransitionTo(ScreenType.ImageMenu);
+            StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.MainMenu));
 			currentRow.TransitionIn(Constants.Transitions.FadeTime);
 	    }
 
@@ -273,30 +273,29 @@ namespace CylinderMenu
 		    // Start the server and the webcam viewer
 		    server.gameObject.SetActive(true);
 
-			overlayTransitioner.TransitionTo(ScreenType.CameraDisplay);
+            StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.CameraDisplay));
 			StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime, null));
 
 			webcamViewer.ViewWebcam(server.myImage);
 		}
 
 		public void ExitWebcam() {
-			overlayTransitioner.TransitionTo(ScreenType.MainMenu);
+            StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.MainMenu));
 			currentRow.TransitionIn(Constants.Transitions.FadeTime);
 		}
 
-	    public void StartPIP()
+	    public IEnumerator StartPIP()
         {
-            overlayTransitioner.TransitionTo(ScreenType.PIPDisplay);
-            StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime, null));
+            StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.PIPDisplay));
+            yield return StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime, null));
 
 			pipController.StartPIP();
-            Debug.Log("Starting PIP");
         }
 
 		public void ExitPIP() {
-			overlayTransitioner.TransitionTo(ScreenType.MainMenu);
+            StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.MainMenu));
 			currentRow.TransitionIn(Constants.Transitions.FadeTime);
-		}
+        }
 
 	    public void ToNewRow()
         {
@@ -314,8 +313,8 @@ namespace CylinderMenu
 		    currentRow.transform.position = new Vector3(prevRow.transform.position.x, prevRow.transform.position.y, prevRow.transform.position.z);
 		    currentRow.InitializeMenu(prevRow, circleRadius, maxRows, maxColumns, itemScale, gapBetweenItems);
 
-			// Currently new row is only ever "Image Menu" so transition to that
-			overlayTransitioner.TransitionTo(ScreenType.ImageMenu);
+            // Currently new row is only ever "Image Menu" so transition to that
+            StartCoroutine(overlayTransitioner.TransitionMenuTitle("Image Menu"));
 			StartCoroutine(prevRow.TransitionOut(Constants.Transitions.FadeTime, currentRow));
 	    }
 
@@ -330,10 +329,9 @@ namespace CylinderMenu
 		    MenuRow prevRow = currentRow;
             currentRow = currentRow.belowRow;
 
-			overlayTransitioner.TransitionTo(ScreenType.MainMenu);
+			overlayTransitioner.TransitionMenuTitle("Main Menu");
 			StartCoroutine(prevRow.TransitionOut(Constants.Transitions.FadeTime, currentRow));
-	    }
-        
+	    }   
 
         private IEnumerator SmoothMovement(Vector3 end)
         {
