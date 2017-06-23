@@ -135,6 +135,8 @@ namespace CylinderMenu
 
 		override protected IEnumerator TransitionOut ()
 		{
+			OverlayTransitioner.instance.TransitionOut();
+
 			InputManager.instance.goDown.RemoveListener(ZoomOut);
 			InputManager.instance.goUp.RemoveListener(ZoomIn);
 			InputManager.instance.goLeft.RemoveListener(PreviousImage);

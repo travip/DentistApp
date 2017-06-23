@@ -314,7 +314,8 @@ namespace CylinderMenu
             }
         }
 
-	    private IEnumerator setCanRotate(float t) {
+	    private IEnumerator setCanRotate(float t)
+		{
 		    canRotate = false;
 		    yield return new WaitForSeconds(t);
 		    canRotate = true;
@@ -322,7 +323,8 @@ namespace CylinderMenu
 
 		// Transitions
 
-		override protected IEnumerator TransitionIn () {
+		override protected IEnumerator TransitionIn ()
+		{
 			if (navButtons == null)
 				CreateMainButtons();
 
@@ -336,7 +338,8 @@ namespace CylinderMenu
 			// Do something after row fades in
 		}
 
-		override protected IEnumerator TransitionOut () {
+		override protected IEnumerator TransitionOut ()
+		{
 			if (navButtons != null)
 				Destroy(navButtons.gameObject);
 
@@ -350,7 +353,8 @@ namespace CylinderMenu
 			gameObject.SetActive(false);
 		}
 
-		private IEnumerator Fade (float startAlpha, float endAlpha, float startScale, float endScale, float totalTime) {
+		private IEnumerator Fade (float startAlpha, float endAlpha, float startScale, float endScale, float totalTime)
+		{
 			float newScale = startScale;
 			float t = 0;
 			float currentT = 0;
