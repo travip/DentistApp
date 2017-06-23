@@ -29,13 +29,14 @@ public class PIPController : TransitionableObject
 	// Transitions
 
 	override protected IEnumerator TransitionIn () {
+		OverlayTransitioner.instance.TransitionIn(ScreenType.PIPDisplay);
 		InputManager.instance.ToggleViewMode();
 		InputManager.instance.goDown.AddListener(StartTransitionOut);
 		yield return null;
 	}
 
 	override protected IEnumerator TransitionOut () {
-		OverlayTransitioner.instance.TransitionScreenNotCo(ScreenType.MainMenu);
+		OverlayTransitioner.instance.TransitionOut();
 		InputManager.instance.goDown.RemoveListener(StartTransitionOut);
 
 		yield return new WaitForSeconds(Constants.Transitions.FadeTime);

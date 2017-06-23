@@ -330,6 +330,7 @@ namespace CylinderMenu
 			foreach (MenuItem m in menuItems)
 				m.StartTransitionIn();
 
+			OverlayTransitioner.instance.TransitionMenuTitleIn(name);
 			yield return StartCoroutine(Fade(0f, 1f, transitionScale, 1f, Constants.Transitions.FadeTime));
 
 			// Do something after row fades in
@@ -343,6 +344,7 @@ namespace CylinderMenu
 			foreach (MenuItem m in menuItems)
 				m.StartTransitionOut();
 
+			OverlayTransitioner.instance.TransitionMenuTitleOut();
 			yield return StartCoroutine(Fade(1f, 0f, 1f, transitionScale, Constants.Transitions.FadeTime));
 
 			gameObject.SetActive(false);
