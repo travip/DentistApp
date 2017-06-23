@@ -59,7 +59,7 @@ void CaptureScreen(Server* server)
 	HDC hDesktopDC = GetDC(hDesktopWnd);
 	HDC hCaptureDC = CreateCompatibleDC(hDesktopDC);
 	HBITMAP hCaptureBitmap = CreateCompatibleBitmap(hDesktopDC,
-		nScreenWidth, nScreenHeight);
+		500, 500);
 	SelectObject(hCaptureDC, hCaptureBitmap);
 
 	CLSID myClsId;	
@@ -81,7 +81,7 @@ void CaptureScreen(Server* server)
 		printf("Bytes: ");
 		std::cout << pEnd.QuadPart << std::endl;
 		server->TCPSend((const char*)hMem, pEnd.QuadPart, PTYPE_IMAGECAPTURE);
-		Sleep(50);
+		Sleep(75);
 	
 		delete image;
 	}
