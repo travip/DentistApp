@@ -20,5 +20,4 @@ public class TransitionableObject : MonoBehaviour {
 	virtual protected IEnumerator TransitionOut () {
 		yield return null;
 	}
-
 }

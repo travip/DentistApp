@@ -26,16 +26,15 @@ public class PIPController : TransitionableObject
         PIPPointer.localRotation = Quaternion.Euler(0, -180f, 0);
     }
 
-	// Transitions
-
 	override protected IEnumerator TransitionIn () {
-		InputManager.instance.ToggleViewMode();
+        OverlayTransitioner.instance.TransitionIn(ScreenType.PIPDisplay);
+        InputManager.instance.ToggleViewMode();
 		InputManager.instance.goDown.AddListener(StartTransitionOut);
 		yield return null;
 	}
 
 	override protected IEnumerator TransitionOut () {
-		OverlayTransitioner.instance.TransitionScreenNotCo(ScreenType.MainMenu);
+		OverlayTransitioner.instance.TransitionOut();
 		InputManager.instance.goDown.RemoveListener(StartTransitionOut);
 
 		yield return new WaitForSeconds(Constants.Transitions.FadeTime);
