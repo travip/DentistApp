@@ -27,8 +27,8 @@ public class PIPController : TransitionableObject
     }
 
 	override protected IEnumerator TransitionIn () {
-        OverlayTransitioner.instance.TransitionIn(ScreenType.PIPDisplay);
-        InputManager.instance.ToggleViewMode();
+		OverlayTransitioner.instance.TransitionIn(ScreenType.PIPDisplay);
+		InputManager.instance.ToggleViewMode();
 		InputManager.instance.goDown.AddListener(StartTransitionOut);
 		yield return null;
 	}

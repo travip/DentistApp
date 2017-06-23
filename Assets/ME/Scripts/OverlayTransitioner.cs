@@ -20,14 +20,13 @@ public class OverlayTransitioner : MonoBehaviour
             Destroy(this);
     }
 
-	public void TransitionScreenNotCo(ScreenType newScreen) {
-		StartCoroutine(TransitionScreen(newScreen));
-	}
-
+	/*
     public IEnumerator TransitionScreen(ScreenType newScreen)
     {
+		
         if (newScreen != ScreenType.MainMenu)
-            StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, menuTitle));      
+            StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, menuTitle));
+
         yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, overlays[(int)currentScreen]));
 
         overlays[(int)currentScreen].gameObject.SetActive(false);
@@ -35,17 +34,34 @@ public class OverlayTransitioner : MonoBehaviour
 
         if(newScreen == ScreenType.MainMenu)
             StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime, menuTitle));
+
         StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime, overlays[(int)newScreen]));
+		
+		yield return StartCoroutine (Fade(1f, 0f, Constants.Transitions.FadeTime, overlays[(int)currentScreen]));
+		StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime, overlays[(int)newScreen]));
 
-        currentScreen = newScreen;
+		currentScreen = newScreen;
     }
+	*/
 
-    public IEnumerator TransitionMenuTitle(string title)
+	public void TransitionIn(ScreenType newScreen) {
+		currentScreen = newScreen;
+		StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime, overlays[(int)newScreen]));
+	}
+
+	public void TransitionOut() {
+		StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, overlays[(int)currentScreen]));
+	}
+
+	public void TransitionMenuTitleIn (string title) {
+		menuTitle.text = title;
+		StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime, menuTitle));
+	}
+
+	public void TransitionMenuTitleOut()
     {
-        yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, menuTitle));
-        menuTitle.text = title;
-        StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime, menuTitle));
-    }
+		StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, menuTitle));
+	}
 
     private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime, Graphic image)
     {

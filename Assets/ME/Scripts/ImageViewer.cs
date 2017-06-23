@@ -118,6 +118,7 @@ namespace CylinderMenu
 
 		override protected IEnumerator TransitionIn ()
 		{
+			OverlayTransitioner.instance.TransitionIn(ScreenType.ImageViewer);
 			InputManager.instance.ToggleViewMode();
 
 			yield return Fade(0f, 1f, Constants.Transitions.FadeTime);
@@ -141,7 +142,6 @@ namespace CylinderMenu
 
 			viewingImage = false;
 
-			OverlayTransitioner.instance.TransitionScreenNotCo(ScreenType.MainMenu);
 			InputManager.instance.goDown.RemoveListener(StartTransitionOut);
 
 			yield return Fade(1f, 0f, Constants.Transitions.FadeTime);

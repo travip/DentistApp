@@ -10,7 +10,10 @@ namespace CylinderMenu {
 
 		public CanvasGroup canvasGroup;
 
-		override protected IEnumerator TransitionIn () {
+		override protected IEnumerator TransitionIn ()
+		{
+			OverlayTransitioner.instance.TransitionIn(ScreenType.CameraDisplay);
+
 			InputManager.instance.ToggleViewMode();
 
 			yield return Fade(0f, 1f, Constants.Transitions.FadeTime);
@@ -18,8 +21,8 @@ namespace CylinderMenu {
 			InputManager.instance.goDown.AddListener(StartTransitionOut);
 		}
 
-		override protected IEnumerator TransitionOut () {
-			OverlayTransitioner.instance.TransitionScreenNotCo(ScreenType.MainMenu);
+		override protected IEnumerator TransitionOut ()
+		{
 			InputManager.instance.goDown.RemoveListener(StartTransitionOut);
 
 			yield return Fade(1f, 0f, Constants.Transitions.FadeTime);
@@ -29,7 +32,8 @@ namespace CylinderMenu {
 			MenuManager.instance.ExitWebcam();
 		}
 
-		private IEnumerator Fade(float from, float to, float totalTime) {
+		private IEnumerator Fade(float from, float to, float totalTime)
+		{
 			float t = 0;
 			float currentT = 0;
 
