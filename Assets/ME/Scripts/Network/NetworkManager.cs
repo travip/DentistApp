@@ -120,7 +120,7 @@ public class NetworkManager : MonoBehaviour {
                 if (0 < size && size < 5000000)
                 {
                     numBytes = tcpStream.Read(pic, 0, size);
-                    Debug.Log("Read " + numBytes + " bytes");
+                    //Debug.Log("Read " + numBytes + " bytes");
                     myImage.LoadImage(pic);
                 }
                 else
@@ -165,7 +165,7 @@ public class NetworkManager : MonoBehaviour {
         {
             if (tcpStream.DataAvailable)
             {
-                Debug.Log("Read a packet!");
+                //Debug.Log("Read a packet!");
                 ReadPacket();
             }
         }

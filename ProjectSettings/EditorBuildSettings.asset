@@ -23,9 +23,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/VRSampleScenes/Scenes/Shooter180.unity
     guid: 00000000000000000000000000000000
-  - enabled: 0
+  - enabled: 1
     path: Assets/ME/main.unity
     guid: 59f933b6d9d954f45955de4528c22dcb
-  - enabled: 1
+  - enabled: 0
     path: Assets/PIP/PipScenes/Display.unity
     guid: f248ddf98c9443246901ff828ad1f511
