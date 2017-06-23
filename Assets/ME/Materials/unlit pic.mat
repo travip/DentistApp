@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: unlit pic
-  m_Shader: {fileID: 4800000, guid: a8e6ab54932422e4baa8860092080380, type: 3}
+  m_Shader: {fileID: 4800000, guid: 195327f7b22797147b8adc940486df93, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0

@@ -110,20 +110,22 @@ namespace CylinderMenu
 
 	    public IEnumerator TransitionOut(float fadeTime, IFadeable to)
         {
-            Debug.Log("Item trans out");
 		    col.enabled = false;
-		    yield return StartCoroutine(Fade(1f, 0f, fadeTime, to));
-            gameObject.SetActive(false);
+		    yield return StartCoroutine(Fade(1f, 0f, fadeTime));
+			if (to != null)
+				to.TransitionIn(fadeTime);
+
+			gameObject.SetActive(false);
 	    }
 
 	    public void TransitionIn(float fadeTime)
         {
 		    col.enabled = true;
             gameObject.SetActive(true);
-            StartCoroutine(Fade(0f, 1f, fadeTime, null));
+            StartCoroutine(Fade(0f, 1f, fadeTime));
 	    }
 
-        private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime, IFadeable to)
+        private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime)
         {
 		    Material mat1 = pic.Find("mesh").GetComponent<Renderer>().materials[0];
 
@@ -136,8 +138,6 @@ namespace CylinderMenu
 			    mat1.SetFloat("_Alpha", alpha);
 			    yield return null;
 		    }
-            if(to != null)
-                to.TransitionIn(totalTime);
 	    }
     }
 

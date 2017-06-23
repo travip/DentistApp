@@ -240,14 +240,13 @@ namespace CylinderMenu
 
 	    public void ImageView()
         {
-		    // Move up to empty space
-		    Vector3 newPosition = transform.position;
-		    newPosition.y -= rowGap*1.5f;
+			// Show the full sized pic
+			Debug.Log("Starting Image View");
 
-		    StartCoroutine(SmoothMovement(newPosition));
+			overlayTransitioner.TransitionTo(ScreenType.ImageViewer);
+			StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime, null));
 
-		    // Show the full sized pic
-		    imageViewer.ViewImage(currentRow.selectedItem.FullSizedPic);
+			imageViewer.ViewImage(currentRow.selectedItem.FullSizedPic);
         }
 
 	    public Texture ImageViewerNext()
@@ -273,21 +272,19 @@ namespace CylinderMenu
         {
 		    Debug.Log("Starting Webcam");
 
-		    // Move up to empty space
-		    Vector3 newPosition = transform.position;
-		    newPosition.y -= rowGap * 1.5f;
-
-		    StartCoroutine(SmoothMovement(newPosition));
-
 		    // Start the server and the webcam viewer
 		    server.gameObject.SetActive(true);
-		    webcamViewer.ViewWebcam(server.myImage);
-	    }
+
+			overlayTransitioner.TransitionTo(ScreenType.CameraDisplay);
+			StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime, null));
+
+			webcamViewer.ViewWebcam(server.myImage);
+		}
 
 	    public void StartPIP()
         {
-            overlayTransitioner.TransitionTo(ScreenType.PIPDisplay, true);
-            currentRow.TransitionOut(Constants.Transitions.FadeTime, null);
+            overlayTransitioner.TransitionTo(ScreenType.PIPDisplay);
+            StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime, null));
             Debug.Log("Starting PIP");
         }
 
@@ -307,7 +304,9 @@ namespace CylinderMenu
 		    currentRow.transform.position = new Vector3(prevRow.transform.position.x, prevRow.transform.position.y, prevRow.transform.position.z);
 		    currentRow.InitializeMenu(prevRow, circleRadius, maxRows, maxColumns, itemScale, gapBetweenItems);
 
-            StartCoroutine(prevRow.TransitionOut(Constants.Transitions.FadeTime, currentRow));
+			// Currently new row is only ever "Image Menu" so transition to that
+			overlayTransitioner.TransitionTo(ScreenType.ImageMenu);
+			StartCoroutine(prevRow.TransitionOut(Constants.Transitions.FadeTime, currentRow));
 	    }
 
 	    public void ToPreviousRow()
@@ -322,12 +321,6 @@ namespace CylinderMenu
             currentRow = currentRow.belowRow;
 			
 		    StartCoroutine(prevRow.TransitionOut(Constants.Transitions.FadeTime, currentRow));
-	    }
-
-	    private IEnumerator BackMenu(Vector3 end, MenuRow prevRow)
-        {
-		    yield return StartCoroutine(SmoothMovement(end));
-		    prevRow.TerminateMenu(spentMenuContainer);       
 	    }
         
 

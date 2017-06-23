@@ -18,12 +18,12 @@ public class OverlayTransitioner : MonoBehaviour {
             Destroy(this);
     }
 
-    public void TransitionTo(ScreenType newScreen, bool toggleView)
+    public void TransitionTo(ScreenType newScreen)
     {
-        StartCoroutine(Fade(1f, 0f, 0.3f, overlays[0], overlays[(int)newScreen], toggleView));
+        StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, overlays[(int)currentScreen], overlays[(int)newScreen]));
     }
 
-    private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime, Image imageOut, Image imageIn, bool toggleView)
+    private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime, Image imageOut, Image imageIn)
     {
         float t = 0;
         float alpha = startAlpha;
@@ -41,9 +41,7 @@ public class OverlayTransitioner : MonoBehaviour {
         {
             imageOut.gameObject.SetActive(false);
             imageIn.gameObject.SetActive(true);
-            if(toggleView)
-                InputManager.instance.ToggleViewMode();
-            StartCoroutine(Fade(0f, 1f, 0.3f, imageIn, null, false));
+            StartCoroutine(Fade(0f, 1f, 0.3f, imageIn, null));
         }
     }
 }

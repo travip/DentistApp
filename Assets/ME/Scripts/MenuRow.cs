@@ -21,7 +21,6 @@ namespace CylinderMenu
 	    public float turnFriction;
 
 	    [Header("Transitions")]
-	    public float transitionTime;
 	    public float transitionScale;
 
 	    [Header("Image layout")]
@@ -195,25 +194,28 @@ namespace CylinderMenu
 		
 		    // Fade alpha out. Also call each menu item to fade out as well
 		    foreach (MenuItem m in menuItems)
-			    StartCoroutine(m.TransitionOut(transitionTime, null));
+			    StartCoroutine(m.TransitionOut(fadeTime, null));
 
-		    yield return StartCoroutine(Fade(1f, 0f, 1f, transitionScale, transitionTime, to));
-            gameObject.SetActive(false);   
+		    yield return StartCoroutine(Fade(1f, 0f, 1f, transitionScale, fadeTime));
+
+			if (to != null)
+				to.TransitionIn(fadeTime);
+
+			gameObject.SetActive(false);   
 	    }
 
         public void TransitionIn(float fadeTime)
         {
             gameObject.SetActive(true);
+
             // Fade alpha in. Also call each menu item to fade in as well
             foreach (MenuItem m in menuItems)
-            {
-                m.TransitionIn(transitionTime);
-            }
+                m.TransitionIn(fadeTime);
 
-		    StartCoroutine(Fade(0f, 1f, transitionScale, 1f, transitionTime, null));
+		    StartCoroutine(Fade(0f, 1f, transitionScale, 1f, fadeTime));
 	    }
 
-        private IEnumerator Fade(float startAlpha, float endAlpha, float startScale, float endScale, float totalTime, IFadeable to)
+        private IEnumerator Fade(float startAlpha, float endAlpha, float startScale, float endScale, float totalTime)
         {
 		    float newScale = startScale;
 		    float t = 0;
@@ -228,8 +230,6 @@ namespace CylinderMenu
 			    yield return null;
 		    }
 		    transform.localScale = Vector3.one;
-            if (to != null)
-                to.TransitionIn(totalTime);
 	    }
 
         // Remove menu items - put them in the faraway land where they wont get in our way
