@@ -111,14 +111,16 @@ namespace CylinderMenu
 
 		// Transitions
 
-		override protected IEnumerator TransitionOut () {
+		override protected IEnumerator TransitionOut ()
+		{
 			col.enabled = false;
 			yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime));
 
 			gameObject.SetActive(false);
 		}
 
-		override protected IEnumerator TransitionIn () {
+		override protected IEnumerator TransitionIn ()
+		{
 			col.enabled = true;
 			yield return StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime));
 		}

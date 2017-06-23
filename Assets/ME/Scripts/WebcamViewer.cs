@@ -13,7 +13,6 @@ namespace CylinderMenu {
 		override protected IEnumerator TransitionIn ()
 		{
 			OverlayTransitioner.instance.TransitionIn(ScreenType.CameraDisplay);
-
 			InputManager.instance.ToggleViewMode();
 
 			yield return Fade(0f, 1f, Constants.Transitions.FadeTime);
@@ -23,6 +22,7 @@ namespace CylinderMenu {
 
 		override protected IEnumerator TransitionOut ()
 		{
+			OverlayTransitioner.instance.TransitionOut();
 			InputManager.instance.goDown.RemoveListener(StartTransitionOut);
 
 			yield return Fade(1f, 0f, Constants.Transitions.FadeTime);

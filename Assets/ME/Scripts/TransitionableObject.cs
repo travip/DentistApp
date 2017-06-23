@@ -2,22 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TransitionableObject : MonoBehaviour {
+public class TransitionableObject : MonoBehaviour
+{
 
-	public void StartTransitionIn () {
+	public void StartTransitionIn ()
+	{
 		gameObject.SetActive(true);
 		StartCoroutine(TransitionIn());
 	}
 
-	public void StartTransitionOut () {
+	public void StartTransitionOut ()
+	{
 		StartCoroutine(TransitionOut());
 	}
 
-	virtual protected IEnumerator TransitionIn() {
+	virtual protected IEnumerator TransitionIn()
+	{
 		yield return null;
 	}
 
-	virtual protected IEnumerator TransitionOut () {
+	virtual protected IEnumerator TransitionOut ()
+	{
 		yield return null;
 	}
 }

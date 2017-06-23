@@ -88,7 +88,8 @@ namespace CylinderMenu
 		    raycaster.looker = cam.transform;
 	    }
 
-	    void Update() {
+	    void Update()
+		{
 		    // Cast a ray from the middle of the camera into the scene to test if it hit hits any menu selectors
 		    raycaster.CastForward();
 
@@ -214,7 +215,8 @@ namespace CylinderMenu
 		    return currentRow.PreviousImage().FullSizedPic; ;
 	    }
 
-		public void StartImageView () {
+		public void StartImageView ()
+		{
 			Debug.Log("Starting Image View");
 			// Show the full sized pic
 			imageViewer.LoadImage(currentRow.selectedItem.FullSizedPic);
@@ -242,7 +244,8 @@ namespace CylinderMenu
 			StartCoroutine(FadeOut(currentRow, webcamViewer));
 		}
 
-		public void ExitWebcam() {
+		public void ExitWebcam()
+		{
 			overlayTransitioner.TransitionIn(ScreenType.MainMenu);
 			overlayTransitioner.TransitionMenuTitleIn(currentRow.name);
 			currentRow.StartTransitionIn();
@@ -255,13 +258,15 @@ namespace CylinderMenu
 			StartCoroutine(FadeOut(currentRow, pipController));
 		}
 
-		public void ExitPIP() {
+		public void ExitPIP()
+		{
 			overlayTransitioner.TransitionIn(ScreenType.MainMenu);
 			overlayTransitioner.TransitionMenuTitleIn(currentRow.name);
 			currentRow.StartTransitionIn();
         }
 
-		private IEnumerator FadeOut (MenuRow row, TransitionableObject transitionAfter) {
+		private IEnumerator FadeOut (MenuRow row, TransitionableObject transitionAfter)
+		{
 			row.StartTransitionOut();
 			yield return new WaitForSeconds(Constants.Transitions.FadeTime);
 			transitionAfter.StartTransitionIn();
