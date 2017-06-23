@@ -21,6 +21,7 @@ namespace CylinderMenu
 		public ImageViewer imageViewer;
 		public WebcamViewer webcamViewer;
 		public NetworkManager server;
+        public OverlayTransitioner overlayTransitioner;
 
 		private Camera cam;
 		
@@ -210,7 +211,6 @@ namespace CylinderMenu
 			}
 		}
 
-
 		public void MoveMenuRight()
         {
             currentRow.MoveRight();
@@ -220,7 +220,6 @@ namespace CylinderMenu
         {
             currentRow.MoveLeft();
         }
-
 
 		public void SelectMenuItem(MenuItem selected)
 		{
@@ -243,8 +242,8 @@ namespace CylinderMenu
 			}
 		}
 
-		public void ImageView() {
-
+		public void ImageView()
+        {
 			// Move up to empty space
 			Vector3 newPosition = transform.position;
 			newPosition.y -= rowGap*1.5f;
@@ -255,11 +254,13 @@ namespace CylinderMenu
 			imageViewer.ViewImage(currentRow.selectedItem.FullSizedPic);
         }
 
-		public Texture ImageViewerNext() {
+		public Texture ImageViewerNext()
+        {
 			return currentRow.NextImage().FullSizedPic;
 		}
 
-		public Texture ImageViewerPrevious () {
+		public Texture ImageViewerPrevious ()
+        {
 			return currentRow.PreviousImage().FullSizedPic; ;
 		}
 
@@ -272,7 +273,8 @@ namespace CylinderMenu
 			StartCoroutine(SmoothMovement(newPosition));
 		}
 
-		public void StartWebcam() {
+		public void StartWebcam()
+        {
 			Debug.Log("Starting Webcam");
 
 			// Move up to empty space
@@ -286,9 +288,12 @@ namespace CylinderMenu
 			webcamViewer.ViewWebcam(server.myImage);
 		}
 
-		public void StartPIP() {
-			Debug.Log("Starting PIP");
-		}
+		public void StartPIP()
+        {
+            overlayTransitioner.TransitionTo(ScreenType.PIPDisplay);
+            currentRow.TransitionOut(null);
+            Debug.Log("Starting PIP");
+        }
 
 		public void ToNewRow()
         {
