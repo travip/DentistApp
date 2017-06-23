@@ -4,12 +4,8 @@ using EasyWiFi.Core;
 using System;
 using UnityEngine.UI;
 
-
-
 namespace EasyWiFi.ServerControls
 {
-
-    [AddComponentMenu("EasyWiFiController/Server/UserControls/Match Orientation Gyro")]
     public class MatchOrientationGyroServerController : MonoBehaviour, IServerController
     {
 		
@@ -41,15 +37,11 @@ namespace EasyWiFi.ServerControls
 		public Text valueY;
 		public Text valueZ;
 
-		//public RectTransform CrossHairSize;
 		public RectTransform CrossNorth;
 		public RectTransform CrossSouth;
 		public RectTransform CrossWest;
 		public RectTransform CrossEast;
-		private int scaleCrossHair =3;
-
-		// public transform handedness
-
+		private int scaleCrossHair = 3;
 
 		public Text sensitivity;
 
@@ -86,45 +78,27 @@ namespace EasyWiFi.ServerControls
                 {
                     mapDataStructureToAction(i);
                 }
-            }
-      
+            }   
 		}
 
-		public void IncreaseTolerance(){
+		public void IncreaseTolerance()
+        {
 			tolerance++;
-			MoveCrossNorth ();
-			MoveCrossSouth ();
-			MoveCrossWest ();
-			MoveCrossEast ();
+            UpdateCrosshairPosition();
 		}
 
-		public void DecreaseTolerance(){
+		public void DecreaseTolerance()
+        {
 			tolerance--;
-			MoveCrossNorth ();
-			MoveCrossSouth ();
-			MoveCrossWest ();
-			MoveCrossEast ();
+            UpdateCrosshairPosition();
 		}
 
-		//move crosshairs
-		public void MoveCrossNorth (){
+		public void UpdateCrosshairPosition (){
 			CrossNorth.transform.localPosition = new Vector3 (0,110+tolerance*scaleCrossHair,0);
-		}
-
-		public void MoveCrossSouth (){
-			CrossSouth.transform.localPosition = new Vector3 (0,-110-tolerance*scaleCrossHair,0);
-		}
-		public void MoveCrossWest (){
-			CrossWest.transform.localPosition = new Vector3 (-110-tolerance*scaleCrossHair,0,0);
-		}
-
-		public void MoveCrossEast (){
-			CrossEast.transform.localPosition = new Vector3 ((110+tolerance*scaleCrossHair),0, 0);
-		}
-
-		public void RightHand (){
-			
-		}
+            CrossSouth.transform.localPosition = new Vector3(0, -110 - tolerance * scaleCrossHair, 0);
+            CrossWest.transform.localPosition = new Vector3(-110 - tolerance * scaleCrossHair, 0, 0);
+            CrossEast.transform.localPosition = new Vector3((110 + tolerance * scaleCrossHair), 0, 0);
+        }
 
 		//wifi stuff
 		public void mapDataStructureToAction(int index)
@@ -134,23 +108,8 @@ namespace EasyWiFi.ServerControls
            y = gyro[index].GYRO_Y;
            z = gyro[index].GYRO_Z;
 
-			{
-				//zeroing
-				if(Mathf.Abs(Input.gyro.rotationRateUnbiased.y)>1.5)
-					zeroOrientation=orientation;
-
-			}
-
-			{
-			if(Input.GetMouseButtonDown (0))
-				zeroOrientation=orientation;
-
-			}
 			orientation = new Quaternion (x, y, z, w);
-
 			finalOrientation = Quaternion.Inverse (zeroOrientation) * orientation;
-
-
 			transform.rotation = finalOrientation;
        
 			angle_x = Mathf.Abs (transform.localEulerAngles.x);
@@ -158,7 +117,6 @@ namespace EasyWiFi.ServerControls
 			angle_z = Mathf.Abs (transform.localEulerAngles.z);
 
 			sensitivity.text = tolerance.ToString ();
-
 
 			if (angle_x > tolerance && angle_x < (360 - tolerance)) {
 				Camera.main.GetComponent<Camera> ().backgroundColor = colorRed;
@@ -169,9 +127,6 @@ namespace EasyWiFi.ServerControls
 			} else
 				Camera.main.GetComponent<Camera> ().backgroundColor = colorBlack;
 		}
-
-
-
 
         public void checkForNewConnections(bool isConnect, int playerNumber)
         {
