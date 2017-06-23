@@ -28,7 +28,7 @@ namespace CylinderMenu {
 		private bool hitThisFrame;
 
 		void Start() {
-			if (parentMenuItem == null) {
+			if (parentMenuItem == null && transform.parent != null) {
 				parentMenuItem = transform.parent.GetComponent<MenuItem>();
 			}
 		}

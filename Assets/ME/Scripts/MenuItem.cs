@@ -74,7 +74,7 @@ namespace CylinderMenu {
 			pic.localScale = new Vector3(scale.x, scale.y, scale.z);
 
 			// slight magic number for the y position of the selector
-			selector.localPosition = new Vector3(0f, scale.y * -0.3f, distance);
+			selector.localPosition = new Vector3(0f, scale.y * -0.14f, distance);
 
 			gameObject.SetActive(true);
 		}
