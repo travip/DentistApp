@@ -11,9 +11,24 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1655467071807828}
   m_IsPrefabParent: 1
---- !u!1 &1060266452623144
+--- !u!1 &1032810731437724
 GameObject:
   m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4181452357645010}
+  m_Layer: 0
+  m_Name: Images
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1060266452623144
+GameObject:
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
@@ -29,7 +44,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &1130620760668056
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
@@ -45,7 +60,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &1350726636587894
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
@@ -61,7 +76,7 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &1513127374785174
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
@@ -93,6 +108,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!4 &4181452357645010
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1032810731437724}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4669363293986456}
+  - {fileID: 4439699525136892}
+  - {fileID: 4839155954008776}
+  - {fileID: 4925313376366968}
+  m_Father: {fileID: 4637130920016576}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4439699525136892
 Transform:
   m_ObjectHideFlags: 1
@@ -103,7 +135,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
-  m_Father: {fileID: 4637130920016576}
+  m_Father: {fileID: 4181452357645010}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4637130920016576
@@ -116,10 +148,7 @@ Transform:
   m_LocalPosition: {x: -0.914, y: 0.03, z: 20}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children:
-  - {fileID: 4669363293986456}
-  - {fileID: 4439699525136892}
-  - {fileID: 4839155954008776}
-  - {fileID: 4925313376366968}
+  - {fileID: 4181452357645010}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -133,7 +162,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
-  m_Father: {fileID: 4637130920016576}
+  m_Father: {fileID: 4181452357645010}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4839155954008776
@@ -146,7 +175,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
-  m_Father: {fileID: 4637130920016576}
+  m_Father: {fileID: 4181452357645010}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4925313376366968
@@ -159,7 +188,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children: []
-  m_Father: {fileID: 4637130920016576}
+  m_Father: {fileID: 4181452357645010}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &114017318673021844
@@ -178,8 +207,10 @@ MonoBehaviour:
   parentMenuItem: {fileID: 0}
   scalingImage: {fileID: 4925313376366968}
   minScale: 0
-  maxScale: 3.1
+  maxScale: 3.9
   reduceTimeMultiplier: 2
+  selectedZ: 1
+  selectMoveSpeed: 20
 --- !u!114 &114381815952942346
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -197,6 +228,10 @@ MonoBehaviour:
   rotateSpeedInside: 55
   rotateSpeedMiddle: -30
   rotateSpeedOutside: 15
+  rotateFastInside: 1000
+  rotateFastMiddle: -600
+  rotateFastOutside: 300
+  selecting: 0
 --- !u!135 &135348556172088816
 SphereCollider:
   m_ObjectHideFlags: 1

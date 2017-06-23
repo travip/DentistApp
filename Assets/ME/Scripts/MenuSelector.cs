@@ -13,6 +13,7 @@ namespace CylinderMenu {
 			previousPage
 		}
 
+		private Transform imagesTransform;
 
 		public SelectionType selectionType;
 		public float totalTime = 1f;
@@ -22,32 +23,46 @@ namespace CylinderMenu {
 		public Transform scalingImage;
 		public float minScale = 1f;
 		public float maxScale = 3.1f;
+		
 
 		public float reduceTimeMultiplier = 1f;
 
+		public float selectedZ;
+		public float selectMoveSpeed;
+
 		private bool hitThisFrame;
+		private float targetZ;
+		private SelectionSpinner spinner;
 
 		void Start() {
 			if (parentMenuItem == null && transform.parent != null) {
 				parentMenuItem = transform.parent.GetComponent<MenuItem>();
 			}
+			imagesTransform = transform.Find("Images");
+			targetZ = 0f;
+			selectedZ = -selectedZ;
+			spinner = GetComponent<SelectionSpinner>();
 		}
 
 		public bool LookAt () {
+			targetZ = selectedZ;
+			if (spinner != null)
+				spinner.selecting = true;
+
 			hitThisFrame = true;
 			currentTime += Time.deltaTime;
-			setInsideSize(currentTime / totalTime);
+			SetInsideSize(currentTime / totalTime);
 
 			if (currentTime > totalTime) {
 				currentTime = 0f;
-				setInsideSize(0f);
+				NoSelection();
 				return true;
 			}
 
 			return false;
 		}
 
-		private void setInsideSize(float percent) {
+		private void SetInsideSize(float percent) {
 			float newScale = minScale + (percent * (maxScale - minScale));
 			scalingImage.localScale = new Vector3(newScale, newScale, newScale);
 		}
@@ -55,10 +70,40 @@ namespace CylinderMenu {
 		void Update() {
 			if (currentTime > 0f && hitThisFrame == false) {
 				currentTime -= Time.deltaTime * reduceTimeMultiplier;
-				setInsideSize(currentTime / totalTime);
+				NoSelection();
+			}
+
+			if (imagesTransform.localPosition.z != targetZ) {
+				MoveTowardsTarget();
 			}
 
 			hitThisFrame = false;
 		}
+
+		void NoSelection() {
+			SetInsideSize(currentTime / totalTime);
+			targetZ = 0f;
+			if (spinner != null)
+				spinner.selecting = false;
+		}
+
+		void MoveTowardsTarget() {
+			if (imagesTransform.localPosition.z > targetZ) {
+				Vector3 v = imagesTransform.localPosition;
+				v.z -= Time.deltaTime * selectMoveSpeed;
+				if (v.z < targetZ)
+					v.z = targetZ;
+
+				imagesTransform.localPosition = v;
+			} else {
+				Vector3 v = imagesTransform.localPosition;
+				v.z += Time.deltaTime * selectMoveSpeed;
+				if (v.z > targetZ)
+					v.z = targetZ;
+
+				imagesTransform.localPosition = v;
+			}
+		}
+
 	}
 }
