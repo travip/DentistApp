@@ -5,8 +5,7 @@ using UnityEngine.UI;
 
 namespace CylinderMenu
 {
-    public class MenuRow : MonoBehaviour, IFadeable
-    {
+    public class MenuRow : TransitionableObject {
 	    // Object links
 	    public GameObject BackSelectorPrefab, NextPageSelectorPrefab, PreviousPageSelectorPrefab;
 	    public List<MenuItem> menuItems;
@@ -189,54 +188,6 @@ namespace CylinderMenu
 		    }		
 	    }
 
-	    public IEnumerator TransitionOut(float fadeTime, IFadeable to)
-        {
-            if (navButtons != null)
-			    Destroy(navButtons.gameObject);
-		
-		    // Fade alpha out. Also call each menu item to fade out as well
-		    foreach (MenuItem m in menuItems)
-			    StartCoroutine(m.TransitionOut(fadeTime, null));
-
-		    yield return StartCoroutine(Fade(1f, 0f, 1f, transitionScale, fadeTime));
-
-			if (to != null)
-				to.TransitionIn(fadeTime);
-
-			gameObject.SetActive(false);   
-	    }
-
-        public void TransitionIn(float fadeTime)
-        {
-			if (navButtons == null)
-				CreateMainButtons();
-
-			gameObject.SetActive(true);
-
-            // Fade alpha in. Also call each menu item to fade in as well
-            foreach (MenuItem m in menuItems)
-                m.TransitionIn(fadeTime);
-
-		    StartCoroutine(Fade(0f, 1f, transitionScale, 1f, fadeTime));
-	    }
-
-        private IEnumerator Fade(float startAlpha, float endAlpha, float startScale, float endScale, float totalTime)
-        {
-		    float newScale = startScale;
-		    float t = 0;
-		    float currentT = 0;
-
-		    while (t < totalTime)
-            {
-			    t += Time.deltaTime;
-			    currentT = Easing.Quadratic.Out(t / totalTime);
-			    newScale = Mathf.Lerp(startScale, endScale, currentT);
-			    transform.localScale = new Vector3(newScale, newScale, newScale);
-			    yield return null;
-		    }
-		    transform.localScale = Vector3.one;
-	    }
-
         // Remove menu items - put them in the faraway land where they wont get in our way
         public void TerminateMenu(Transform container)
         {
@@ -368,6 +319,49 @@ namespace CylinderMenu
 		    yield return new WaitForSeconds(t);
 		    canRotate = true;
 	    }
-    }
+
+		// Transitions
+
+		override protected IEnumerator TransitionIn () {
+			if (navButtons == null)
+				CreateMainButtons();
+
+			// Fade alpha in. Also call each menu item to fade in as well
+			foreach (MenuItem m in menuItems)
+				m.StartTransitionIn();
+
+			yield return StartCoroutine(Fade(0f, 1f, transitionScale, 1f, Constants.Transitions.FadeTime));
+
+			// Do something after row fades in
+		}
+
+		override protected IEnumerator TransitionOut () {
+			if (navButtons != null)
+				Destroy(navButtons.gameObject);
+
+			// Fade alpha out. Also call each menu item to fade out as well
+			foreach (MenuItem m in menuItems)
+				m.StartTransitionOut();
+
+			yield return StartCoroutine(Fade(1f, 0f, 1f, transitionScale, Constants.Transitions.FadeTime));
+
+			gameObject.SetActive(false);
+		}
+
+		private IEnumerator Fade (float startAlpha, float endAlpha, float startScale, float endScale, float totalTime) {
+			float newScale = startScale;
+			float t = 0;
+			float currentT = 0;
+
+			while (t < totalTime) {
+				t += Time.deltaTime;
+				currentT = Easing.Quadratic.Out(t / totalTime);
+				newScale = Mathf.Lerp(startScale, endScale, currentT);
+				transform.localScale = new Vector3(newScale, newScale, newScale);
+				yield return null;
+			}
+			transform.localScale = Vector3.one;
+		}
+	}
 
 }

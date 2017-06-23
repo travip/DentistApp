@@ -5,8 +5,9 @@ using UnityEngine;
 // Handle viewing of image
 namespace CylinderMenu
 {
-	public class ImageViewer : MonoBehaviour
+	public class ImageViewer : TransitionableObject
 	{
+
 		//public Vector3 picContainerOffset;
 
 		public float[] zoomLevels;
@@ -49,28 +50,13 @@ namespace CylinderMenu
 			}
 		}
 
-
-		public void ViewImage (Texture image)
+		public void LoadImage(Texture image)
 		{
-			InputManager.instance.ToggleViewMode();
-			InputManager.instance.goDown.AddListener(ZoomOut);
-			InputManager.instance.goUp.AddListener(ZoomIn);
-			InputManager.instance.goLeft.AddListener(PreviousImage);
-			InputManager.instance.goRight.AddListener(NextImage);
-
-			LoadImage(image);
-		}
-
-		public void LoadImage(Texture image) {
 			mat.mainTexture = image;
 
-			transform.position = new Vector3(0f, 15f, 0f);
+			transform.position = new Vector3(0f, 0f, 0f);
 			currentZoom = 0;
 			SetZoomLevel();
-
-
-			gameObject.SetActive(true);
-			StartCoroutine(InputGracePeriod());
 		}
 
 		public void SetZoomLevel ()
@@ -92,7 +78,7 @@ namespace CylinderMenu
 			if (currentZoom < 0)
 			{
 				currentZoom = 0;
-				HideImage();
+				StartTransitionOut();
 			} else
 			{
 				SetZoomLevel();
@@ -112,39 +98,70 @@ namespace CylinderMenu
 		private void NextImage()
 		{
 			LoadImage(MenuManager.instance.ImageViewerNext());
+			StartCoroutine(InputGracePeriod());
 		}
 
 		private void PreviousImage()
 		{
 			LoadImage(MenuManager.instance.ImageViewerPrevious());
+			StartCoroutine(InputGracePeriod());
 		}
 
-		private void HideImage ()
+		private IEnumerator InputGracePeriod ()
+		{
+			viewingImage = false;
+			yield return new WaitForSeconds(0.5f);
+			viewingImage = true;
+			StartCoroutine(ViewerUpdate());
+		}
+
+
+		override protected IEnumerator TransitionIn ()
 		{
 			InputManager.instance.ToggleViewMode();
+
+			yield return Fade(0f, 1f, Constants.Transitions.FadeTime);
+
+			InputManager.instance.goDown.AddListener(ZoomOut);
+			InputManager.instance.goUp.AddListener(ZoomIn);
+			InputManager.instance.goLeft.AddListener(PreviousImage);
+			InputManager.instance.goRight.AddListener(NextImage);
+
+			viewingImage = true;
+			SetZoomLevel();
+			StartCoroutine(ViewerUpdate());
+		}
+
+		override protected IEnumerator TransitionOut ()
+		{
 			InputManager.instance.goDown.RemoveListener(ZoomOut);
 			InputManager.instance.goUp.RemoveListener(ZoomIn);
 			InputManager.instance.goLeft.RemoveListener(PreviousImage);
 			InputManager.instance.goRight.RemoveListener(NextImage);
 
 			viewingImage = false;
-			StartCoroutine(ToggleActiveAfterSeconds(0.5f));
 
+			OverlayTransitioner.instance.TransitionScreenNotCo(ScreenType.MainMenu);
+			InputManager.instance.goDown.RemoveListener(StartTransitionOut);
+
+			yield return Fade(1f, 0f, Constants.Transitions.FadeTime);
+
+			InputManager.instance.ToggleViewMode();
+			gameObject.SetActive(false);
 			MenuManager.instance.ExitImageView();
 		}
 
-
-		private IEnumerator ToggleActiveAfterSeconds (float t)
+		private IEnumerator Fade (float startAlpha, float endAlpha, float totalTime)
 		{
-			yield return new WaitForSeconds(t);
-			gameObject.SetActive(!gameObject.activeSelf);
-		}
+			float t = 0;
+			float alpha = startAlpha;
 
-		private IEnumerator InputGracePeriod ()
-		{
-			yield return new WaitForSeconds(0.5f);
-			viewingImage = true;
-			StartCoroutine(ViewerUpdate());
+			while (t < totalTime) {
+				t += Time.deltaTime;
+				alpha = Mathf.Lerp(startAlpha, endAlpha, t / totalTime);
+				mat.SetFloat("_Alpha", alpha);
+				yield return null;
+			}
 		}
 
 

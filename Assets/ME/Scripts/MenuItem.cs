@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace CylinderMenu
 {
-    public class MenuItem : MonoBehaviour, IFadeable {
+    public class MenuItem : TransitionableObject {
 
 	    // Object Links
 	    public GameObject PicPrefab;
@@ -108,24 +108,22 @@ namespace CylinderMenu
 		    }
 	    }
 
-	    public IEnumerator TransitionOut(float fadeTime, IFadeable to)
-        {
-		    col.enabled = false;
-		    yield return StartCoroutine(Fade(1f, 0f, fadeTime));
-			if (to != null)
-				to.TransitionIn(fadeTime);
+
+		// Transitions
+
+		override protected IEnumerator TransitionOut () {
+			col.enabled = false;
+			yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime));
 
 			gameObject.SetActive(false);
-	    }
+		}
 
-	    public void TransitionIn(float fadeTime)
-        {
-		    col.enabled = true;
-            gameObject.SetActive(true);
-            StartCoroutine(Fade(0f, 1f, fadeTime));
-	    }
+		override protected IEnumerator TransitionIn () {
+			col.enabled = true;
+			yield return StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime));
+		}
 
-        private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime)
+		private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime)
         {
 		    Material mat1 = pic.Find("mesh").GetComponent<Renderer>().materials[0];
 

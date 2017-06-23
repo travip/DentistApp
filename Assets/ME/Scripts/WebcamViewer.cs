@@ -5,22 +5,40 @@ using UnityEngine.UI;
 
 // Handle viewing of image
 namespace CylinderMenu {
-	public class WebcamViewer : MonoBehaviour {
+	public class WebcamViewer : TransitionableObject
+	{
 
-		public void ViewWebcam (Texture2D image) {
-			gameObject.SetActive(true);
+		public CanvasGroup canvasGroup;
 
+		override protected IEnumerator TransitionIn () {
 			InputManager.instance.ToggleViewMode();
-			InputManager.instance.goDown.AddListener(HideWebcam);
+
+			yield return Fade(0f, 1f, Constants.Transitions.FadeTime);
+
+			InputManager.instance.goDown.AddListener(StartTransitionOut);
 		}
 
-		public void HideWebcam () {
-			InputManager.instance.goDown.RemoveListener(HideWebcam);
+		override protected IEnumerator TransitionOut () {
+			OverlayTransitioner.instance.TransitionScreenNotCo(ScreenType.MainMenu);
+			InputManager.instance.goDown.RemoveListener(StartTransitionOut);
+
+			yield return Fade(1f, 0f, Constants.Transitions.FadeTime);
+
 			InputManager.instance.ToggleViewMode();
-
 			gameObject.SetActive(false);
-
 			MenuManager.instance.ExitWebcam();
+		}
+
+		private IEnumerator Fade(float from, float to, float totalTime) {
+			float t = 0;
+			float currentT = 0;
+
+			while (t < totalTime) {
+				t += Time.deltaTime;
+				currentT = Easing.Quadratic.Out(t / totalTime);
+				canvasGroup.alpha = Mathf.Lerp(from, to, currentT);
+				yield return null;
+			}
 		}
 	}
 }

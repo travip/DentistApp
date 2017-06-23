@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 222146398428604140}
   - component: {fileID: 114566425343621506}
   - component: {fileID: 114512042585563596}
+  - component: {fileID: 225834110741209444}
   m_Layer: 5
   m_Name: Webcam Viewer
   m_TagString: Untagged
@@ -40,6 +41,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22f5472af8e15bc4db4910d68af1b287, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvasGroup: {fileID: 225834110741209444}
 --- !u!114 &114566425343621506
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -85,8 +87,19 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 1000, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &225834110741209444
+CanvasGroup:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1730859376048694}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

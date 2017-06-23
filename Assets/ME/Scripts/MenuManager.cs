@@ -86,7 +86,7 @@ namespace CylinderMenu
 
 		    currentRow.InitializeMenu(null, circleRadius, maxRows, maxColumns, mainMenuItemScale, gapBetweenItems);
 
-		    currentRow.TransitionIn(Constants.Transitions.FadeTime);
+		    currentRow.StartTransitionIn();
 
 		    raycaster = new RayCaster();
 		    raycaster.OnRayEnter += RayEnterHandler;
@@ -232,7 +232,7 @@ namespace CylinderMenu
 				    StartWebcam();
 				    break;
 			    case MenuManager.SelectAction.PIP:
-				    StartCoroutine(StartPIP());
+				    StartPIP();
 				    break;
 			    default:
 				    break;
@@ -241,13 +241,13 @@ namespace CylinderMenu
 
 	    public void ImageView()
         {
-			// Show the full sized pic
 			Debug.Log("Starting Image View");
 
-            StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.ImageViewer));
-			StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime, null));
+			// Show the full sized pic
+			imageViewer.LoadImage(currentRow.selectedItem.FullSizedPic);
 
-			imageViewer.ViewImage(currentRow.selectedItem.FullSizedPic);
+			StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.ImageViewer));
+			StartCoroutine(FadeOut(currentRow, imageViewer));
         }
 
 	    public Texture ImageViewerNext()
@@ -263,7 +263,7 @@ namespace CylinderMenu
 	    public void ExitImageView()
 	    {
             StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.MainMenu));
-			currentRow.TransitionIn(Constants.Transitions.FadeTime);
+			currentRow.StartTransitionIn();
 	    }
 
 	    public void StartWebcam()
@@ -274,27 +274,29 @@ namespace CylinderMenu
 		    server.gameObject.SetActive(true);
 
             StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.CameraDisplay));
-			StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime, null));
+			StartCoroutine(FadeOut(currentRow, webcamViewer));
+		}
 
-			webcamViewer.ViewWebcam(server.myImage);
+		private IEnumerator FadeOut(MenuRow row, TransitionableObject transitionAfter) {
+			row.StartTransitionOut();
+			yield return new WaitForSeconds(Constants.Transitions.FadeTime);
+			transitionAfter.StartTransitionIn();
 		}
 
 		public void ExitWebcam() {
             StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.MainMenu));
-			currentRow.TransitionIn(Constants.Transitions.FadeTime);
+			currentRow.StartTransitionIn();
 		}
 
-	    public IEnumerator StartPIP()
+	    public void StartPIP()
         {
             StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.PIPDisplay));
-            yield return StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime, null));
-
-			pipController.StartPIP();
-        }
+			StartCoroutine(FadeOut(currentRow, pipController));
+		}
 
 		public void ExitPIP() {
             StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.MainMenu));
-			currentRow.TransitionIn(Constants.Transitions.FadeTime);
+			currentRow.StartTransitionIn();
         }
 
 	    public void ToNewRow()
@@ -313,10 +315,8 @@ namespace CylinderMenu
 		    currentRow.transform.position = new Vector3(prevRow.transform.position.x, prevRow.transform.position.y, prevRow.transform.position.z);
 		    currentRow.InitializeMenu(prevRow, circleRadius, maxRows, maxColumns, itemScale, gapBetweenItems);
 
-            // Currently new row is only ever "Image Menu" so transition to that
-            StartCoroutine(overlayTransitioner.TransitionMenuTitle("Image Menu"));
-			StartCoroutine(prevRow.TransitionOut(Constants.Transitions.FadeTime, currentRow));
-	    }
+			StartCoroutine(FadeOut(prevRow, currentRow));
+		}
 
 	    public void ToPreviousRow()
 	    {
@@ -330,8 +330,9 @@ namespace CylinderMenu
             currentRow = currentRow.belowRow;
 
 			overlayTransitioner.TransitionMenuTitle("Main Menu");
-			StartCoroutine(prevRow.TransitionOut(Constants.Transitions.FadeTime, currentRow));
-	    }   
+			StartCoroutine(FadeOut(prevRow, currentRow));
+			//StartCoroutine(prevRow.TransitionOut(Constants.Transitions.FadeTime, currentRow));
+		}   
 
         private IEnumerator SmoothMovement(Vector3 end)
         {

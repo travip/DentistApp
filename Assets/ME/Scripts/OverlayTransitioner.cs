@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class OverlayTransitioner : MonoBehaviour
 {
 
-    public OverlayTransitioner instance { get; private set; }
+    public static OverlayTransitioner instance { get; private set; }
 
     ScreenType currentScreen = ScreenType.MainMenu;
     public Text menuTitle;
@@ -19,6 +19,10 @@ public class OverlayTransitioner : MonoBehaviour
         else
             Destroy(this);
     }
+
+	public void TransitionScreenNotCo(ScreenType newScreen) {
+		StartCoroutine(TransitionScreen(newScreen));
+	}
 
     public IEnumerator TransitionScreen(ScreenType newScreen)
     {
@@ -62,8 +66,8 @@ public class OverlayTransitioner : MonoBehaviour
 
 public interface IFadeable
 {
-    void TransitionIn(float fadeTime);
-    IEnumerator TransitionOut(float fadeTime, IFadeable to);
+    void StartTransitionIn();
+    void StartTransitionOut();
 }
 
 public enum ScreenType

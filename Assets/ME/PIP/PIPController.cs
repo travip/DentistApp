@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PIPController : MonoBehaviour
+public class PIPController : TransitionableObject
 {
     public PIPController instance { get; private set; }
 
@@ -16,22 +16,6 @@ public class PIPController : MonoBehaviour
             Destroy(this);
     }
 
-    // Update is called once per frame
-    void Update () {
-		
-	}
-
-	public void StartPIP() {
-		InputManager.instance.ToggleViewMode();
-		InputManager.instance.goDown.AddListener(Back);
-	}
-
-	private void Back() {
-		InputManager.instance.goDown.RemoveListener(Back);
-		CylinderMenu.MenuManager.instance.ExitPIP();
-        InputManager.instance.ToggleViewModeDelayed(0.5f);
-    }
-
     public void RightHanded()
     {
         PIPPointer.localRotation = Quaternion.Euler(0, 0, 0);
@@ -41,4 +25,23 @@ public class PIPController : MonoBehaviour
     {
         PIPPointer.localRotation = Quaternion.Euler(0, -180f, 0);
     }
+
+	// Transitions
+
+	override protected IEnumerator TransitionIn () {
+		InputManager.instance.ToggleViewMode();
+		InputManager.instance.goDown.AddListener(StartTransitionOut);
+		yield return null;
+	}
+
+	override protected IEnumerator TransitionOut () {
+		OverlayTransitioner.instance.TransitionScreenNotCo(ScreenType.MainMenu);
+		InputManager.instance.goDown.RemoveListener(StartTransitionOut);
+
+		yield return new WaitForSeconds(Constants.Transitions.FadeTime);
+
+		InputManager.instance.ToggleViewMode();
+		gameObject.SetActive(false);
+		CylinderMenu.MenuManager.instance.ExitPIP();
+	}
 }
