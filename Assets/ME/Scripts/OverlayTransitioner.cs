@@ -48,6 +48,12 @@ public class OverlayTransitioner : MonoBehaviour {
     }
 }
 
+public interface IFadeable
+{
+    void TransitionIn(float fadeTime);
+    IEnumerator TransitionOut(float fadeTime, IFadeable to);
+}
+
 public enum ScreenType
 {
     MainMenu = 0,
