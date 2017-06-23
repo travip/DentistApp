@@ -108,13 +108,10 @@ namespace CylinderMenu
 		    }
 	    }
 
-	    public IEnumerator TransitionOut(float fadeTime, IFadeable to)
+	    public IEnumerator TransitionOut(float fadeTime)
         {
 		    col.enabled = false;
 		    yield return StartCoroutine(Fade(1f, 0f, fadeTime));
-			if (to != null)
-				to.TransitionIn(fadeTime);
-
 			gameObject.SetActive(false);
 	    }
 

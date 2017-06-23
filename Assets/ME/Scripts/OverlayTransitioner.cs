@@ -9,6 +9,7 @@ public class OverlayTransitioner : MonoBehaviour
     public OverlayTransitioner instance { get; private set; }
 
     ScreenType currentScreen = ScreenType.MainMenu;
+    public float fadeTime = 0.3f;
     public Text menuTitle;
     public List<Image> overlays;
 
@@ -20,27 +21,48 @@ public class OverlayTransitioner : MonoBehaviour
             Destroy(this);
     }
 
-    public IEnumerator TransitionScreen(ScreenType newScreen)
+    // Transition between systems - From an IFadeable TO and IFadeable.
+    // transType: Type of transition (MenuToMenu, MenuToSystem, SystemToMenu)
+    // screenType: Destination overlay
+    public IEnumerator Transition(IFadeable from, IFadeable to, TransitionType transType, ScreenType screenType)
     {
-        if (newScreen != ScreenType.MainMenu)
-            StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, menuTitle));      
-        yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, overlays[(int)currentScreen]));
+        switch (transType)
+        {
+            case TransitionType.MenuToMenu:
+                // Fade out Menu Title and Items
+                StartCoroutine(Fade(1f, 0f, fadeTime, menuTitle));
+                yield return from.TransitionOut(fadeTime);
+                menuTitle.text = (to as CylinderMenu.MenuRow).name;
+                // Fade in Menu Title
+                StartCoroutine(Fade(0f, 1f, fadeTime, menuTitle));
+                break;
 
-        overlays[(int)currentScreen].gameObject.SetActive(false);
-        overlays[(int)newScreen].gameObject.SetActive(true);
+            case TransitionType.MenuToSystem:
+                // Fade out Menu Title, Overlay, and Items
+                StartCoroutine(Fade(1f, 0f, fadeTime, menuTitle));
+                StartCoroutine(Fade(1f, 0f, fadeTime, overlays[(int)currentScreen]));
+                yield return from.TransitionOut(fadeTime);
+                // Fade in Overlay
+                currentScreen = screenType;
+                StartCoroutine(Fade(0f, 1f, fadeTime, overlays[(int)currentScreen]));
+                break;
 
-        if(newScreen == ScreenType.MainMenu)
-            StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime, menuTitle));
-        StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime, overlays[(int)newScreen]));
+            case TransitionType.SystemToMenu:
+                // Fade out Overlay and System
+                StartCoroutine(Fade(1f, 0f, fadeTime, overlays[(int)currentScreen]));
+                yield return from.TransitionOut(fadeTime);
+                // Fade in Menu Title, Overlay
+                currentScreen = screenType;
+                StartCoroutine(Fade(0f, 1f, fadeTime, menuTitle));
+                StartCoroutine(Fade(0f, 1f, fadeTime, overlays[(int)currentScreen]));
+                break;
 
-        currentScreen = newScreen;
-    }
-
-    public IEnumerator TransitionMenuTitle(string title)
-    {
-        yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, menuTitle));
-        menuTitle.text = title;
-        StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime, menuTitle));
+            default:
+                Debug.Log("Bad transition");
+                break;
+        }
+        // Fade in system/items
+        to.TransitionIn(fadeTime);
     }
 
     private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime, Graphic image)
@@ -63,7 +85,14 @@ public class OverlayTransitioner : MonoBehaviour
 public interface IFadeable
 {
     void TransitionIn(float fadeTime);
-    IEnumerator TransitionOut(float fadeTime, IFadeable to);
+    IEnumerator TransitionOut(float fadeTime);
+}
+
+public enum TransitionType
+{
+    MenuToMenu,
+    MenuToSystem,
+    SystemToMenu,
 }
 
 public enum ScreenType

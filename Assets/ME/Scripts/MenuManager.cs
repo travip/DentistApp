@@ -232,7 +232,7 @@ namespace CylinderMenu
 				    StartWebcam();
 				    break;
 			    case MenuManager.SelectAction.PIP:
-				    StartCoroutine(StartPIP());
+				    StartPIP();
 				    break;
 			    default:
 				    break;
@@ -245,7 +245,7 @@ namespace CylinderMenu
 			Debug.Log("Starting Image View");
 
             StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.ImageViewer));
-			StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime, null));
+			StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime));
 
 			imageViewer.ViewImage(currentRow.selectedItem.FullSizedPic);
         }
@@ -274,27 +274,23 @@ namespace CylinderMenu
 		    server.gameObject.SetActive(true);
 
             StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.CameraDisplay));
-			StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime, null));
+			StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime));
 
 			webcamViewer.ViewWebcam(server.myImage);
 		}
 
 		public void ExitWebcam() {
-            StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.MainMenu));
-			currentRow.TransitionIn(Constants.Transitions.FadeTime);
+
 		}
 
-	    public IEnumerator StartPIP()
+	    public void StartPIP()
         {
-            StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.PIPDisplay));
-            yield return StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime, null));
-
-			pipController.StartPIP();
+            StartCoroutine(overlayTransitioner.Transition(currentRow, pipController, TransitionType.MenuToSystem, ScreenType.PIPDisplay));
         }
 
-		public void ExitPIP() {
-            StartCoroutine(overlayTransitioner.TransitionScreen(ScreenType.MainMenu));
-			currentRow.TransitionIn(Constants.Transitions.FadeTime);
+		public void ExitPIP()
+        {
+            StartCoroutine(overlayTransitioner.Transition(pipController, currentRow, TransitionType.SystemToMenu, ScreenType.MainMenu));
         }
 
 	    public void ToNewRow()
@@ -310,12 +306,12 @@ namespace CylinderMenu
 
 		    // Generate new MenuRow and set its list of menu items
 		    currentRow = Instantiate(MenuRowPrefab, transform).GetComponent<MenuRow>();
+            currentRow.name = "Image Selection";
 		    currentRow.transform.position = new Vector3(prevRow.transform.position.x, prevRow.transform.position.y, prevRow.transform.position.z);
 		    currentRow.InitializeMenu(prevRow, circleRadius, maxRows, maxColumns, itemScale, gapBetweenItems);
 
-            // Currently new row is only ever "Image Menu" so transition to that
-            StartCoroutine(overlayTransitioner.TransitionMenuTitle("Image Menu"));
-			StartCoroutine(prevRow.TransitionOut(Constants.Transitions.FadeTime, currentRow));
+            // Transition to new row
+            StartCoroutine(overlayTransitioner.Transition(prevRow, currentRow, TransitionType.MenuToMenu, ScreenType.MainMenu));
 	    }
 
 	    public void ToPreviousRow()
@@ -329,8 +325,8 @@ namespace CylinderMenu
 		    MenuRow prevRow = currentRow;
             currentRow = currentRow.belowRow;
 
-			overlayTransitioner.TransitionMenuTitle("Main Menu");
-			StartCoroutine(prevRow.TransitionOut(Constants.Transitions.FadeTime, currentRow));
+            // Transition to previous row
+            StartCoroutine(overlayTransitioner.Transition(prevRow, currentRow, TransitionType.MenuToMenu, ScreenType.MainMenu));
 	    }   
 
         private IEnumerator SmoothMovement(Vector3 end)

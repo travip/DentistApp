@@ -22,6 +22,7 @@ namespace CylinderMenu
 
 	    [Header("Transitions")]
 	    public float transitionScale;
+        public string rowName;
 
 	    [Header("Image layout")]
 	    public bool startInMiddle = true;
@@ -189,20 +190,16 @@ namespace CylinderMenu
 		    }		
 	    }
 
-	    public IEnumerator TransitionOut(float fadeTime, IFadeable to)
+	    public IEnumerator TransitionOut(float fadeTime)
         {
             if (navButtons != null)
 			    Destroy(navButtons.gameObject);
 		
 		    // Fade alpha out. Also call each menu item to fade out as well
 		    foreach (MenuItem m in menuItems)
-			    StartCoroutine(m.TransitionOut(fadeTime, null));
+			    StartCoroutine(m.TransitionOut(fadeTime));
 
 		    yield return StartCoroutine(Fade(1f, 0f, 1f, transitionScale, fadeTime));
-
-			if (to != null)
-				to.TransitionIn(fadeTime);
-
 			gameObject.SetActive(false);   
 	    }
 

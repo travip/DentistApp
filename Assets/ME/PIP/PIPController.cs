@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PIPController : MonoBehaviour
+public class PIPController : MonoBehaviour, IFadeable
 {
     public PIPController instance { get; private set; }
 
@@ -27,6 +28,7 @@ public class PIPController : MonoBehaviour
 	}
 
 	private void Back() {
+        Debug.Log("Back");
 		InputManager.instance.goDown.RemoveListener(Back);
 		CylinderMenu.MenuManager.instance.ExitPIP();
         InputManager.instance.ToggleViewModeDelayed(0.5f);
@@ -40,5 +42,15 @@ public class PIPController : MonoBehaviour
     public void LeftHanded()
     {
         PIPPointer.localRotation = Quaternion.Euler(0, -180f, 0);
+    }
+
+    public void TransitionIn(float fadeTime)
+    {
+        StartPIP();
+    }
+
+    public IEnumerator TransitionOut(float fadeTime)
+    {
+        yield return new WaitForSeconds(fadeTime);
     }
 }
