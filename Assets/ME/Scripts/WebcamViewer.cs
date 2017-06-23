@@ -20,7 +20,7 @@ namespace CylinderMenu {
 
 			gameObject.SetActive(false);
 
-			MenuManager.instance.ExitImageView();
+			MenuManager.instance.ExitWebcam();
 		}
 	}
 }

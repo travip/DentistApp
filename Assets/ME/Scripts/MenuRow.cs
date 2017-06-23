@@ -179,7 +179,9 @@ namespace CylinderMenu
 		    navButtons.parent = MenuManager.instance.transform;
 		    navButtons.transform.position = new Vector3(0f, transform.position.y - 2.5f, radius);
 
-		    Instantiate(BackSelectorPrefab, navButtons);
+			if (belowRow != null)
+				Instantiate(BackSelectorPrefab, navButtons);
+
 		    if (pages > 1)
 		    {
 			    Instantiate(NextPageSelectorPrefab, navButtons).transform.localPosition = new Vector3(2f, 0f, 0f);
@@ -206,7 +208,10 @@ namespace CylinderMenu
 
         public void TransitionIn(float fadeTime)
         {
-            gameObject.SetActive(true);
+			if (navButtons == null)
+				CreateMainButtons();
+
+			gameObject.SetActive(true);
 
             // Fade alpha in. Also call each menu item to fade in as well
             foreach (MenuItem m in menuItems)

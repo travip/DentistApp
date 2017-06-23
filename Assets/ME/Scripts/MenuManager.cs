@@ -21,6 +21,7 @@ namespace CylinderMenu
 	    public GameObject MenuRowPrefab;
         public Transform spentMenuContainer;
 	    public ImageViewer imageViewer;
+		public PIPController pipController;
 	    public WebcamViewer webcamViewer;
 	    public NetworkManager server;
         public OverlayTransitioner overlayTransitioner;
@@ -261,11 +262,8 @@ namespace CylinderMenu
 
 	    public void ExitImageView()
 	    {
-		    // Move back to the row we came from
-		    Vector3 newPosition = transform.position;
-		    newPosition.y = -currentRow.transform.localPosition.y;
-
-		    StartCoroutine(SmoothMovement(newPosition));
+			overlayTransitioner.TransitionTo(ScreenType.ImageMenu);
+			currentRow.TransitionIn(Constants.Transitions.FadeTime);
 	    }
 
 	    public void StartWebcam()
@@ -281,12 +279,24 @@ namespace CylinderMenu
 			webcamViewer.ViewWebcam(server.myImage);
 		}
 
+		public void ExitWebcam() {
+			overlayTransitioner.TransitionTo(ScreenType.MainMenu);
+			currentRow.TransitionIn(Constants.Transitions.FadeTime);
+		}
+
 	    public void StartPIP()
         {
             overlayTransitioner.TransitionTo(ScreenType.PIPDisplay);
             StartCoroutine(currentRow.TransitionOut(Constants.Transitions.FadeTime, null));
+
+			pipController.StartPIP();
             Debug.Log("Starting PIP");
         }
+
+		public void ExitPIP() {
+			overlayTransitioner.TransitionTo(ScreenType.MainMenu);
+			currentRow.TransitionIn(Constants.Transitions.FadeTime);
+		}
 
 	    public void ToNewRow()
         {
@@ -319,8 +329,9 @@ namespace CylinderMenu
 
 		    MenuRow prevRow = currentRow;
             currentRow = currentRow.belowRow;
-			
-		    StartCoroutine(prevRow.TransitionOut(Constants.Transitions.FadeTime, currentRow));
+
+			overlayTransitioner.TransitionTo(ScreenType.MainMenu);
+			StartCoroutine(prevRow.TransitionOut(Constants.Transitions.FadeTime, currentRow));
 	    }
         
 

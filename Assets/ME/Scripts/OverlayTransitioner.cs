@@ -20,8 +20,9 @@ public class OverlayTransitioner : MonoBehaviour {
 
     public void TransitionTo(ScreenType newScreen)
     {
-        StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, overlays[(int)currentScreen], overlays[(int)newScreen]));
-    }
+		StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime, overlays[(int)currentScreen], overlays[(int)newScreen]));
+		currentScreen = newScreen;
+	}
 
     private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime, Image imageOut, Image imageIn)
     {

@@ -21,6 +21,17 @@ public class PIPController : MonoBehaviour
 		
 	}
 
+	public void StartPIP() {
+		InputManager.instance.ToggleViewMode();
+		InputManager.instance.goDown.AddListener(Back);
+	}
+
+	private void Back() {
+		InputManager.instance.ToggleViewMode();
+		InputManager.instance.goDown.RemoveListener(Back);
+		CylinderMenu.MenuManager.instance.ExitPIP();
+	}
+
     public void RightHanded()
     {
         PIPPointer.localRotation = Quaternion.Euler(0, 0, 0);
