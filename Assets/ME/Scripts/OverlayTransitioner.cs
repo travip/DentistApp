@@ -18,9 +18,9 @@ public class OverlayTransitioner : MonoBehaviour {
             Destroy(this);
     }
 
-    public void TransitionTo(ScreenType newScreen)
+    public void TransitionTo(ScreenType newScreen, bool toggleView)
     {
-        StartCoroutine(Fade(1f, 0f, 0.3f, overlays[0], overlays[(int)newScreen], true));
+        StartCoroutine(Fade(1f, 0f, 0.3f, overlays[0], overlays[(int)newScreen], toggleView));
     }
 
     private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime, Image imageOut, Image imageIn, bool toggleView)

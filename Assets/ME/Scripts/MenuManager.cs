@@ -290,7 +290,7 @@ namespace CylinderMenu
 
 		public void StartPIP()
         {
-            overlayTransitioner.TransitionTo(ScreenType.PIPDisplay);
+            overlayTransitioner.TransitionTo(ScreenType.PIPDisplay, true);
             currentRow.TransitionOut(null);
             Debug.Log("Starting PIP");
         }
