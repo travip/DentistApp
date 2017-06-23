@@ -1,9 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UdpState
 {
@@ -32,6 +34,7 @@ public class NetworkManager : MonoBehaviour {
     private UdpClient udpClient = null;
 
     public Texture2D myImage;
+    public Text errorText;
 
     private byte[] pic;
 
@@ -80,6 +83,7 @@ public class NetworkManager : MonoBehaviour {
 
     private void FlushStream()
     {
+        errorText.text = "Flushing";
         var buffer = new byte[10000];
         while (tcpStream.DataAvailable)
         {
@@ -117,10 +121,40 @@ public class NetworkManager : MonoBehaviour {
         {
             case PacketType.IMAGE_CAPTURE:
                 Array.Resize(ref pic, size);
+                int bytesRead = 0;
                 if (0 < size && size < 5000000)
                 {
-                    numBytes = tcpStream.Read(pic, 0, size);
-                    Debug.Log("Read " + numBytes + " bytes");
+                    while (bytesRead < size)
+                    {
+                        try
+                        {
+                            numBytes = tcpStream.Read(pic, bytesRead, size - bytesRead);
+                        }
+                        catch(ArgumentOutOfRangeException e)
+                        {
+                            errorText.text = "ARG ERROR";
+                            return;
+                        }
+                        catch (IOException e)
+                        {
+                            FlushStream();
+                            return;
+                        }
+                        catch(ObjectDisposedException e)
+                        {
+                            FlushStream();
+                            return;
+                        }
+   
+                        bytesRead += numBytes;
+                        Debug.Log("Read " + numBytes + " bytes");
+                        errorText.text = numBytes.ToString();
+                    }
+                    if(bytesRead != size)
+                    {
+                        Debug.Log("Read too many bytes?");
+                        errorText.text = "Too many";
+                    }
                     myImage.LoadImage(pic);
                 }
                 else
@@ -157,6 +191,7 @@ public class NetworkManager : MonoBehaviour {
         s.u = udpClient;
 
         udpClient.BeginReceive(new AsyncCallback(ReceiveCallback), s);
+        errorText.text = "Waiting";
     }
     
     private void Update()
