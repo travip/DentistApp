@@ -130,18 +130,9 @@ public class NetworkManager : MonoBehaviour {
                         {
                             numBytes = tcpStream.Read(pic, bytesRead, size - bytesRead);
                         }
-                        catch(ArgumentOutOfRangeException e)
+                        catch(Exception e)
                         {
-                            errorText.text = "ARG ERROR";
-                            return;
-                        }
-                        catch (IOException e)
-                        {
-                            FlushStream();
-                            return;
-                        }
-                        catch(ObjectDisposedException e)
-                        {
+                            Debug.Log(e.ToString());
                             FlushStream();
                             return;
                         }
