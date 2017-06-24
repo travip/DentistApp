@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,7 +9,7 @@ public class OverlayTransitioner : MonoBehaviour
 
     public static OverlayTransitioner instance { get; private set; }
 
-    ScreenType currentScreen = ScreenType.MainMenu;
+    public ScreenType currentScreen = ScreenType.MainMenu;
     public Text menuTitle;
     public List<Image> overlays;
 
@@ -86,6 +87,7 @@ public interface IFadeable
     void StartTransitionOut();
 }
 
+[Serializable]
 public enum ScreenType
 {
     MainMenu = 0,

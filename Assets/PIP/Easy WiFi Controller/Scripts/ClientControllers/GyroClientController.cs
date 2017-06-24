@@ -7,8 +7,6 @@ using EasyWiFi.Core;
 
 namespace EasyWiFi.ClientControls
 {
-	
-	[AddComponentMenu("EasyWiFiController/Client/UserControls/Gyro")]
     public class GyroClientController : MonoBehaviour, IClientController
     {
         public string controlName = "Gyro";
@@ -26,10 +24,9 @@ namespace EasyWiFi.ClientControls
 			Input.gyro.updateInterval = 1f / 100f;
         }
 
-		public void ClickExit () {
-
+		public void ClickExit ()
+        {
 			Application.Quit();
-
 		}
 
         //here we grab the input and map it to the data list
@@ -38,8 +35,6 @@ namespace EasyWiFi.ClientControls
             mapInputToDataStream();
         }
 
-
-
         public void mapInputToDataStream()
         {
             Quaternion gyroQuat;
@@ -47,15 +42,10 @@ namespace EasyWiFi.ClientControls
 
             //acceleromter sensor
             gyroQuat = Input.gyro.attitude;
-
             gyro.GYRO_W = gyroQuat.w;
             gyro.GYRO_X = gyroQuat.x;
             gyro.GYRO_Y = gyroQuat.y;
             gyro.GYRO_Z = gyroQuat.z;
         }
-
-
     }
-
-
 }

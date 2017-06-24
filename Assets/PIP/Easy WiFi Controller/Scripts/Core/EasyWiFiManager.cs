@@ -158,8 +158,7 @@ public class EasyWiFiManager : MonoBehaviour {
             }
 			else if (EasyWiFiController.clientState != EasyWiFiConstants.CURRENT_CLIENT_STATE.Broadcasting){
 				EasyWiFiController.checkForServer ();
-			}
-				
+			}				
         }
         else 
         {
