@@ -188,6 +188,7 @@ GameObject:
   - component: {fileID: 47071283}
   - component: {fileID: 47071282}
   - component: {fileID: 47071285}
+  - component: {fileID: 47071286}
   m_Layer: 5
   m_Name: Crosshair Canvas
   m_TagString: Untagged
@@ -291,6 +292,12 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!222 &47071286
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 47071280}
 --- !u!1001 &56986508
 Prefab:
   m_ObjectHideFlags: 0
@@ -864,7 +871,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &243475635
 Transform:
   m_ObjectHideFlags: 0
@@ -889,13 +896,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 078137b6501183a49864bb19d3b56d92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  instance: {fileID: 0}
   myPort: 12345
   discoverPort: 52524
   dataPort: 56567
   myIpString: 
   myImage: {fileID: 2800000, guid: 62d2720e2612796488a7bfbebc46e424, type: 3}
-  errorText: {fileID: 0}
 --- !u!1 &251853652
 GameObject:
   m_ObjectHideFlags: 0
@@ -1187,57 +1192,6 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 999215781}
   m_Script: {fileID: 11500000, guid: ddf72919956e8ff43a8c608aa7e1ee8c, type: 3}
---- !u!1 &467803816
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 467803817}
-  - component: {fileID: 467803818}
-  m_Layer: 0
-  m_Name: EasyWifiManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &467803817
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 467803816}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &467803818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 467803816}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba545878a81c9ac448043048b810737a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serverSocketPort: 2015
-  clientSocketPort: 2016
-  peerType: 0
-  clientTimeout: 0
-  serverSendBackchannel: 0
-  serverSendHeartbeatRate: 0
-  clientConnectAutomatically: 1
-  clientMaxSendRate: 0
-  heartbeatTimeout: 0
-  logVerbose: 1
-  applicationName: AR Dental
 --- !u!1 &499376992
 GameObject:
   m_ObjectHideFlags: 0
@@ -1688,9 +1642,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PIPPointer: {fileID: 159859621}
-  control: Gyro
-  player: 0
+  orientation: {x: 0, y: 0, z: 0, w: 0}
   spiritLevel: {fileID: 1279015462}
+  pipSending: 0
   x: 0
   y: 0
   z: 0
@@ -1702,6 +1656,7 @@ MonoBehaviour:
   maxTolerance: 45
   minTolerance: 1
   pipCanvas: {fileID: 47071285}
+  pipAlert: {fileID: 0}
   CrossNorth: {fileID: 251853653}
   CrossSouth: {fileID: 138524336}
   CrossWest: {fileID: 1561275362}
@@ -1720,7 +1675,7 @@ Transform:
   - {fileID: 1279015462}
   - {fileID: 47071281}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &668681265
 Prefab:
@@ -2075,7 +2030,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4897595329708022, guid: 971438a59fb5a114fa67dd0383c9271d, type: 2}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 971438a59fb5a114fa67dd0383c9271d, type: 2}
@@ -2490,7 +2445,7 @@ Transform:
   - {fileID: 209850784}
   - {fileID: 1368149383}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1331906434
 GameObject:

@@ -20,10 +20,11 @@ int CALLBACK Server::CheckValidConnection(LPWSABUF lpCallerId,
 {
 	Server* callingServer = (Server *) dwCallbackData;
 	sockaddr_in* connectingAddr = (sockaddr_in *)lpCallerId->buf;
-	if ( strcmp(inet_ntoa(connectingAddr->sin_addr), inet_ntoa(callingServer->clientAddr.sin_addr)) == 0) {
+	/*if ( strcmp(inet_ntoa(connectingAddr->sin_addr), inet_ntoa(callingServer->clientAddr.sin_addr)) == 0) {
 		return CF_ACCEPT;
 	}
-	return CF_REJECT;
+	*/
+	return CF_ACCEPT;
 }
 
 Server::Server()
@@ -126,7 +127,9 @@ int Server::CreateTCPSocket()
 	}
 
 	DWORD nTrue = 1;
+	DWORD timeout = 5000;
 	setsockopt(tcpListenSocket, SOL_SOCKET, SO_CONDITIONAL_ACCEPT, (char*)&nTrue, sizeof(nTrue));
+	setsockopt(tcpListenSocket, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout));
 
 	return 0;
 }
@@ -149,9 +152,11 @@ int Server::WaitForConnection()
 	else
 	{
 		printf("Received %i bytes from connection from: %s:%d\n", recvLen, inet_ntoa(clientAddr.sin_addr), ntohs(clientAddr.sin_port));
-		if (recvLen == 1 && recvBuf[0] == 0x01) {
+		if (recvLen == 5 && recvBuf[0] == 0x01) {
 			printf("Valid connection request. Replying...\n");
-			UDPSend("HI", 2);
+			char reply[1];
+			reply[0] = 0x01;
+			UDPSend(reply, 1);
 			recvLen = EstablishTCPConnection();
 		}
 	}

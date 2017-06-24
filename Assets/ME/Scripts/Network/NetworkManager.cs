@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +16,7 @@ public class UdpState
 
 public class NetworkManager : MonoBehaviour {
 
-    public NetworkManager instance;
+    public static NetworkManager instance { get; private set; }
 
     public int myPort = 12345;
     public int discoverPort = 52524;
@@ -25,18 +26,23 @@ public class NetworkManager : MonoBehaviour {
     private IPAddress localAddr;
     private IPEndPoint broadcastAddr;
 
-    private IPEndPoint currentAddr;
+    private IPEndPoint pipAddr;
     private UdpState udpState;
-    private bool isConnected = false;
+
+    private IPEndPoint any;
+
+    private bool discoveryingStream = false;
+    private bool pipConnected = false;
+    private bool camConnected = false;
 
     private TcpClient tcpClient = null;
     private NetworkStream tcpStream = null;
     private UdpClient udpClient = null;
 
     public Texture2D myImage;
-    public Text errorText;
 
     private byte[] pic;
+    private byte[] gyroData;
 
     // Use this for initialization
     private void Awake()
@@ -50,11 +56,22 @@ public class NetworkManager : MonoBehaviour {
             Destroy(this);
         }
 
+        pic = new byte[5];
+        gyroData = new byte[5];
+
         GetIPAddress();
-        pic = new byte[4];
         udpClient = new UdpClient(myPort);
         udpClient.EnableBroadcast = true;
         broadcastAddr = new IPEndPoint(IPAddress.Parse("255.255.255.255"), discoverPort);
+        Debug.Log("Broadcast client on");
+
+        any = new IPEndPoint(IPAddress.Any, myPort);
+        UdpState s = new UdpState();
+        s.e = any;
+        s.u = udpClient;
+
+        Debug.Log("Any: " + any.Address + ":" + any.Port);
+        udpClient.BeginReceive(new AsyncCallback(ReceiveDatagram), s);
     }
 
     private bool GetIPAddress()
@@ -72,18 +89,8 @@ public class NetworkManager : MonoBehaviour {
         return true;
     }
 
-    public void CloseConnection()
-    {
-        if(tcpClient != null)
-        {
-            tcpClient.Close();
-            tcpClient = null;
-        }
-    }
-
     private void FlushStream()
     {
-        errorText.text = "Flushing";
         var buffer = new byte[10000];
         while (tcpStream.DataAvailable)
         {
@@ -119,7 +126,7 @@ public class NetworkManager : MonoBehaviour {
 
         switch (pType[0])
         {
-            case PacketType.IMAGE_CAPTURE:
+            case PacketType.CAM_IMAGE_CAPTURE:
                 Array.Resize(ref pic, size);
                 int bytesRead = 0;
                 if (0 < size && size < 5000000)
@@ -139,12 +146,10 @@ public class NetworkManager : MonoBehaviour {
    
                         bytesRead += numBytes;
                         Debug.Log("Read " + numBytes + " bytes");
-                        errorText.text = numBytes.ToString();
                     }
                     if(bytesRead != size)
                     {
                         Debug.Log("Read too many bytes?");
-                        errorText.text = "Too many";
                     }
                     myImage.LoadImage(pic);
                 }
@@ -156,45 +161,167 @@ public class NetworkManager : MonoBehaviour {
         }      
     }
 
-    public void ReceiveCallback(IAsyncResult ar)
+    public void StartPIPDataStream()
+    {
+        if (pipConnected)
+        {
+            byte[] msg = NetworkHelper.CreateDatagram(PacketType.PIP_START, null);
+            udpClient.Send(msg, msg.Length, pipAddr);
+            PIPController.instance.pipSending = true;
+        }
+        else
+        {
+            Debug.Log("StartPIP: PIP not connected");
+        }
+
+    }
+
+    public void StopPIPDataStream()
+    {
+        if (pipConnected)
+        {
+            byte[] msg = NetworkHelper.CreateDatagram(PacketType.PIP_STOP, null);
+            udpClient.Send(msg, msg.Length, pipAddr);
+            PIPController.instance.pipSending = false;
+        }
+        else
+        {
+            Debug.Log("StartPIP: PIP not connected");
+        }
+
+    }
+    public void DisconnectPIP()
+    {
+        if (pipConnected)
+        {
+            byte[] msg = NetworkHelper.CreateDatagram(PacketType.PIP_DISCONNECT, null);
+            udpClient.Send(msg, msg.Length, pipAddr);
+            pipAddr = null;
+            pipConnected = false;
+        }
+        else
+        {
+            Debug.Log("StartPIP: PIP not connected");
+        }
+    }
+
+    private void GetPIPGyroData(byte[] recv)
+    {
+        int size = BitConverter.ToInt32(recv, 1);
+        size = IPAddress.NetworkToHostOrder(size);
+
+        Array.Resize(ref gyroData, size);
+        Array.Copy(recv, 5, gyroData, 0, size);
+
+        string data = Encoding.ASCII.GetString(gyroData);
+        string[] gyro = data.Split(':');
+
+        Quaternion receivedQuart = new Quaternion(float.Parse(gyro[0]),
+            float.Parse(gyro[1]),
+            float.Parse(gyro[2]),
+            float.Parse(gyro[3]));
+
+        Debug.Log(receivedQuart.eulerAngles);
+        PIPController.instance.orientation = receivedQuart;
+    }
+
+    public void ReceiveDatagram(IAsyncResult ar)
     {
         UdpClient u = ((UdpState)(ar.AsyncState)).u;
         IPEndPoint e = ((UdpState)(ar.AsyncState)).e;
 
         byte[] recv = u.EndReceive(ar, ref e);
-        Debug.Log(e.Address.ToString() + ":" + e.Port.ToString());
-        Debug.Log(Encoding.ASCII.GetString(recv));
-        Thread.Sleep(1000);
-        tcpClient = new TcpClient(e.Address.ToString(), dataPort);
-        tcpStream = tcpClient.GetStream();
-        Debug.Log("Connected!");
-        isConnected = true;
-    }
 
-    public void BeginDiscovery()
-    {
-        Debug.Log("Discovering..");
-        udpClient.Send(BitConverter.GetBytes(true), 1, broadcastAddr);
+        switch (recv[0])
+        {
+            case PacketType.CAM_DISCOVERY:
+                if (discoveryingStream)
+                {
+                    Debug.Log("Found a streaming client");
+                    Thread.Sleep(1000);
+                    tcpClient = new TcpClient(e.Address.ToString(), dataPort);
+                    tcpStream = tcpClient.GetStream();
+                    Debug.Log("Connected!");
+                    camConnected = true;
+                }
+                else
+                    Debug.Log("Got CAM_DISCOVERY whilst not discovering");
+                break;
+            case PacketType.PIP_DISCOVERY:
+                if (!pipConnected)
+                {
+                    Debug.Log("Pip attempting to connect");
+                    byte[] reply = NetworkHelper.CreateDatagram(PacketType.PIP_DISCOVERY, null);
+                    pipAddr = e;
+                    udpClient.Send(reply, reply.Length, pipAddr);
+                    pipConnected = true;
+                }
+                else
+                {
+                    byte[] reply = NetworkHelper.CreateDatagram(PacketType.PIP_REJECT, null);
+                    udpClient.Send(reply, reply.Length, e);
+                }
+                break;
+            case PacketType.PIP_DISCONNECT:
+                Debug.Log("Pip disconnected");
+                pipAddr = null;
+                pipConnected = false;
+                PIPController.instance.pipSending = false;
+                break;
+            case PacketType.PIP_GYRODATA:
+                GetPIPGyroData(recv);
+                break;
+            default:
+                Debug.Log("Unknown datagram");
+                break;
 
-        IPEndPoint e = new IPEndPoint(IPAddress.Any, myPort);
+        }
+        // Get next UDP Datagram
         UdpState s = new UdpState();
-        s.e = e;
+        s.e = any;
         s.u = udpClient;
-
-        udpClient.BeginReceive(new AsyncCallback(ReceiveCallback), s);
-        errorText.text = "Waiting";
+        udpClient.BeginReceive(new AsyncCallback(ReceiveDatagram), s);
     }
-    
+
+    public void BeginCamDiscovery()
+    {
+        Debug.Log("Discovering stream..");
+        byte[] msg = NetworkHelper.CreateDatagram(PacketType.CAM_DISCOVERY, null);
+        udpClient.Send(msg, msg.Length,broadcastAddr);
+        discoveryingStream = true;
+    }
+
+    public void CloseCamConnection()
+    {
+        if (tcpClient != null)
+        {
+            tcpClient.Close();
+            tcpClient = null;
+            tcpStream = null;
+            camConnected = false;
+        }
+    }
+
     private void Update()
     {
-        if (isConnected)
+        if (camConnected)
         {
             if (tcpStream.DataAvailable)
             {
-                //Debug.Log("Read a packet!");
                 ReadPacket();
             }
         }
     }
-    
+
+    void OnApplicationQuit()
+    {
+        if(tcpClient != null)
+            tcpClient.Close();
+        if (pipConnected)
+        {
+            byte[] msg = NetworkHelper.CreateDatagram(PacketType.PIP_DISCONNECT, null);
+            udpClient.Send(msg, msg.Length, pipAddr);
+        }
+        udpClient.Close();
+    }
 }

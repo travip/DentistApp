@@ -80,7 +80,11 @@ void CaptureScreen(Server* server)
 
 		printf("Bytes: ");
 		std::cout << pEnd.QuadPart << std::endl;
-		server->TCPSend((const char*)hMem, pEnd.QuadPart, PTYPE_IMAGECAPTURE);
+
+		if (server->TCPSend((const char*)hMem, pEnd.QuadPart, PTYPE_IMAGECAPTURE) == 1) {
+			return;
+		}
+
 		Sleep(75);
 	
 		delete image;
@@ -95,10 +99,13 @@ void CaptureScreen(Server* server)
 int main() 
 {
 	Server server;
-	if (server.WaitForConnection() != 0) {
-		printf("Seomthign went wrong\n");
-		exit(EXIT_FAILURE);
+	while (true) {
+		if (server.WaitForConnection() != 0) {
+			printf("Something went wrong\n");
+			break;
+		}
+		CaptureScreen(&server);
+		server.CreateTCPSocket();
 	}
-	CaptureScreen(&server);
 	return 0;
 }

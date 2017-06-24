@@ -21,6 +21,7 @@ public:
 	int UDPSend(const char *msg, long size);
 	int TCPSend(const char* msg, long size, char packetType);
 	int WaitForConnection();
+	int CreateTCPSocket();
 	int EstablishTCPConnection();
 	int EndConnection();
 	static int CALLBACK CheckValidConnection(LPWSABUF lpCallerId,
@@ -39,7 +40,6 @@ private:
 	WSADATA wsaData;
 	bool connected;
 
-	int CreateTCPSocket();
 	int CreateUDPSocket();
 };
 

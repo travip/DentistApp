@@ -2,28 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using EasyWiFi.Core;
-using EasyWiFi.ServerControls;
 
-public class PIPController : TransitionableObject, IServerController
+public class PIPController : TransitionableObject
 {
-    public PIPController instance { get; private set; }
+    public static PIPController instance { get; private set; }
 
     public Transform PIPPointer;
 
-    public string control = "Gyro";
-    public EasyWiFiConstants.PLAYER_NUMBER player = EasyWiFiConstants.PLAYER_NUMBER.Player1;
-
-    //runtime variables
-    GyroControllerType[] gyro = new GyroControllerType[EasyWiFiConstants.MAX_CONTROLLERS];
-    int currentNumberControllers = 0;
-
     //values and variables
-    Quaternion orientation;
+    public Quaternion orientation;
     Quaternion zeroOrientation;
     Quaternion finalOrientation;
 
     public Transform spiritLevel;
+    public bool pipSending;
 
     public float x = 0;
     public float y = 0;
@@ -39,6 +31,7 @@ public class PIPController : TransitionableObject, IServerController
     public float minTolerance = 1;
 
     public CanvasGroup pipCanvas;
+    public Image pipAlert;
     public RectTransform CrossNorth;
     public RectTransform CrossSouth;
     public RectTransform CrossWest;
@@ -57,40 +50,19 @@ public class PIPController : TransitionableObject, IServerController
 
     void OnEnable()
     {
-        Input.gyro.enabled = true;
+        orientation = Quaternion.identity;
         CrossNorth.localPosition = new Vector3(0, (110 + tolerance * scaleCrossHair), 0);
         CrossSouth.localPosition = new Vector3(0, (-110 - tolerance * scaleCrossHair), 0);
         CrossWest.localPosition = new Vector3((-110 - tolerance * scaleCrossHair), 0, 0);
         CrossEast.localPosition = new Vector3((110 + tolerance * scaleCrossHair), 0, 0);
-
         sensitivity.text = tolerance.ToString();
-
-        EasyWiFiController.On_ConnectionsChanged += checkForNewConnections;
-
-        //do one check at the beginning just in case we're being spawned after startup and after the callbacks
-        //have already been called
-        if (gyro[0] == null && EasyWiFiController.lastConnectedPlayerNumber >= 0)
-        {
-            EasyWiFiUtilities.checkForClient(control, (int)player, ref gyro, ref currentNumberControllers);
-        }
-    }
-
-    void OnDestroy()
-    {
-        EasyWiFiController.On_ConnectionsChanged -= checkForNewConnections;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //iterate over the current number of connected controllers
-        for (int i = 0; i < currentNumberControllers; i++)
-        {
-            if (gyro[i] != null && gyro[i].serverKey != null && gyro[i].logicalPlayerNumber != EasyWiFiConstants.PLAYERNUMBER_DISCONNECTED)
-            {
-                mapDataStructureToAction(i);
-            }
-        }
+        if(pipSending)
+            CalculateOrienatation();
     }
 
     public void IncreaseTolerance()
@@ -122,14 +94,8 @@ public class PIPController : TransitionableObject, IServerController
     }
 
     //wifi stuff
-    public void mapDataStructureToAction(int index)
+    public void CalculateOrienatation()
     {
-        w = gyro[index].GYRO_W;
-        x = gyro[index].GYRO_X;
-        y = gyro[index].GYRO_Y;
-        z = gyro[index].GYRO_Z;
-
-        orientation = new Quaternion(x, y, z, w);
         finalOrientation = Quaternion.Inverse(zeroOrientation) * orientation;
         spiritLevel.rotation = finalOrientation;
 
@@ -141,23 +107,18 @@ public class PIPController : TransitionableObject, IServerController
 
         if (angle_x > tolerance && angle_x < (360 - tolerance))
         {
-            Camera.main.backgroundColor = Color.red;
+            pipAlert.color = Color.red;
         }
         else if (angle_y > tolerance && angle_y < (360 - tolerance))
         {
-            Camera.main.backgroundColor = Color.red;
+            pipAlert.color = Color.red;
         }
         else if (angle_z > tolerance && angle_z < (360 - tolerance))
         {
-            Camera.main.backgroundColor = Color.red;
+            pipAlert.color = Color.red;
         }
         else
-            Camera.main.backgroundColor = Color.black;
-    }
-
-    public void checkForNewConnections(bool isConnect, int playerNumber)
-    {
-        EasyWiFiUtilities.checkForClient(control, (int)player, ref gyro, ref currentNumberControllers);
+            pipAlert.color = Color.black;
     }
 
 
@@ -176,12 +137,23 @@ public class PIPController : TransitionableObject, IServerController
         pipCanvas.alpha -= 0.1f;
     }
 
+    public void ZeroOrientation()
+    {
+        if (!pipSending)
+        {
+            NetworkManager.instance.StartPIPDataStream();
+        }
+        zeroOrientation = orientation;
+    }
+
     override protected IEnumerator TransitionIn()
     {
         OverlayTransitioner.instance.TransitionIn(ScreenType.PIPDisplay);
         InputManager.instance.DisableReticle();
         InputManager.instance.ToggleViewMode();
         InputManager.instance.goDown.AddListener(StartTransitionOut);
+        InputManager.instance.goLeft.AddListener(ZeroOrientation);
+        InputManager.instance.goRight.AddListener(ZeroOrientation);
         yield return StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime));
     }
 
@@ -189,9 +161,14 @@ public class PIPController : TransitionableObject, IServerController
     {
         OverlayTransitioner.instance.TransitionOut();
         InputManager.instance.goDown.RemoveListener(StartTransitionOut);
+        InputManager.instance.goLeft.RemoveListener(ZeroOrientation);
+        InputManager.instance.goRight.RemoveListener(ZeroOrientation);
+
+        NetworkManager.instance.StopPIPDataStream();
 
         yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime));
 
+        pipAlert.color = Color.black;
         InputManager.instance.ToggleViewMode();
         InputManager.instance.EnableReticle();
         gameObject.SetActive(false);

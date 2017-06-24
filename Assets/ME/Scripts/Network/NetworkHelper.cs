@@ -45,6 +45,25 @@ public static class NetworkHelper
 
         return BitConverter.ToSingle(bytes, 0);
     }
+
+    public static byte[] CreateDatagram(byte pType, byte[] message)
+    {
+        int size;
+        if (message == null)
+            size = 0;
+        else
+            size = message.Length;
+
+        byte[] packet = new byte[size + 5];
+        size = IPAddress.HostToNetworkOrder(size);
+
+        packet[0] = pType;
+        BitConverter.GetBytes(size).CopyTo(packet, 1);
+        if(message != null)
+            message.CopyTo(packet, 5);
+
+        return packet;
+    }
 }
 
 public class NetworkException : Exception
@@ -67,7 +86,15 @@ public class NetworkException : Exception
 
 public static class PacketType
 {
-    public const byte DISCOVERY = 0x01;
-    public const byte DISCONNECT = 0x02;
-    public const byte IMAGE_CAPTURE = 0x05;
+    public const byte CAM_DISCOVERY = 0x01;
+    public const byte CAM_DISCONNECT = 0x02;
+    public const byte CAM_IMAGE_CAPTURE = 0x05;
+
+    public const byte PIP_DISCOVERY = 0x11;
+    public const byte PIP_DISCONNECT = 0x12;
+    public const byte PIP_START = 0x13;
+    public const byte PIP_STOP = 0x14;
+    public const byte PIP_GYRODATA = 0x15;
+    public const byte PIP_REJECT = 0x16;
+
 }
