@@ -63,13 +63,6 @@ namespace CylinderMenu
 				(secs < 10 ? "0" + secs.ToString() : secs.ToString());
 		}
 
-		public void AddTime (float t)
-		{
-			totalTime += t;
-			currentTime += t;
-			UpdateText();
-		}
-
 		public void StartTimer ()
 		{
 			timerText.gameObject.SetActive(true);
@@ -91,16 +84,6 @@ namespace CylinderMenu
 			timerText.gameObject.SetActive(false);
 			timing = false;
 			currentTime = totalTime;
-		}
-
-		public void ShowTimerScreen()
-		{
-			timerText.gameObject.SetActive(true);
-		}
-
-		public void ExitTimerScreen()
-		{
-			timerText.gameObject.SetActive(false);
 		}
 	}
 }
