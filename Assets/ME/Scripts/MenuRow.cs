@@ -56,7 +56,7 @@ namespace CylinderMenu
 		    itemScale = _itemScale;
 		    gapBetweenItems = _gapBetweenItems;
 
-		    transform.Find("mesh").localScale = new Vector3(radius+1f, radius+1f, 3f);
+		    //transform.Find("mesh").localScale = new Vector3(radius+1f, radius+1f, 3f);
 
 		    gameObject.SetActive(false);
 
@@ -96,25 +96,6 @@ namespace CylinderMenu
 		    }
 	    }
 
-	    public void RecalculateRow(float _radius, int _rows, int _columns, Vector3 _itemScale, float _gapBetweenItems)
-        {
-		    radius = _radius;
-		    maxRows = _rows;
-		    maxColumns = _columns;
-		    itemScale = _itemScale;
-		    gapBetweenItems = _gapBetweenItems;
-
-		    transform.Find("mesh").localScale = new Vector3(radius + 1f, radius + 1f, 3f);
-
-		    PositionMenuItems();
-
-		    if (belowRow != null)
-            {
-			    Destroy(navButtons.gameObject);
-			    CreateMainButtons();
-		    }
-	    }
-
 	    public void PositionMenuItems()
         {
 		    // Need to track index for proper positioning
@@ -151,9 +132,9 @@ namespace CylinderMenu
 		    }
 
 		    int col = 0, row = 0;
-		    for (int i = 0; i < menuItems.Count; i++)
+			for (int i = 0; i < menuItems.Count; i++)
             {
-			    // Some of this might be able to be done in MenuItem or set beforehand
+				// Some of this might be able to be done in MenuItem or set beforehand
 			    menuItems[i].AddToMenuRow(transform, radius, Quaternion.Euler(new Vector3(startRotX + picRotDiffX * row, startRotY + picRotDiffY * col, 0f)), itemScale);
 			    row++;
 				
@@ -176,6 +157,7 @@ namespace CylinderMenu
         {
 		    // Create back button and navigation buttons (left/right)
 		    navButtons = new GameObject().transform;
+			navButtons.name = "Navigation buttons";
 		    navButtons.parent = MenuManager.instance.transform;
 		    navButtons.transform.position = new Vector3(0f, transform.position.y - 2.5f, radius);
 
@@ -347,7 +329,10 @@ namespace CylinderMenu
 				m.StartTransitionOut();
 
 			yield return StartCoroutine(Fade(1f, 0f, 1f, transitionScale, Constants.Transitions.FadeTime));
-			// Nothing after
+			// after transition
+
+			if (belowRow != null) 
+				TerminateMenu(MenuManager.instance.spentMenuContainer);
 		}
 
 		private IEnumerator Fade (float startAlpha, float endAlpha, float startScale, float endScale, float totalTime)

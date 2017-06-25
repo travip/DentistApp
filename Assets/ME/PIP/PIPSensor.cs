@@ -152,7 +152,7 @@ public class PIPSensor : MonoBehaviour {
         {
             currentMsg = "Discovering headset..";
             byte[] msg = NetworkHelper.CreateDatagram(PacketType.PIP_DISCOVERY, null);
-            udpClient.Send(msg, msg.Length, broadcastAddr);
+            udpClient.Send(msg, msg.Length, any);
         }
     }
 

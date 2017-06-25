@@ -11,8 +11,6 @@ public class MouseInput : InputManager {
     private Vector3 mouseDiff = Vector3.zero;
     //private Vector3 mouseLast = Vector3.zero;
 
-    public float scrollSpeed = 1f;
-
 	private float yaw = 0f;
 	private float pitch = 0f;
 
@@ -84,7 +82,6 @@ public class MouseInput : InputManager {
 	public override void ToggleViewMode () {
 		mouseRotation = !mouseRotation;
 		cam.transform.rotation = Quaternion.identity;
-		Debug.Log("Viewmode Toggled");
 	}
 
 	public override Vector2 Get2DMovement()

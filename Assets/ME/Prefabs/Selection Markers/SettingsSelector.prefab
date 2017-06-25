@@ -99,11 +99,11 @@ GameObject:
   m_Component:
   - component: {fileID: 4637130920016576}
   - component: {fileID: 135348556172088816}
-  - component: {fileID: 114443908859086772}
-  - component: {fileID: 114017318673021844}
+  - component: {fileID: 114579167188752500}
+  - component: {fileID: 114531975767351228}
   - component: {fileID: 114381815952942346}
   m_Layer: 0
-  m_Name: SelectionMarker
+  m_Name: SettingsSelector
   m_TagString: Selector
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -192,18 +192,6 @@ Transform:
   m_Father: {fileID: 4181452357645010}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114017318673021844
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1655467071807828}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e39bff5c2e3fb5d40b1e57d1e29f67c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentItem: {fileID: 0}
 --- !u!114 &114381815952942346
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -225,7 +213,19 @@ MonoBehaviour:
   rotateFastMiddle: -600
   rotateFastOutside: 300
   selecting: 0
---- !u!114 &114443908859086772
+--- !u!114 &114531975767351228
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1655467071807828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0939523008c95149b93534b121c5e30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  valueChange: 0
+--- !u!114 &114579167188752500
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -237,7 +237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectOnce: 1
-  totalTime: 0.6
+  totalTime: 0.2
   scalingImage: {fileID: 4925313376366968}
   minScale: 0
   maxScale: 9
@@ -369,7 +369,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  m_Color: {r: 0.4039216, g: 0.90196085, b: 0.86666673, a: 0.641}
+  m_Color: {r: 0.4039216, g: 0.90196085, b: 0.86666673, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

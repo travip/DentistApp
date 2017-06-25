@@ -2,13 +2,13 @@
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(CylinderMenu.MenuItem))]
+[CustomEditor(typeof(CylinderMenu.TransitionItem))]
 public class SelectActionConditional : Editor
 {
-	CylinderMenu.MenuItem script;
+	CylinderMenu.TransitionItem script;
 
 	void OnEnable () {
-		script = (CylinderMenu.MenuItem)target;
+		script = (CylinderMenu.TransitionItem)target;
 	}
 
 	public override void OnInspectorGUI () {

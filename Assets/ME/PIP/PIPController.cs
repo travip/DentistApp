@@ -178,7 +178,6 @@ public class PIPController : TransitionableObject
 
         while (t < totalTime)
         {
-            Debug.Log("ALPHAL: " + alpha);
             t += Time.deltaTime;
             alpha = Mathf.Lerp(startAlpha, endAlpha, t / totalTime);
             mat1.SetFloat("_Alpha", alpha);

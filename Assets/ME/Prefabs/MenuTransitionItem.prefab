@@ -19,10 +19,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4904686432969730}
-  - component: {fileID: 114733397055437614}
+  - component: {fileID: 114870236191980876}
   - component: {fileID: 65378185871742052}
   m_Layer: 0
-  m_Name: MenuItem
+  m_Name: MenuTransitionItem
   m_TagString: MenuItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -53,7 +53,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 0.1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114733397055437614
+--- !u!114 &114870236191980876
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -61,16 +61,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1857470517894238}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2df7d1b006b36543836b9e32cb413fa, type: 3}
+  m_Script: {fileID: 11500000, guid: e403f62b680c79e40b4e791be853ffd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overlay: {fileID: 0}
   PicPrefab: {fileID: 1203379546126720, guid: cc79b914e69ff3b4688107c792c1d16c, type: 2}
-  SelectorPrefab: {fileID: 1655467071807828, guid: aec8cb979b403ad4485f380693c3cbb2,
-    type: 2}
-  subMenuItems: []
   hoverForward: 0.4
   hoverTime: 0.1
-  itemName: 22
-  menuPic: {fileID: 2800000, guid: 55efbfc3eb653d547afeaf4c836e19eb, type: 3}
+  itemName: 
+  menuPic: {fileID: 0}
   selectAction: 0
   FullSizedPic: {fileID: 0}
+  subMenuItems: []
+  SelectorPrefab: {fileID: 1655467071807828, guid: aec8cb979b403ad4485f380693c3cbb2,
+    type: 2}

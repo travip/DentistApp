@@ -12,7 +12,21 @@ public class RayCaster {
 
 	private List<RayCasterHit> currentHits;
 
-	public RayCaster() {
+	private static RayCaster _instance;
+	public static RayCaster instance
+	{
+		get
+		{
+			if (_instance == null) {
+				_instance = new RayCaster();
+			}
+			return _instance;
+		}
+	}
+
+
+	private RayCaster()
+	{
 		currentHits = new List<RayCasterHit>();
 	}
 
@@ -69,15 +83,18 @@ public class RayCaster {
 	}
 
 	private void OnEnter(GameObject o) {
-		OnRayEnter(o);
+		if (OnRayEnter != null)
+			OnRayEnter(o);
 	}
 
 	private void OnStay (GameObject o) {
-		OnRayStay(o);
+		if (OnRayStay != null)
+			OnRayStay(o);
 	}
 
 	private void OnExit (GameObject o) {
-		OnRayExit(o);
+		if (OnRayExit != null)
+			OnRayExit(o);
 	}
 }
 

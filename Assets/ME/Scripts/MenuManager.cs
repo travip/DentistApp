@@ -11,7 +11,8 @@ namespace CylinderMenu
 
 	    public enum SelectAction
         {
-		    subMenu,
+			none,
+			subMenu,
 		    imageView,
 		    webcam,
 		    PIP
@@ -24,6 +25,7 @@ namespace CylinderMenu
 		public PIPController pipController;
 	    public WebcamViewer webcamViewer;
 	    public NetworkManager server;
+		public Settings settings;
 
 	    private Camera cam;
 		
@@ -45,7 +47,6 @@ namespace CylinderMenu
 	    public int maxRows = 1;
 	    public int maxColumns = 50;
 	    public Vector3 mainMenuItemScale;
-	    public Vector3 itemScale;
 	    public float gapBetweenItems = 0.5f;
 
 	    private void Awake()
@@ -80,7 +81,7 @@ namespace CylinderMenu
 
 		    currentRow.StartTransitionIn();
 
-		    raycaster = new RayCaster();
+			raycaster = RayCaster.instance;
 		    raycaster.OnRayEnter += RayEnterHandler;
 		    raycaster.OnRayStay += RayStayHandler;
 		    raycaster.OnRayExit += RayExitHandler;
@@ -112,8 +113,8 @@ namespace CylinderMenu
         {
 		    switch (hit.transform.tag) {
 			    case "Selector":
-				    LookAtSelector(hit.transform.gameObject.GetComponent<MenuSelector>());
-				    break;
+					hit.transform.gameObject.GetComponent<Selector>().LookAt();
+					break;
 			    case "MenuItem":
 				    hit.transform.gameObject.GetComponent<MenuItem>().LookAt();
 				    break;
@@ -126,12 +127,12 @@ namespace CylinderMenu
         {
 		    switch (hit.transform.tag) {
 			    case "Selector":
-				    LookAtSelector(hit.transform.gameObject.GetComponent<MenuSelector>());
+					hit.transform.gameObject.GetComponent<Selector>().LookAt();
 				    break;
 			    case "MenuItem":
 				    //hit.transform.gameObject.GetComponent<MenuItem>().LookAt();
-				    break;
-			    default:
+					break;
+				default:
 				    break;
 		    }
 	    }
@@ -149,31 +150,8 @@ namespace CylinderMenu
 				    break;
 		    }
 	    }
-		
-	    private void LookAtSelector(MenuSelector menuHit)
-	    {		
-		    // If hitting a menu selector, check with the selector if it's pressed yet
-		    if (menuHit.LookAt()) {
-			    switch (menuHit.selectionType) {
-				    case MenuSelector.SelectionType.select:
-					    SelectMenuItem(menuHit.parentMenuItem);
-					    break;
-				    case MenuSelector.SelectionType.back:
-					    ToPreviousRow();
-					    break;
-				    case MenuSelector.SelectionType.nextPage:
-					    MoveMenuRight();
-					    break;
-				    case MenuSelector.SelectionType.previousPage:
-					    MoveMenuLeft();
-					    break;
-				    default:
-					    break;
-			    }
-		    }
-	    }
 
-	    public void MoveMenuRight()
+		public void MoveMenuRight()
         {
             currentRow.MoveRight();
         }
@@ -183,7 +161,7 @@ namespace CylinderMenu
             currentRow.MoveLeft();
         }
 
-	    public void SelectMenuItem(MenuItem selected)
+	    public void SelectMenuItem(TransitionItem selected)
 	    {
 		    currentRow.selectedItem = selected;
 		    switch (selected.selectAction) {
@@ -264,8 +242,8 @@ namespace CylinderMenu
 		    // Generate new MenuRow and set its list of menu items
 		    currentRow = Instantiate(MenuRowPrefab, transform).GetComponent<MenuRow>();
 		    currentRow.transform.position = new Vector3(prevRow.transform.position.x, prevRow.transform.position.y, prevRow.transform.position.z);
-		    currentRow.InitializeMenu(prevRow, circleRadius, maxRows, maxColumns, itemScale, gapBetweenItems);
-			currentRow.name = "Images";
+		    currentRow.InitializeMenu(prevRow, circleRadius, maxRows, maxColumns, prevRow.selectedItem.rowItemSize, gapBetweenItems);
+			currentRow.name = prevRow.selectedItem.itemName;
 
 			StartCoroutine(FadeBetweenRows(prevRow, currentRow));
 		}
