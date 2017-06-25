@@ -2650,7 +2650,7 @@ MonoBehaviour:
   server: {fileID: 243475636}
   settings: {fileID: 0}
   currentRow: {fileID: 0}
-  turnThresholdMin: 25
+  turnThresholdMin: 35
   turnThresholdMax: 50
   rowGap: 10
   moveTime: 0.5
