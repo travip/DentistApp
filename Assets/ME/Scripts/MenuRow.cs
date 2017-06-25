@@ -330,9 +330,6 @@ namespace CylinderMenu
 
 			yield return StartCoroutine(Fade(1f, 0f, 1f, transitionScale, Constants.Transitions.FadeTime));
 			// after transition
-
-			if (belowRow != null) 
-				TerminateMenu(MenuManager.instance.spentMenuContainer);
 		}
 
 		private IEnumerator Fade (float startAlpha, float endAlpha, float startScale, float endScale, float totalTime)

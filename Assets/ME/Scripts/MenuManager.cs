@@ -221,10 +221,12 @@ namespace CylinderMenu
 			yield return null;
 		}
 
-		private IEnumerator FadeBetweenRows (MenuRow before, MenuRow after)
+		private IEnumerator FadeBetweenRows (MenuRow before, MenuRow after, bool destroyBefore)
 		{
 			before.StartTransitionOut();
 			yield return new WaitForSeconds(Constants.Transitions.FadeTime);
+			if (destroyBefore)
+				before.TerminateMenu(spentMenuContainer);
 			after.StartTransitionIn();
 		}
 
@@ -245,7 +247,7 @@ namespace CylinderMenu
 		    currentRow.InitializeMenu(prevRow, circleRadius, maxRows, maxColumns, prevRow.selectedItem.rowItemSize, gapBetweenItems);
 			currentRow.name = prevRow.selectedItem.itemName;
 
-			StartCoroutine(FadeBetweenRows(prevRow, currentRow));
+			StartCoroutine(FadeBetweenRows(prevRow, currentRow, false));
 		}
 
 	    public void ToPreviousRow()
@@ -259,7 +261,7 @@ namespace CylinderMenu
 		    MenuRow prevRow = currentRow;
             currentRow = currentRow.belowRow;
 
-			StartCoroutine(FadeBetweenRows(prevRow, currentRow));
+			StartCoroutine(FadeBetweenRows(prevRow, currentRow, true));
 		}
 
         private IEnumerator SmoothMovement(Vector3 end)
