@@ -89,9 +89,16 @@ namespace CylinderMenu
 				    rot += 360f;
 
 			    if (rot <= leftestRotation)
+				{
 				    transform.rotation = Quaternion.Euler(transform.rotation.x, leftestRotation, transform.rotation.z);
-                else if (rot >= rightestRotation)
-				    transform.rotation = Quaternion.Euler(transform.rotation.x, rightestRotation, transform.rotation.z);
+					turnRate = 0f;
+				}
+				else if (rot >= rightestRotation)
+				{
+					transform.rotation = Quaternion.Euler(transform.rotation.x, rightestRotation, transform.rotation.z);
+					turnRate = 0f;
+				}
+				    
 
 			    turning = false;
 		    }
