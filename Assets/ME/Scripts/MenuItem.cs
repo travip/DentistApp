@@ -5,15 +5,14 @@ using UnityEngine;
 
 namespace CylinderMenu
 {
-    public class MenuItem : TransitionableObject {
-
+    public class MenuItem : TransitionableObject
+	{
 	    // Object Links
 	    public GameObject PicPrefab;
 	    public GameObject SelectorPrefab;
-	    // Get an explicit reference to the submenu transform so we can use it in dynamic menu creation
 	    [HideInInspector]
-	    public List<MenuItem> subMenuItems;
-	    private Collider col;
+	    public List<MenuItem> subMenuItems; // Explicit reference to the submenu transform so we can use it in dynamic menu creation
+		private Collider col;
 
 	    [Space(10)]
 
@@ -111,7 +110,7 @@ namespace CylinderMenu
 
 		// Transitions
 
-		override protected IEnumerator TransitionOut ()
+		override protected IEnumerator TransitionOut (TransitionableObject inAfter)
 		{
 			col.enabled = false;
 			yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime));

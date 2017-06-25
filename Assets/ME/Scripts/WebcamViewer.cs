@@ -10,26 +10,30 @@ namespace CylinderMenu {
 
 		public CanvasGroup canvasGroup;
 
+		public void Back () {
+			StartTransitionOut(CylinderMenu.MenuManager.instance);
+		}
+
 		override protected IEnumerator TransitionIn ()
 		{
-			OverlayTransitioner.instance.TransitionIn(ScreenType.CameraDisplay);
 			InputManager.instance.ToggleViewMode();
 
 			yield return Fade(0f, 1f, Constants.Transitions.FadeTime);
 
-			InputManager.instance.goDown.AddListener(StartTransitionOut);
+			InputManager.instance.goDown.AddListener(Back);
 		}
 
-		override protected IEnumerator TransitionOut ()
+		override protected IEnumerator TransitionOut (TransitionableObject inAfter)
 		{
-			OverlayTransitioner.instance.TransitionOut();
-			InputManager.instance.goDown.RemoveListener(StartTransitionOut);
+			InputManager.instance.goDown.RemoveListener(Back);
 
 			yield return Fade(1f, 0f, Constants.Transitions.FadeTime);
 
 			InputManager.instance.ToggleViewMode();
 			gameObject.SetActive(false);
-			MenuManager.instance.ExitWebcam();
+
+			if (inAfter)
+				inAfter.StartTransitionIn();
 		}
 
 		private IEnumerator Fade(float from, float to, float totalTime)
