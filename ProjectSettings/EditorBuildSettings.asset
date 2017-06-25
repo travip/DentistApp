@@ -27,10 +27,10 @@ EditorBuildSettings:
     path: Assets/ME/Scenes/main.unity
     guid: 59f933b6d9d954f45955de4528c22dcb
   - enabled: 0
-    path: 
+    path: Assets/PIP/PipScenes/Display.unity
     guid: f248ddf98c9443246901ff828ad1f511
   - enabled: 0
-    path: 
+    path: Assets/PIP/PipScenes/Sensor.unity
     guid: ac07112c77b16e143b898b8290051d73
   - enabled: 0
     path: Assets/ME/PIP/Sensor.unity

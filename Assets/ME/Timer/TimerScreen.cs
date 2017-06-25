@@ -19,102 +19,53 @@ public class TimerScreen : TransitionableObject {
     public float minUpTime = -1;
     public float minDownTime = -1;
 
+	public float baseTimeToProc = 1f;
+	public float minTimeToProc = 0.1f;
+	public float timeToProc = 1f;
+	public float totalTime = 0f;
+	public int consecutiveProcs = 0;
+
     private Coroutine updateTimer;
 
     // Use this for initialization
     void Start () {
-        RayCaster.instance.OnRayEnter += RayEnterHandler;
-        RayCaster.instance.OnRayExit += RayExitHandler;
-        RayCaster.instance.looker = Camera.main.transform;
-        updateTimer = StartCoroutine(SetTimer());
-    }
+        RayCaster.instance.OnRayStay += RayStayHandler;
+		RayCaster.instance.OnRayExit += RayExitHandler;
+		RayCaster.instance.looker = Camera.main.transform;
+		RayCaster.instance.StartRaycasting();
+	}
 
-    private void Increment(float by, ref int val)
-    {
-        if (by > 5)
-            val += 5;
-        else if (by > 1)
-            val += 1;
-    }
+	public void RayStayHandler(GameObject hit)
+	{
+		totalTime += Time.deltaTime;
+		if (totalTime >= timeToProc) {
+			totalTime = 0f;
+			timeToProc = Mathf.Max(timeToProc - 0.1f, minTimeToProc);
 
-    private void Decrement(float by, ref int val)
-    {
-        if (by > 5)
-            val -= 5;
-        else if (by > 1)
-            val -= 1;
-    }
-
-    private IEnumerator SetTimer()
-    {
-        while (true)
-        {
-            Debug.Log("Updating Timers");
-            Increment(sUpTime, ref secs);
-            Decrement(sDownTime, ref secs);
-            Increment(minUpTime, ref mins);
-            Decrement(minDownTime, ref mins);
-            yield return new WaitForSeconds(0.5f);
-        }
-    }
-
-    public void RayEnterHandler(GameObject hit)
-    {
-        switch (hit.name)
-        {
-            case "Seconds Up":
-                sUpTime = 0f;
-                break;
-            case "Seconds Down":
-                sDownTime = 0f;
-                break;
-            case "Minutes Up":
-                minUpTime = 0f;
-                break;
-            case "Minutes Down":
-                minDownTime = 0f;
-                break;
-        }
-    }
+			switch (hit.name) {
+				case "Seconds Up":
+					secs++;
+					break;
+				case "Seconds Down":
+					secs--;
+					break;
+				case "Minutes Up":
+					mins++;
+					break;
+				case "Minutes Down":
+					mins--;
+					break;
+			}
+		}
+	}
 
     public void RayExitHandler(GameObject hit)
     {
-        switch (hit.name)
-        {
-            case "Seconds Up":
-                sUpTime = -1f;
-                break;
-            case "Seconds Down":
-                sDownTime = -1f;
-                break;
-            case "Minutes Up":
-                minUpTime = -1f;
-                break;
-            case "Minutes Down":
-                minDownTime = -1f;
-                break;
-        }
-    }
+		totalTime = 0f;
+		timeToProc = baseTimeToProc;
+	}
 
-    // Update is called once per frame
-    void Update()
-    {
-        RayCaster.instance.CastForward();
-        // Second Controls
-        if (sUpTime >= 0)
-            sUpTime += Time.deltaTime;
-        else if (sDownTime >= 0)
-            sDownTime += Time.deltaTime;
-        else if (minUpTime >= 0)
-            minUpTime += Time.deltaTime;
-        else if (minDownTime >= 0)
-            minDownTime += Time.deltaTime;
-
-        minText.text = mins.ToString();
-        secText.text = secs.ToString();
-    }
-
-    override protected IEnumerator TransitionIn()
+	override protected IEnumerator TransitionIn()
     {
         yield return StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime));
     }

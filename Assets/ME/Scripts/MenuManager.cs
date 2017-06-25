@@ -90,14 +90,12 @@ namespace CylinderMenu
 		    raycaster.OnRayStay += RayStayHandler;
 		    raycaster.OnRayExit += RayExitHandler;
 		    raycaster.looker = cam.transform;
+
+			raycaster.StartRaycasting();
 	    }
 
 	    void Update()
 		{
-		    // Cast a ray from the middle of the camera into the scene to test if it hit hits any menu selectors
-		    raycaster.CastForward();
-
-			
 		    float yRot = cam.transform.rotation.eulerAngles.y;
 		    if (yRot > 180f) {
 			    yRot = yRot - 360f;

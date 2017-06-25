@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RayCaster {
+public class RayCaster : MonoBehaviour 
+{
+	public static RayCaster instance { get; private set; }
 
 	public Transform looker;
 
@@ -11,23 +14,48 @@ public class RayCaster {
 	public event Action<GameObject> OnRayExit;
 
 	private List<RayCasterHit> currentHits;
+	private IEnumerator raycastUpdate;
+	private bool casting = false;
 
-	private static RayCaster _instance;
-	public static RayCaster instance
+	private void Awake()
 	{
-		get
+		if (instance == null || instance == this)
 		{
-			if (_instance == null) {
-				_instance = new RayCaster();
-			}
-			return _instance;
+			instance = this;
+			Initialise();
 		}
+		else
+			Destroy(this);
 	}
 
 
-	private RayCaster()
+	private void Initialise()
 	{
 		currentHits = new List<RayCasterHit>();
+		raycastUpdate = Casting();
+	}
+
+	public void StopRaycasting() {
+		if (casting == false)
+			return;
+
+		casting = false;
+		StopCoroutine(raycastUpdate);
+	}
+
+	public void StartRaycasting() {
+		if (casting == true)
+			return;
+
+		casting = true;
+		StartCoroutine(raycastUpdate);
+	}
+
+	private IEnumerator Casting() {
+		while (casting) {
+			CastForward();
+			yield return null;
+		}
 	}
 
 	public void CastForward() {
