@@ -20,7 +20,7 @@ namespace CylinderMenu
 		public string itemName;
 		public Texture menuPic;
 
-		private Transform pic;
+		protected Transform pic;
 
 		// Runtime variables
 		private float zDistance;

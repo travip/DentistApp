@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CylinderMenu
 {
@@ -8,6 +9,8 @@ namespace CylinderMenu
 	{
 		public GameObject SelectorPrefab;
 
+		private Transform valueText;
+		 
 		public string label;
 		public Settings.Setting setting;
 
@@ -21,6 +24,8 @@ namespace CylinderMenu
 
 			selectorUp = Instantiate(SelectorPrefab, selectors).GetComponent<SettingsSelection>();
 			selectorDown = Instantiate(SelectorPrefab, selectors).GetComponent<SettingsSelection>();
+			valueText = transform.Find("TextValue");
+			valueText.parent = pic;
 			selectorUp.valueChange = 1f;
 			selectorDown.valueChange = -1f;
 		}
@@ -31,12 +36,8 @@ namespace CylinderMenu
 			// slight magic number for the y position of the selector
 			selectorUp.transform.localPosition = new Vector3(0f, scale.y * 0.3f, 0f);
 			selectorDown.transform.localPosition = new Vector3(0f, scale.y * -0.3f, 0f);
-		}
 
-		public void ChangeValue (float newValue)
-		{
-			currentValue = newValue;
-			Debug.Log(currentValue);
+			valueText.transform.localPosition = new Vector3(0f, scale.y * -0.025f, -0.1f);
 		}
 	}
 }

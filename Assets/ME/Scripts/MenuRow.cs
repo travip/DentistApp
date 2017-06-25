@@ -16,9 +16,9 @@ namespace CylinderMenu
 	    [Header("Navigation")]
 	    public float turnTick = 10f;
 	    public float rotateTime = 0.1f;
-	    public float turnAccel;
-	    public float turnRateMax;
-	    public float turnFriction;
+	    public static float turnAccel = 0.5f;
+	    public static float turnRateMax = 0.3f;
+	    public static float turnFriction = 0.96f;
 
 	    [Header("Transitions")]
 	    public float transitionScale;

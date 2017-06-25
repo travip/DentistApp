@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 316dcebff36d0ae47b628809829344c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveThreshold: {x: 5, y: 5}
+  moveThreshold: {x: 5, y: 3}
   scrollSpeed: 1
   reticle: {fileID: 716822385}
   goRight:
@@ -1031,6 +1031,11 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!102 &341932907 stripped
+TextMesh:
+  m_PrefabParentObject: {fileID: 102556761413643674, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
+    type: 2}
+  m_PrefabInternal: {fileID: 2061861716}
 --- !u!1 &342870990
 GameObject:
   m_ObjectHideFlags: 0
@@ -1904,6 +1909,11 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 716822385}
+--- !u!102 &769093624 stripped
+TextMesh:
+  m_PrefabParentObject: {fileID: 102556761413643674, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
+    type: 2}
+  m_PrefabInternal: {fileID: 2066281339}
 --- !u!1 &821332791
 GameObject:
   m_ObjectHideFlags: 0
@@ -2057,6 +2067,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58, type: 2}
   m_IsPrefabParent: 0
+--- !u!102 &846396177 stripped
+TextMesh:
+  m_PrefabParentObject: {fileID: 102556761413643674, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
+    type: 2}
+  m_PrefabInternal: {fileID: 1468968079}
 --- !u!1001 &883368761
 Prefab:
   m_ObjectHideFlags: 0
@@ -2656,6 +2671,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2381b2018a627a741b2bcd4a7bdde40b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  senseX:
+    text: {fileID: 846396177}
+    min: 0.2
+    max: 10
+    tick: 0.2
+  senseY:
+    text: {fileID: 769093624}
+    min: 0.2
+    max: 10
+    tick: 0.2
+  look:
+    text: {fileID: 2057392782}
+    min: 0.1
+    max: 2
+    tick: 0.1
+  scroll:
+    text: {fileID: 1681734261}
+    min: 0.1
+    max: 1
+    tick: 0.1
+  deadzone:
+    text: {fileID: 341932907}
+    min: 0
+    max: 50
+    tick: 2
 --- !u!1001 &1307158599
 Prefab:
   m_ObjectHideFlags: 0
@@ -2697,13 +2737,18 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1857470517894238, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
       propertyPath: m_Name
-      value: MenuSettingsItem (3)
+      value: Row Scroll Speed
       objectReference: {fileID: 0}
     - target: {fileID: 114209796583056542, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
         type: 2}
       propertyPath: setting
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114209796583056542, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
+        type: 2}
+      propertyPath: menuPic
+      value: 
+      objectReference: {fileID: 2800000, guid: 4e0160e881c061844b4be6311ae82927, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
   m_IsPrefabParent: 0
@@ -2893,6 +2938,15 @@ Prefab:
     - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
       propertyPath: m_RootOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114209796583056542, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
+        type: 2}
+      propertyPath: menuPic
+      value: 
+      objectReference: {fileID: 2800000, guid: 263ca4fdf7e5b384cb3676b59057ad8a, type: 3}
+    - target: {fileID: 1857470517894238, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_Name
+      value: Gesture X
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
@@ -3180,6 +3234,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1253b128cad6c1d4bb9a9c71cc2041bb, type: 2}
   m_IsPrefabParent: 0
+--- !u!102 &1681734261 stripped
+TextMesh:
+  m_PrefabParentObject: {fileID: 102556761413643674, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
+    type: 2}
+  m_PrefabInternal: {fileID: 1307158599}
 --- !u!1 &1777985624
 GameObject:
   m_ObjectHideFlags: 0
@@ -3519,6 +3578,67 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 522125934}
   m_Script: {fileID: 11500000, guid: 22f5472af8e15bc4db4910d68af1b287, type: 3}
+--- !u!102 &2057392782 stripped
+TextMesh:
+  m_PrefabParentObject: {fileID: 102556761413643674, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
+    type: 2}
+  m_PrefabInternal: {fileID: 2124750148}
+--- !u!1001 &2061861716
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 522103492}
+    m_Modifications:
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1857470517894238, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_Name
+      value: Deadzone Size
+      objectReference: {fileID: 0}
+    - target: {fileID: 114209796583056542, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
+        type: 2}
+      propertyPath: setting
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114209796583056542, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
+        type: 2}
+      propertyPath: menuPic
+      value: 
+      objectReference: {fileID: 2800000, guid: 76d82e7e75645cb4d88173c6a44c8ef6, type: 3}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1001 &2066281339
 Prefab:
   m_ObjectHideFlags: 0
@@ -3560,13 +3680,18 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1857470517894238, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
       propertyPath: m_Name
-      value: MenuSettingsItem (1)
+      value: Gesture Y
       objectReference: {fileID: 0}
     - target: {fileID: 114209796583056542, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
         type: 2}
       propertyPath: setting
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114209796583056542, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
+        type: 2}
+      propertyPath: menuPic
+      value: 
+      objectReference: {fileID: 2800000, guid: 9ee16b619fdcd1e4786a202a2ba5bf0b, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
   m_IsPrefabParent: 0
@@ -3611,13 +3736,18 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1857470517894238, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
       propertyPath: m_Name
-      value: MenuSettingsItem (2)
+      value: Movement Sens
       objectReference: {fileID: 0}
     - target: {fileID: 114209796583056542, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
         type: 2}
       propertyPath: setting
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114209796583056542, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
+        type: 2}
+      propertyPath: menuPic
+      value: 
+      objectReference: {fileID: 2800000, guid: 6f42b7310f945e045a14fe63b4dc1fc5, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
   m_IsPrefabParent: 0
