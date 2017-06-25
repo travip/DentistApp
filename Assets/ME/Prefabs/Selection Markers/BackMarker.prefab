@@ -82,7 +82,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4637130920016576}
-  - component: {fileID: 135348556172088816}
+  - component: {fileID: 65927793512261718}
   - component: {fileID: 114119799145105512}
   - component: {fileID: 114920896685890586}
   m_Layer: 0
@@ -113,7 +113,7 @@ Transform:
   m_GameObject: {fileID: 1471462254390062}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 4.847454, y: 1, z: 1}
   m_Children:
   - {fileID: 4925313376366968}
   - {fileID: 4839155954008776}
@@ -161,6 +161,18 @@ Transform:
   m_Father: {fileID: 4624809177817940}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
+--- !u!65 &65927793512261718
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1655467071807828}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 6, y: 1, z: 0.1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114119799145105512
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -191,18 +203,6 @@ MonoBehaviour:
   reduceTimeMultiplier: 1
   selectedZ: 0
   selectMoveSpeed: 0
---- !u!135 &135348556172088816
-SphereCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1655467071807828}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.62
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!212 &212001783099893832
 SpriteRenderer:
   m_ObjectHideFlags: 1
