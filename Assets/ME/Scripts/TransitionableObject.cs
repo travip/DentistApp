@@ -22,7 +22,17 @@ public class TransitionableObject : MonoBehaviour
 		if (overlay != null)
 			StartCoroutine(FadeOverlay(1f, 0f, Constants.Transitions.FadeTime));
 
-		StartCoroutine(TransitionOut(inAfter));
+		StartCoroutine(TransitionOut());
+
+		if (inAfter != null)
+			inAfter.Invoke("StartTransitionIn", Constants.Transitions.FadeTime);
+
+		Invoke("EndTransitionOut", Constants.Transitions.FadeTime + 0.5f);
+	}
+
+	private void EndTransitionOut() {
+		gameObject.SetActive(false);
+		
 	}
 
 	virtual protected IEnumerator TransitionIn()
@@ -30,7 +40,7 @@ public class TransitionableObject : MonoBehaviour
 		yield return null;
 	}
 
-	virtual protected IEnumerator TransitionOut (TransitionableObject inAfter)
+	virtual protected IEnumerator TransitionOut ()
 	{
 		yield return null;
 	}

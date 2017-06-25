@@ -232,14 +232,13 @@ namespace CylinderMenu
 			}
 		}
 
-		protected override IEnumerator TransitionOut (TransitionableObject inAfter) {
+		protected override IEnumerator TransitionOut () {
 			currentRow.StartTransitionOut();
 			yield return new WaitForSeconds(Constants.Transitions.FadeTime);
-			inAfter.StartTransitionIn();
+			// nothing after
 		}
 
 		protected override IEnumerator TransitionIn () {
-			Debug.Log(currentRow.name);
 			currentRow.StartTransitionIn();
 			yield return null;
 		}

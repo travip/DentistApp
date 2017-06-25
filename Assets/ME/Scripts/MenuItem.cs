@@ -110,18 +110,18 @@ namespace CylinderMenu
 
 		// Transitions
 
-		override protected IEnumerator TransitionOut (TransitionableObject inAfter)
+		override protected IEnumerator TransitionOut ()
 		{
 			col.enabled = false;
 			yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime));
-
-			gameObject.SetActive(false);
+			// Nothing after
 		}
 
 		override protected IEnumerator TransitionIn ()
 		{
 			col.enabled = true;
 			yield return StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime));
+			// Nothing after
 		}
 
 		private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime)

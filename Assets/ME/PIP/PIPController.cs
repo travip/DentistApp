@@ -160,7 +160,7 @@ public class PIPController : TransitionableObject
         yield return StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime));
     }
 
-    override protected IEnumerator TransitionOut(TransitionableObject inAfter)
+    override protected IEnumerator TransitionOut()
     {
         InputManager.instance.goDown.RemoveListener(Back);
         InputManager.instance.goLeft.RemoveListener(ZeroOrientation);
@@ -173,10 +173,6 @@ public class PIPController : TransitionableObject
         pipAlert.color = Color.black;
         InputManager.instance.ToggleViewMode();
         InputManager.instance.EnableReticle();
-        gameObject.SetActive(false);
-
-		if (inAfter)
-			inAfter.StartTransitionIn();
 	}
 
     private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime)
