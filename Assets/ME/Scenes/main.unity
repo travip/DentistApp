@@ -1483,6 +1483,10 @@ Prefab:
       propertyPath: overlay
       value: 
       objectReference: {fileID: 1570793186}
+    - target: {fileID: 1730859376048694, guid: bf29dbf74fe30964dbe6e6d6a5702a67, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bf29dbf74fe30964dbe6e6d6a5702a67, type: 2}
   m_IsPrefabParent: 0

@@ -54,7 +54,7 @@ public abstract class InputManager : MonoBehaviour
         Invoke("ToggleViewMode", seconds);
     }
 
-	public void ToggleViewMode ()
+	virtual public void ToggleViewMode ()
 	{
 		reticle.SetActive(!reticle.activeSelf);
 		rotationMode = !rotationMode;

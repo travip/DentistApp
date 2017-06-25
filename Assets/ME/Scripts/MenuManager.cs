@@ -173,13 +173,14 @@ namespace CylinderMenu
 				    ToNewRow();
 				    break;
 			    case MenuManager.SelectAction.imageView:
-					LoadModule(0);
+					imageViewer.LoadImage(currentRow.selectedItem.FullSizedPic);
+					StartTransitionOut(imageViewer);
 				    break;
 			    case MenuManager.SelectAction.webcam:
-					LoadModule(1);
+					StartTransitionOut(webcamViewer);
 					break;
 			    case MenuManager.SelectAction.PIP:
-					LoadModule(2);
+					StartTransitionOut(pipController);
 					break;
 			    default:
 				    break;
@@ -195,24 +196,6 @@ namespace CylinderMenu
         {
 		    return currentRow.PreviousImage().FullSizedPic; ;
 	    }
-
-		public void LoadModule (int type) {
-			switch (type) {
-				case 0:
-					imageViewer.LoadImage(currentRow.selectedItem.FullSizedPic);
-					StartTransitionOut(imageViewer);
-					break;
-				case 1:
-					server.gameObject.SetActive(true);
-					StartTransitionOut(webcamViewer);
-					break;
-				case 2:
-					StartTransitionOut(pipController);
-					break;
-				default:
-					break;
-			}
-		}
 
 		protected override IEnumerator TransitionOut () {
 			currentRow.StartTransitionOut();

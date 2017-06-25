@@ -51,6 +51,13 @@ public class MouseInput : InputManager
 
 	}
 
+	public override void ToggleViewMode ()
+	{
+		base.ToggleViewMode();
+		yaw = 0;
+		pitch = 0;
+	}
+
 	public override Vector2 Get2DMovement()
     {
 		Vector2 mov = rotDiff * scrollSpeed;

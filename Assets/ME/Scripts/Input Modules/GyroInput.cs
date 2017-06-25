@@ -58,7 +58,13 @@ public class GyroInput : InputManager
 			pitch -= rotDiff.x * scrollSpeed;
 			cam.transform.eulerAngles = new Vector3(pitch, yaw, 0f);
 		}
+	}
 
+	public override void ToggleViewMode ()
+	{
+		base.ToggleViewMode();
+		yaw = 0;
+		pitch = 0;
 	}
 
 	public override Vector2 Get2DMovement () 
