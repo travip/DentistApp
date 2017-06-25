@@ -66,7 +66,7 @@ public abstract class InputManager : MonoBehaviour
 		StartCoroutine(PreventMultipleInputRoutine());
 	}
 
-	protected IEnumerator PreventMultipleInputRoutine ()
+	private IEnumerator PreventMultipleInputRoutine ()
 	{
 		canTrigger = false;
 		yield return new WaitForSeconds(0.5f);
