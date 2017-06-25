@@ -50,8 +50,7 @@ public class PIPSensor : MonoBehaviour {
         any = new IPEndPoint(IPAddress.Any, appPort);
         udpClient = new UdpClient(myPort);
         udpClient.EnableBroadcast = true;
-		//broadcastAddr = new IPEndPoint(IPAddress.Parse("255.255.255.255"), 12345);
-		broadcastAddr = new IPEndPoint(IPAddress.Parse("192.168.0.12"), 12345);
+		broadcastAddr = new IPEndPoint(IPAddress.Parse("255.255.255.255"), 12345);
 
 		currentListenAddr = any;
 
