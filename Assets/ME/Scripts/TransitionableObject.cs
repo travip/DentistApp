@@ -12,7 +12,7 @@ public class TransitionableObject : MonoBehaviour
 		gameObject.SetActive(true);
 
 		if (overlay != null)
-			StartCoroutine(FadeOverlay(0f, 1f, Constants.Transitions.FadeTime));
+			StartCoroutine(FadeCanvasGroup(0f, 1f, Constants.Transitions.FadeTime, overlay));
 
 		StartCoroutine(TransitionIn());
 	}
@@ -20,7 +20,7 @@ public class TransitionableObject : MonoBehaviour
 	public void StartTransitionOut (TransitionableObject inAfter = null)
 	{
 		if (overlay != null)
-			StartCoroutine(FadeOverlay(1f, 0f, Constants.Transitions.FadeTime));
+			StartCoroutine(FadeCanvasGroup(1f, 0f, Constants.Transitions.FadeTime, overlay));
 
 		StartCoroutine(TransitionOut());
 
@@ -45,16 +45,16 @@ public class TransitionableObject : MonoBehaviour
 		yield return null;
 	}
 
-	protected IEnumerator FadeOverlay(float startAlpha, float endAlpha, float totalTime) {
+	protected IEnumerator FadeCanvasGroup(float startAlpha, float endAlpha, float totalTime, CanvasGroup group)
+	{
 		float t = 0;
 		float alpha = startAlpha;
 
 		while (t < totalTime) {
 			t += Time.deltaTime;
 			alpha = Mathf.Lerp(startAlpha, endAlpha, t / totalTime);
-			overlay.alpha = alpha;
+			group.alpha = alpha;
 			yield return null;
 		}
 	}
-
 }

@@ -145,7 +145,6 @@ public class PIPController : TransitionableObject
 
     override protected IEnumerator TransitionIn()
     {
-        InputManager.instance.DisableReticle();
         InputManager.instance.ToggleViewMode();
         InputManager.instance.goDown.AddListener(Back);
         InputManager.instance.goLeft.AddListener(ZeroOrientation);
@@ -165,7 +164,6 @@ public class PIPController : TransitionableObject
 
         pipAlert.materials[0].color = Color.black;
         InputManager.instance.ToggleViewMode();
-        InputManager.instance.EnableReticle();
 	}
 
     private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime)

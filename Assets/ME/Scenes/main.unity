@@ -760,7 +760,7 @@ Prefab:
     - target: {fileID: 114870236191980876, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58,
         type: 2}
       propertyPath: itemName
-      value: IMAGES MENU
+      value: IMAGES
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58, type: 2}
@@ -1777,6 +1777,7 @@ GameObject:
   - component: {fileID: 699626781}
   - component: {fileID: 699626783}
   - component: {fileID: 699626782}
+  - component: {fileID: 699626784}
   m_Layer: 5
   m_Name: MenuTitle
   m_TagString: Untagged
@@ -1841,6 +1842,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 699626780}
+--- !u!225 &699626784
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 699626780}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &716822385
 GameObject:
   m_ObjectHideFlags: 0
@@ -2624,6 +2636,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   overlay: {fileID: 1967263486}
+  title: {fileID: 699626784}
   MenuRowPrefab: {fileID: 1537506794370098, guid: 22db83619dd267f438a8f23aebd4d1da,
     type: 2}
   spentMenuContainer: {fileID: 342870991}

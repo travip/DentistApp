@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CylinderMenu
 {
@@ -18,8 +19,9 @@ namespace CylinderMenu
 		    PIP
 	    }
 
-	    // Object links
-	    public GameObject MenuRowPrefab;
+		// Object links
+		public CanvasGroup title;
+		public GameObject MenuRowPrefab;
         public Transform spentMenuContainer;
 	    public ImageViewer imageViewer;
 		public PIPController pipController;
@@ -28,6 +30,7 @@ namespace CylinderMenu
 		public Settings settings;
 
 	    private Camera cam;
+		private Text titleText;
 		
 	    // Runtime variables
 	    private bool canMove = true;
@@ -61,9 +64,10 @@ namespace CylinderMenu
         void Start()
         {
 		    cam = Camera.main;
+			titleText = title.GetComponent<Text>();
 
-		    // Generate starting MenuRow
-		    currentRow = Instantiate(MenuRowPrefab, transform).GetComponent<MenuRow>();
+			// Generate starting MenuRow
+			currentRow = Instantiate(MenuRowPrefab, transform).GetComponent<MenuRow>();
 			
 		    currentRow.maxRows = 1;
 		    currentRow.maxColumns = 5;
@@ -224,9 +228,14 @@ namespace CylinderMenu
 		private IEnumerator FadeBetweenRows (MenuRow before, MenuRow after, bool destroyBefore)
 		{
 			before.StartTransitionOut();
-			yield return new WaitForSeconds(Constants.Transitions.FadeTime);
+
+			yield return StartCoroutine(FadeCanvasGroup(1f, 0f, Constants.Transitions.FadeTime, title));
+			titleText.text = after.name;
+			StartCoroutine(FadeCanvasGroup(0f, 1f, Constants.Transitions.FadeTime, title));
+
 			if (destroyBefore)
 				before.TerminateMenu(spentMenuContainer);
+
 			after.StartTransitionIn();
 		}
 

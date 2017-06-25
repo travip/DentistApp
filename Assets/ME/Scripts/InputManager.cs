@@ -11,6 +11,10 @@ public abstract class InputManager : MonoBehaviour
 	public Vector2 moveThreshold = new Vector2(5f, 5f);
 	public float scrollSpeed = 1f;
 
+	protected bool rotationMode = true;
+	protected bool canTrigger = false;
+	protected Camera cam;
+
 	[SerializeField]
     private GameObject reticle;
 
@@ -25,27 +29,49 @@ public abstract class InputManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null || instance == this)
-            instance = this;
-        else
-            Destroy(this);
+		if (instance == null || instance == this)
+		{
+			instance = this;
+			Initialise();
+		}
+		else
+			Destroy(this);
     }
+
+	private void Initialise()
+	{
+		cam = Camera.main;
+		goLeft.AddListener(PreventMultipleInput);
+		goRight.AddListener(PreventMultipleInput);
+		goUp.AddListener(PreventMultipleInput);
+		goDown.AddListener(PreventMultipleInput);
+
+		PreventMultipleInput();
+	}
 
     public void ToggleViewModeDelayed(float seconds)
     {
         Invoke("ToggleViewMode", seconds);
     }
 
-    public void EnableReticle()
-    {
-        reticle.SetActive(true);
-    }
+	public void ToggleViewMode ()
+	{
+		reticle.SetActive(!reticle.activeSelf);
+		rotationMode = !rotationMode;
+		cam.transform.rotation = Quaternion.identity;
+	}
 
-    public void DisableReticle()
-    {
-        reticle.SetActive(false);
-    }
-	public abstract void ToggleViewMode ();
+	private void PreventMultipleInput()
+	{
+		StartCoroutine(PreventMultipleInputRoutine());
+	}
 
-    public abstract Vector2 Get2DMovement();
+	protected IEnumerator PreventMultipleInputRoutine ()
+	{
+		canTrigger = false;
+		yield return new WaitForSeconds(0.5f);
+		canTrigger = true;
+	}
+
+	public abstract Vector2 Get2DMovement();
 }
