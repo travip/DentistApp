@@ -35,7 +35,6 @@ public class TransitionableObject : MonoBehaviour
 		yield return null;
 	}
 
-
 	protected IEnumerator FadeOverlay(float startAlpha, float endAlpha, float totalTime) {
 		float t = 0;
 		float alpha = startAlpha;

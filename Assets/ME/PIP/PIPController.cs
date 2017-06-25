@@ -30,8 +30,7 @@ public class PIPController : TransitionableObject
     public float maxTolerance = 45;
     public float minTolerance = 1;
 
-    public CanvasGroup pipCanvas;
-    public Image pipAlert;
+    public Renderer pipAlert;
     public RectTransform CrossNorth;
     public RectTransform CrossSouth;
     public RectTransform CrossWest;
@@ -107,20 +106,19 @@ public class PIPController : TransitionableObject
 
         if (angle_x > tolerance && angle_x < (360 - tolerance))
         {
-            pipAlert.color = Color.red;
+            pipAlert.materials[0].SetColor("_Tint", Color.red);
         }
         else if (angle_y > tolerance && angle_y < (360 - tolerance))
         {
-            pipAlert.color = Color.red;
+            pipAlert.materials[0].SetColor("_Tint", Color.red);
         }
         else if (angle_z > tolerance && angle_z < (360 - tolerance))
         {
-            pipAlert.color = Color.red;
+            pipAlert.materials[0].SetColor("_Tint", Color.red);
         }
         else
-            pipAlert.color = Color.black;
+            pipAlert.materials[0].SetColor("_Tint", Color.black);
     }
-
 
     public void RightHanded()
     {
@@ -130,11 +128,6 @@ public class PIPController : TransitionableObject
     public void LeftHanded()
     {
         PIPPointer.localRotation = Quaternion.Euler(0, -180f, 0);
-    }
-
-    public void ChangeAlpha()
-    {
-        pipCanvas.alpha -= 0.1f;
     }
 
     public void ZeroOrientation()
@@ -170,7 +163,7 @@ public class PIPController : TransitionableObject
 
         yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime));
 
-        pipAlert.color = Color.black;
+        pipAlert.materials[0].color = Color.black;
         InputManager.instance.ToggleViewMode();
         InputManager.instance.EnableReticle();
         gameObject.SetActive(false);
@@ -183,16 +176,18 @@ public class PIPController : TransitionableObject
     {
         Material mat1 = spiritLevel.GetComponent<Renderer>().materials[0];
         Material mat2 = PIPPointer.GetComponent<Renderer>().materials[0];
+        Material mat3 = pipAlert.materials[0];
         float t = 0;
         float alpha = startAlpha;
 
         while (t < totalTime)
         {
+            Debug.Log("ALPHAL: " + alpha);
             t += Time.deltaTime;
             alpha = Mathf.Lerp(startAlpha, endAlpha, t / totalTime);
             mat1.SetFloat("_Alpha", alpha);
             mat2.SetFloat("_Alpha", alpha);
-            pipCanvas.alpha = alpha;
+            mat3.SetFloat("_Alpha", alpha);
             yield return null;
         }
     }

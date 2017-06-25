@@ -221,7 +221,6 @@ public class NetworkManager : MonoBehaviour {
             float.Parse(gyro[2]),
             float.Parse(gyro[3]));
 
-        Debug.Log(receivedQuart.eulerAngles);
         PIPController.instance.orientation = receivedQuart;
     }
 
@@ -269,13 +268,12 @@ public class NetworkManager : MonoBehaviour {
                 PIPController.instance.pipSending = false;
                 break;
             case PacketType.PIP_GYRODATA:
-                if(e == pipAddr)
+                if(pipAddr.Address.ToString() == e.Address.ToString())
                     GetPIPGyroData(recv);
                 break;
             default:
                 Debug.Log("Unknown datagram");
                 break;
-
         }
         // Get next UDP Datagram
         UdpState s = new UdpState();
