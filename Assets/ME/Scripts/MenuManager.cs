@@ -5,7 +5,7 @@ using UnityEngine;
 namespace CylinderMenu
 {
 
-    public class MenuManager : MonoBehaviour
+    public class MenuManager : TransitionableObject
     {
         public static MenuManager instance { get; private set; }
 
@@ -24,7 +24,6 @@ namespace CylinderMenu
 		public PIPController pipController;
 	    public WebcamViewer webcamViewer;
 	    public NetworkManager server;
-        public OverlayTransitioner overlayTransitioner;
 
 	    private Camera cam;
 		
@@ -192,84 +191,64 @@ namespace CylinderMenu
 				    ToNewRow();
 				    break;
 			    case MenuManager.SelectAction.imageView:
-				    StartImageView();
+					LoadModule(0);
 				    break;
 			    case MenuManager.SelectAction.webcam:
-				    StartWebcam();
-				    break;
+					LoadModule(1);
+					break;
 			    case MenuManager.SelectAction.PIP:
-				    StartPIP();
-				    break;
+					LoadModule(2);
+					break;
 			    default:
 				    break;
 		    }
 	    }
 
-	    public Texture ImageViewerNext()
+	    public Texture GetNextImage()
         {
 		    return currentRow.NextImage().FullSizedPic;
 	    }
 
-	    public Texture ImageViewerPrevious ()
+	    public Texture GetPreviousImage ()
         {
 		    return currentRow.PreviousImage().FullSizedPic; ;
 	    }
 
-		public void StartImageView ()
-		{
-			Debug.Log("Starting Image View");
-			// Show the full sized pic
-			imageViewer.LoadImage(currentRow.selectedItem.FullSizedPic);
-
-			overlayTransitioner.TransitionOut();
-			overlayTransitioner.TransitionMenuTitleOut();
-			StartCoroutine(FadeOut(currentRow, imageViewer));
+		public void LoadModule (int type) {
+			switch (type) {
+				case 0:
+					imageViewer.LoadImage(currentRow.selectedItem.FullSizedPic);
+					StartTransitionOut(imageViewer);
+					break;
+				case 1:
+					server.gameObject.SetActive(true);
+					StartTransitionOut(webcamViewer);
+					break;
+				case 2:
+					StartTransitionOut(pipController);
+					break;
+				default:
+					break;
+			}
 		}
 
-		public void ExitImageView()
-	    {
-            overlayTransitioner.TransitionIn(ScreenType.MainMenu);
-			overlayTransitioner.TransitionMenuTitleIn(currentRow.name);
-			currentRow.StartTransitionIn();
-	    }
-
-	    public void StartWebcam()
-        {
-		    Debug.Log("Starting Webcam");
-			// Start the server and the webcam viewer
-			server.gameObject.SetActive(true);
-
-			overlayTransitioner.TransitionOut();
-			overlayTransitioner.TransitionMenuTitleOut();
-			StartCoroutine(FadeOut(currentRow, webcamViewer));
-		}
-
-		public void ExitWebcam()
-		{
-			overlayTransitioner.TransitionIn(ScreenType.MainMenu);
-			overlayTransitioner.TransitionMenuTitleIn(currentRow.name);
-			currentRow.StartTransitionIn();
-		}
-
-	    public void StartPIP()
-        {
-			overlayTransitioner.TransitionOut();
-			overlayTransitioner.TransitionMenuTitleOut();
-			StartCoroutine(FadeOut(currentRow, pipController));
-		}
-
-		public void ExitPIP()
-		{
-			overlayTransitioner.TransitionIn(ScreenType.MainMenu);
-			overlayTransitioner.TransitionMenuTitleIn(currentRow.name);
-			currentRow.StartTransitionIn();
-        }
-
-		private IEnumerator FadeOut (MenuRow row, TransitionableObject transitionAfter)
-		{
-			row.StartTransitionOut();
+		protected override IEnumerator TransitionOut (TransitionableObject inAfter) {
+			currentRow.StartTransitionOut();
 			yield return new WaitForSeconds(Constants.Transitions.FadeTime);
-			transitionAfter.StartTransitionIn();
+			inAfter.StartTransitionIn();
+		}
+
+		protected override IEnumerator TransitionIn () {
+			Debug.Log(currentRow.name);
+			currentRow.StartTransitionIn();
+			yield return null;
+		}
+
+		private IEnumerator FadeBetweenRows (MenuRow before, MenuRow after)
+		{
+			before.StartTransitionOut();
+			yield return new WaitForSeconds(Constants.Transitions.FadeTime);
+			after.StartTransitionIn();
 		}
 
 		public void ToNewRow()
@@ -289,7 +268,7 @@ namespace CylinderMenu
 		    currentRow.InitializeMenu(prevRow, circleRadius, maxRows, maxColumns, itemScale, gapBetweenItems);
 			currentRow.name = "Images";
 
-			StartCoroutine(FadeOut(prevRow, currentRow));
+			StartCoroutine(FadeBetweenRows(prevRow, currentRow));
 		}
 
 	    public void ToPreviousRow()
@@ -303,7 +282,7 @@ namespace CylinderMenu
 		    MenuRow prevRow = currentRow;
             currentRow = currentRow.belowRow;
 
-			StartCoroutine(FadeOut(prevRow, currentRow));
+			StartCoroutine(FadeBetweenRows(prevRow, currentRow));
 			//StartCoroutine(prevRow.TransitionOut(Constants.Transitions.FadeTime, currentRow));
 		}
 

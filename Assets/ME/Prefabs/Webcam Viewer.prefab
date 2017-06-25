@@ -41,6 +41,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22f5472af8e15bc4db4910d68af1b287, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overlay: {fileID: 0}
   canvasGroup: {fileID: 225834110741209444}
 --- !u!114 &114566425343621506
 MonoBehaviour:

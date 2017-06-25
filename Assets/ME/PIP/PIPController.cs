@@ -146,21 +146,23 @@ public class PIPController : TransitionableObject
         zeroOrientation = orientation;
     }
 
+	public void Back() {
+		StartTransitionOut(CylinderMenu.MenuManager.instance);
+	}
+
     override protected IEnumerator TransitionIn()
     {
-        OverlayTransitioner.instance.TransitionIn(ScreenType.PIPDisplay);
         InputManager.instance.DisableReticle();
         InputManager.instance.ToggleViewMode();
-        InputManager.instance.goDown.AddListener(StartTransitionOut);
+        InputManager.instance.goDown.AddListener(Back);
         InputManager.instance.goLeft.AddListener(ZeroOrientation);
         InputManager.instance.goRight.AddListener(ZeroOrientation);
         yield return StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime));
     }
 
-    override protected IEnumerator TransitionOut()
+    override protected IEnumerator TransitionOut(TransitionableObject inAfter)
     {
-        OverlayTransitioner.instance.TransitionOut();
-        InputManager.instance.goDown.RemoveListener(StartTransitionOut);
+        InputManager.instance.goDown.RemoveListener(Back);
         InputManager.instance.goLeft.RemoveListener(ZeroOrientation);
         InputManager.instance.goRight.RemoveListener(ZeroOrientation);
 
@@ -172,8 +174,10 @@ public class PIPController : TransitionableObject
         InputManager.instance.ToggleViewMode();
         InputManager.instance.EnableReticle();
         gameObject.SetActive(false);
-        CylinderMenu.MenuManager.instance.ExitPIP();
-    }
+
+		if (inAfter)
+			inAfter.StartTransitionIn();
+	}
 
     private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime)
     {

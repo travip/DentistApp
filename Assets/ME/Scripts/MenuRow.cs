@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 namespace CylinderMenu
 {
-    public class MenuRow : TransitionableObject {
+    public class MenuRow : TransitionableObject
+	{
 	    // Object links
 	    public GameObject BackSelectorPrefab, NextPageSelectorPrefab, PreviousPageSelectorPrefab;
 	    public List<MenuItem> menuItems;
@@ -332,13 +333,13 @@ namespace CylinderMenu
 			foreach (MenuItem m in menuItems)
 				m.StartTransitionIn();
 
-			OverlayTransitioner.instance.TransitionMenuTitleIn(name);
+			//OverlayTransitioner.instance.TransitionMenuTitleIn(name);
 			yield return StartCoroutine(Fade(0f, 1f, transitionScale, 1f, Constants.Transitions.FadeTime));
 
 			// Do something after row fades in
 		}
 
-		override protected IEnumerator TransitionOut ()
+		override protected IEnumerator TransitionOut (TransitionableObject inAfter)
 		{
 			if (navButtons != null)
 				Destroy(navButtons.gameObject);
@@ -347,7 +348,7 @@ namespace CylinderMenu
 			foreach (MenuItem m in menuItems)
 				m.StartTransitionOut();
 
-			OverlayTransitioner.instance.TransitionMenuTitleOut();
+			//OverlayTransitioner.instance.TransitionMenuTitleOut();
 			yield return StartCoroutine(Fade(1f, 0f, 1f, transitionScale, Constants.Transitions.FadeTime));
 
 			gameObject.SetActive(false);

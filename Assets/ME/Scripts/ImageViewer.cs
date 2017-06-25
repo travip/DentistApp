@@ -78,7 +78,7 @@ namespace CylinderMenu
 			if (currentZoom < 0)
 			{
 				currentZoom = 0;
-				StartTransitionOut();
+				StartTransitionOut(MenuManager.instance);
 			} else
 			{
 				SetZoomLevel();
@@ -97,13 +97,13 @@ namespace CylinderMenu
 
 		private void NextImage()
 		{
-			LoadImage(MenuManager.instance.ImageViewerNext());
+			LoadImage(MenuManager.instance.GetNextImage());
 			StartCoroutine(InputGracePeriod());
 		}
 
 		private void PreviousImage()
 		{
-			LoadImage(MenuManager.instance.ImageViewerPrevious());
+			LoadImage(MenuManager.instance.GetPreviousImage());
 			StartCoroutine(InputGracePeriod());
 		}
 
@@ -118,7 +118,6 @@ namespace CylinderMenu
 
 		override protected IEnumerator TransitionIn ()
 		{
-			OverlayTransitioner.instance.TransitionIn(ScreenType.ImageViewer);
 			InputManager.instance.ToggleViewMode();
 
 			yield return Fade(0f, 1f, Constants.Transitions.FadeTime);
@@ -133,10 +132,8 @@ namespace CylinderMenu
 			StartCoroutine(ViewerUpdate());
 		}
 
-		override protected IEnumerator TransitionOut ()
+		override protected IEnumerator TransitionOut (TransitionableObject inAfter)
 		{
-			OverlayTransitioner.instance.TransitionOut();
-
 			InputManager.instance.goDown.RemoveListener(ZoomOut);
 			InputManager.instance.goUp.RemoveListener(ZoomIn);
 			InputManager.instance.goLeft.RemoveListener(PreviousImage);
@@ -144,13 +141,13 @@ namespace CylinderMenu
 
 			viewingImage = false;
 
-			InputManager.instance.goDown.RemoveListener(StartTransitionOut);
-
 			yield return Fade(1f, 0f, Constants.Transitions.FadeTime);
 
 			InputManager.instance.ToggleViewMode();
 			gameObject.SetActive(false);
-			MenuManager.instance.ExitImageView();
+
+			if (inAfter)
+				inAfter.StartTransitionIn();
 		}
 
 		private IEnumerator Fade (float startAlpha, float endAlpha, float totalTime)
