@@ -110,7 +110,9 @@ namespace CylinderMenu
 		    } else if (yRot < -turnThresholdMin) {
 			    float percent = (-yRot - turnThresholdMin) / (turnThresholdMax - turnThresholdMin);
 			    currentRow.TurnLeft(Mathf.Clamp01(percent));
-		    }
+		    } else {
+				currentRow.TowardsNearestItem();
+			}
 	    }
 
 	    public void RayEnterHandler(GameObject hit)

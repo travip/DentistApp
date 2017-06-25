@@ -41,8 +41,9 @@ namespace CylinderMenu
 	    private float targetTurnRate = 0f;
 	    private bool turning = false;
 	    private float leftestRotation, rightestRotation;
+		private float picRotDiffY;
 
-	    IEnumerator movement;
+		IEnumerator movement;
 
 	    [HideInInspector]
 	    public MenuItem selectedItem;
@@ -78,7 +79,7 @@ namespace CylinderMenu
             {
 			    if (!turning)
 				    turnRate *= turnFriction;
-                		
+                
 			    transform.Rotate(0f, turnRate, 0f);
 			    float rot = transform.eulerAngles.y;
 
@@ -115,7 +116,7 @@ namespace CylinderMenu
 		    // Calculate how many degrees around the circle each image appears after the last.
 		    float degreesPerUnit = 360f / (2f * Mathf.PI * radius);
 		    float picRotDiffX = degreesPerUnit * itemScale.x;
-		    float picRotDiffY = picRotDiffX * 0.981f; // 0.981 is 'y' dimension from blender
+		    picRotDiffY = picRotDiffX * 0.981f; // 0.981 is 'y' dimension from blender
 			
 		    picRotDiffX += degreesPerUnit * gapBetweenItems;
 		    picRotDiffY += degreesPerUnit * gapBetweenItems;
@@ -235,6 +236,31 @@ namespace CylinderMenu
 		    targetTurnRate = percent * -turnRateMax;
 		    Turn();
 	    }
+
+		public void TowardsNearestItem() {
+			float rot = transform.eulerAngles.y;
+			if (rot > 180f)
+				rot -= 360f;
+			else if (rot < -180f)
+				rot += 360f;
+
+
+			float rotMod = rot % picRotDiffY;
+
+			if (rotMod < 0)
+				rotMod = picRotDiffY + rotMod;
+
+			if (rotMod > 0.4f) {
+				if (rotMod > picRotDiffY / 2f) {
+					// go left
+					TurnLeft((picRotDiffY - rotMod) / picRotDiffY);
+				}
+				else {
+					// go right
+					TurnRight(rotMod / picRotDiffY);
+				}
+			}
+		}
 
 	    private void Turn()
         {
