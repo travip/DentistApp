@@ -241,7 +241,7 @@ public class NetworkManager : MonoBehaviour {
                     Thread.Sleep(1000);
                     tcpClient = new TcpClient(e.Address.ToString(), dataPort);
                     tcpStream = tcpClient.GetStream();
-                    Debug.Log("Connected!");
+                    Debug.Log("Connected to streaming client");
                     camConnected = true;
                 }
                 else
@@ -269,7 +269,8 @@ public class NetworkManager : MonoBehaviour {
                 PIPController.instance.pipSending = false;
                 break;
             case PacketType.PIP_GYRODATA:
-                GetPIPGyroData(recv);
+                if(e == pipAddr)
+                    GetPIPGyroData(recv);
                 break;
             default:
                 Debug.Log("Unknown datagram");
