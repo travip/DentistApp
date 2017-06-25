@@ -10,67 +10,107 @@ public class TimerScreen : TransitionableObject {
 
     private int mins = 0;
     private int secs = 0;
-    private bool isTiming = false;
-
-    [SerializeField]
-    private GameObject secondsUp, secondsDown, minutesUp, minutesDown;
-    public float sUpTime = -1;
-    public float sDownTime = -1;
-    public float minUpTime = -1;
-    public float minDownTime = -1;
 
 	public float baseTimeToProc = 1f;
 	public float minTimeToProc = 0.1f;
+	public float timeLessPerProc = 0.1f;
 	public float timeToProc = 1f;
-	public float totalTime = 0f;
+	public float currentTime = 0f;
 	public int consecutiveProcs = 0;
 
     private Coroutine updateTimer;
 
     // Use this for initialization
-    void Start () {
+    void Start ()
+	{
         RayCaster.instance.OnRayStay += RayStayHandler;
 		RayCaster.instance.OnRayExit += RayExitHandler;
 		RayCaster.instance.looker = Camera.main.transform;
 		RayCaster.instance.StartRaycasting();
+
+		currentTime = timeToProc;
 	}
 
 	public void RayStayHandler(GameObject hit)
 	{
-		totalTime += Time.deltaTime;
-		if (totalTime >= timeToProc) {
-			totalTime = 0f;
-			timeToProc = Mathf.Max(timeToProc - 0.1f, minTimeToProc);
+		currentTime += Time.deltaTime;
+		if (currentTime >= timeToProc) {
+			currentTime = 0f;
+			timeToProc = Mathf.Max(timeToProc - timeLessPerProc, minTimeToProc);
 
 			switch (hit.name) {
 				case "Seconds Up":
 					secs++;
+					if (secs >= 60) {
+						if (mins < 999) {
+							secs -= 60;
+							mins++;
+						} else {
+							secs = 59;
+						}
+					}
 					break;
 				case "Seconds Down":
 					secs--;
+					if (secs < 0) {
+						if (mins > 0) {
+							secs += 60;
+							mins--;
+						} else {
+							secs = 0;
+						}
+					}
 					break;
 				case "Minutes Up":
-					mins++;
+					mins = Mathf.Min(mins + 1, 999);
 					break;
 				case "Minutes Down":
-					mins--;
+					mins = Mathf.Max(mins - 1, 0);
 					break;
 			}
+			UpdateText();
 		}
 	}
 
+
     public void RayExitHandler(GameObject hit)
     {
-		totalTime = 0f;
 		timeToProc = baseTimeToProc;
+		currentTime = timeToProc;
+	}
+
+	private void UpdateText () {
+		secText.text = secs < 10 ? "0" + secs.ToString() : secs.ToString();
+		minText.text = mins < 10 ? "0" + mins.ToString() : mins.ToString();
+	}
+
+	public void Back () {
+		StartTransitionOut(CylinderMenu.MenuManager.instance);
 	}
 
 	override protected IEnumerator TransitionIn()
     {
-        yield return StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime));
-    }
+		RayCaster.instance.OnRayStay += RayStayHandler;
+		RayCaster.instance.OnRayExit += RayExitHandler;
+		RayCaster.instance.looker = Camera.main.transform;
+		RayCaster.instance.StartRaycasting();
 
-    private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime)
+		yield return StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime));
+
+		InputManager.instance.goDown.AddListener(Back);
+	}
+
+	protected override IEnumerator TransitionOut ()
+	{
+		InputManager.instance.goDown.RemoveListener(Back);
+		RayCaster.instance.StopRaycasting();
+		RayCaster.instance.OnRayStay -= RayStayHandler;
+		RayCaster.instance.OnRayExit -= RayExitHandler;
+
+		yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime));
+	}
+
+	private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime)
     {
         yield return null;
     }

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace CylinderMenu
 {
@@ -10,27 +9,27 @@ namespace CylinderMenu
 		public GameObject SelectorPrefab;
 
 		private Transform valueText;
-		 
-		public string label;
+		
 		public Settings.Setting setting;
-
-		public float currentValue;
 		
 		private SettingsSelection selectorUp;
 		private SettingsSelection selectorDown;
 
-		protected override void Awake () {
+		protected override void Awake ()
+		{
 			base.Awake();
 
 			selectorUp = Instantiate(SelectorPrefab, selectors).GetComponent<SettingsSelection>();
 			selectorDown = Instantiate(SelectorPrefab, selectors).GetComponent<SettingsSelection>();
-			valueText = transform.Find("TextValue");
-			valueText.parent = pic;
 			selectorUp.valueChange = 1f;
 			selectorDown.valueChange = -1f;
+
+			valueText = transform.Find("TextValue");
+			valueText.parent = pic;
 		}
 
-		public override void AddToMenuRow (Transform row, float distance, Quaternion rotation, Vector3 scale) {
+		public override void AddToMenuRow (Transform row, float distance, Quaternion rotation, Vector3 scale)
+		{
 			base.AddToMenuRow(row, distance, rotation, scale);
 
 			// slight magic number for the y position of the selector

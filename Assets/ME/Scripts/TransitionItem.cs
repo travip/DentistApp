@@ -21,7 +21,8 @@ namespace CylinderMenu
 			base.AddToMenuRow(row, distance, rotation, scale);
 
 			// slight magic number for the y position of the selector
-			selector.localPosition = new Vector3(0f, scale.y * -0.14f, 0f);
+			if (selector != null)
+				selector.localPosition = new Vector3(0f, scale.y * -0.14f, 0f);
 		}
 	}
 }

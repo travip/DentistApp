@@ -14,8 +14,7 @@ public class Selector : MonoBehaviour {
 	public float minScale = 0f;
 	public float maxScale = 3.1f;
 
-
-	public float reduceTimeMultiplier = 1f;
+	public float cooloffSpeed = 1f;
 
 	public float selectedZ;
 	public float selectMoveSpeed;
@@ -58,7 +57,7 @@ public class Selector : MonoBehaviour {
 
 	void Update () {
 		if (currentTime > 0f && hitThisFrame == false) {
-			currentTime -= Time.deltaTime * reduceTimeMultiplier;
+			currentTime -= Time.deltaTime * cooloffSpeed;
 			NoSelection();
 		}
 

@@ -6,8 +6,7 @@ namespace CylinderMenu
 {
 	public class MenuSelection : MonoBehaviour, iSelectable
 	{
-
-		public TransitionItem parentItem;
+		private TransitionItem parentItem;
 
 		void Start()
 		{

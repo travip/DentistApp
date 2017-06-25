@@ -42,6 +42,7 @@ namespace CylinderMenu
 	    private bool turning = false;
 	    private float leftestRotation, rightestRotation;
 		private float picRotDiffY;
+		public bool canMove;
 
 		IEnumerator movement;
 
@@ -49,14 +50,15 @@ namespace CylinderMenu
 	    public MenuItem selectedItem;
 
         // Dynamic creation of menu
-        public void InitializeMenu(MenuRow parentRow, float _radius, int _rows, int _columns, Vector3 _itemScale, float _gapBetweenItems)
+        public void InitializeMenu(MenuRow parentRow, RowDetails details)
         {
-		    radius = _radius;
-		    maxRows = _rows;
-		    maxColumns = _columns;
-		    itemScale = _itemScale;
-		    gapBetweenItems = _gapBetweenItems;
-
+			radius = Constants.Menu.Radius;
+			maxRows = details.rows;
+		    maxColumns = details.columns;
+		    itemScale = details.itemScale;
+		    gapBetweenItems = details.gapBetweenItems;
+			startInMiddle = details.startInMiddle;
+			canMove = details.canMove;
 		    //transform.Find("mesh").localScale = new Vector3(radius+1f, radius+1f, 3f);
 
 		    gameObject.SetActive(false);

@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 namespace CylinderMenu
 {
-
     public class MenuManager : TransitionableObject
     {
         public static MenuManager instance { get; private set; }
@@ -16,7 +15,8 @@ namespace CylinderMenu
 			subMenu,
 		    imageView,
 		    webcam,
-		    PIP
+		    PIP,
+			timer
 	    }
 
 		// Object links
@@ -26,6 +26,7 @@ namespace CylinderMenu
 	    public ImageViewer imageViewer;
 		public PIPController pipController;
 	    public WebcamViewer webcamViewer;
+		public TimerScreen timerScreen;
 	    public NetworkManager server;
 		public Settings settings;
 
@@ -72,7 +73,6 @@ namespace CylinderMenu
 		    currentRow.maxRows = 1;
 		    currentRow.maxColumns = 5;
 		    currentRow.name = "Home Screen";
-		    currentRow.startInMiddle = true;
 
 		    for (int i = 0; i < transform.childCount; i++) {
 			    MenuItem m = transform.GetChild(i).GetComponent<MenuItem>();
@@ -81,9 +81,11 @@ namespace CylinderMenu
 			    }
 		    }
 
-		    currentRow.InitializeMenu(null, circleRadius, maxRows, maxColumns, mainMenuItemScale, gapBetweenItems);
+			// circleRadius, maxRows, maxColumns, mainMenuItemScale, gapBetweenItems, true, true);
+			RowDetails rowDetails = new RowDetails(maxRows, maxColumns, mainMenuItemScale, gapBetweenItems, true, true);
+			currentRow.InitializeMenu(null, rowDetails);
 
-		    currentRow.StartTransitionIn();
+			currentRow.StartTransitionIn();
 
 			raycaster = RayCaster.instance;
 		    raycaster.OnRayEnter += RayEnterHandler;
@@ -96,6 +98,9 @@ namespace CylinderMenu
 
 	    void Update()
 		{
+			if (currentRow.canMove == false)
+				return;
+
 		    float yRot = cam.transform.rotation.eulerAngles.y;
 		    if (yRot > 180f) {
 			    yRot = yRot - 360f;
@@ -117,10 +122,10 @@ namespace CylinderMenu
         {
 		    switch (hit.transform.tag) {
 			    case "Selector":
-					hit.transform.gameObject.GetComponent<Selector>().LookAt();
+					hit.GetComponent<Selector>().LookAt();
 					break;
 			    case "MenuItem":
-				    hit.transform.gameObject.GetComponent<MenuItem>().LookAt();
+				    hit.GetComponent<MenuItem>().LookAt();
 				    break;
 			    default:
 				    break;
@@ -131,10 +136,10 @@ namespace CylinderMenu
         {
 		    switch (hit.transform.tag) {
 			    case "Selector":
-					hit.transform.gameObject.GetComponent<Selector>().LookAt();
+					hit.GetComponent<Selector>().LookAt();
 				    break;
 			    case "MenuItem":
-				    //hit.transform.gameObject.GetComponent<MenuItem>().LookAt();
+				    //hit.GetComponent<MenuItem>().LookAt();
 					break;
 				default:
 				    break;
@@ -145,10 +150,10 @@ namespace CylinderMenu
         {
 		    switch (hit.transform.tag) {
 			    case "Selector":
-				    //LookAtSelector(hit.transform.gameObject.GetComponent<MenuSelector>());
+				    //LookAtSelector(hit.GetComponent<MenuSelector>());
 				    break;
 			    case "MenuItem":
-				    hit.transform.gameObject.GetComponent<MenuItem>().LookAway();
+				    hit.GetComponent<MenuItem>().LookAway();
 				    break;
 			    default:
 				    break;
@@ -182,6 +187,9 @@ namespace CylinderMenu
 			    case MenuManager.SelectAction.PIP:
 					StartTransitionOut(pipController);
 					break;
+				case MenuManager.SelectAction.timer:
+					StartTransitionOut(timerScreen);
+					break;
 			    default:
 				    break;
 		    }
@@ -206,6 +214,7 @@ namespace CylinderMenu
 		protected override IEnumerator TransitionIn () {
 			currentRow.StartTransitionIn();
 			yield return null;
+			raycaster.StartRaycasting();
 		}
 
 		private IEnumerator FadeBetweenRows (MenuRow before, MenuRow after, bool destroyBefore)
@@ -236,7 +245,10 @@ namespace CylinderMenu
 		    // Generate new MenuRow and set its list of menu items
 		    currentRow = Instantiate(MenuRowPrefab, transform).GetComponent<MenuRow>();
 		    currentRow.transform.position = new Vector3(prevRow.transform.position.x, prevRow.transform.position.y, prevRow.transform.position.z);
-		    currentRow.InitializeMenu(prevRow, circleRadius, maxRows, maxColumns, prevRow.selectedItem.rowItemSize, gapBetweenItems);
+
+			//circleRadius, maxRows, maxColumns, prevRow.selectedItem.rowItemSize, prevRow.selectedItem.rowGapSize, prevRow.selectedItem.rowStartInMiddle, prevRow.selectedItem.rowCanMove
+
+			currentRow.InitializeMenu(prevRow, prevRow.selectedItem.newRowDetails);
 			currentRow.name = prevRow.selectedItem.itemName;
 
 			StartCoroutine(FadeBetweenRows(prevRow, currentRow, false));

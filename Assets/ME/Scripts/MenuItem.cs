@@ -5,6 +5,22 @@ using UnityEngine;
 
 namespace CylinderMenu
 {
+
+	[Serializable]
+	public class RowDetails
+	{
+		public RowDetails () { }
+		public RowDetails(int _rows, int _columns, Vector3 _itemScale, float _gapBetweenItems, bool _startInMiddle, bool _canMove) {
+			rows = _rows; columns = _columns; itemScale = _itemScale; gapBetweenItems = _gapBetweenItems; startInMiddle = _startInMiddle; canMove = _canMove;
+		}
+		public int rows = 1;
+		public int columns = 50;
+		public Vector3 itemScale = new Vector3(4f, 4f, 4f);
+		public float gapBetweenItems = 0.5f;
+		public bool startInMiddle = false;
+		public bool canMove = true;
+	}
+
 	public class MenuItem : TransitionableObject
 	{
 		// Object Links
@@ -28,7 +44,9 @@ namespace CylinderMenu
 
 		// These 3 should be in TransitionItem but to simplify some code in MenuManager I'm leaving them here for now
 		public MenuManager.SelectAction selectAction;
-		public Vector3 rowItemSize = new Vector3(4f, 4f, 4f);
+
+		public RowDetails newRowDetails;
+
 		[HideInInspector]
 		public Texture FullSizedPic;
 		[HideInInspector]
@@ -48,7 +66,13 @@ namespace CylinderMenu
 
 			// Instantiate the mesh that holds the menu picture
 			pic = Instantiate(PicPrefab, transform).transform;
-			pic.Find("mesh").GetComponent<Renderer>().material.mainTexture = menuPic;
+
+			if (menuPic != null) {
+				pic.Find("mesh").GetComponent<Renderer>().material.mainTexture = menuPic;
+			} else {
+				pic.gameObject.SetActive(false);
+			}
+			
 
 			selectors = new GameObject().transform;
 			selectors.parent = transform;
