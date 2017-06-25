@@ -132,7 +132,7 @@ namespace CylinderMenu
 			StartCoroutine(ViewerUpdate());
 		}
 
-		override protected IEnumerator TransitionOut (TransitionableObject inAfter)
+		override protected IEnumerator TransitionOut ()
 		{
 			InputManager.instance.goDown.RemoveListener(ZoomOut);
 			InputManager.instance.goUp.RemoveListener(ZoomIn);
@@ -144,10 +144,6 @@ namespace CylinderMenu
 			yield return Fade(1f, 0f, Constants.Transitions.FadeTime);
 
 			InputManager.instance.ToggleViewMode();
-			gameObject.SetActive(false);
-
-			if (inAfter)
-				inAfter.StartTransitionIn();
 		}
 
 		private IEnumerator Fade (float startAlpha, float endAlpha, float totalTime)

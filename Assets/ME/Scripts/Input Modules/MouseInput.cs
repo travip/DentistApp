@@ -84,6 +84,7 @@ public class MouseInput : InputManager {
 	public override void ToggleViewMode () {
 		mouseRotation = !mouseRotation;
 		cam.transform.rotation = Quaternion.identity;
+		Debug.Log("Viewmode Toggled");
 	}
 
 	public override Vector2 Get2DMovement()

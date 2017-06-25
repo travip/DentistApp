@@ -23,17 +23,13 @@ namespace CylinderMenu {
 			InputManager.instance.goDown.AddListener(Back);
 		}
 
-		override protected IEnumerator TransitionOut (TransitionableObject inAfter)
+		override protected IEnumerator TransitionOut ()
 		{
 			InputManager.instance.goDown.RemoveListener(Back);
 
 			yield return Fade(1f, 0f, Constants.Transitions.FadeTime);
 
 			InputManager.instance.ToggleViewMode();
-			gameObject.SetActive(false);
-
-			if (inAfter)
-				inAfter.StartTransitionIn();
 		}
 
 		private IEnumerator Fade(float from, float to, float totalTime)

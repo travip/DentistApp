@@ -232,14 +232,13 @@ namespace CylinderMenu
 			}
 		}
 
-		protected override IEnumerator TransitionOut (TransitionableObject inAfter) {
+		protected override IEnumerator TransitionOut () {
 			currentRow.StartTransitionOut();
 			yield return new WaitForSeconds(Constants.Transitions.FadeTime);
-			inAfter.StartTransitionIn();
+			// nothing after
 		}
 
 		protected override IEnumerator TransitionIn () {
-			Debug.Log(currentRow.name);
 			currentRow.StartTransitionIn();
 			yield return null;
 		}
@@ -283,7 +282,6 @@ namespace CylinderMenu
             currentRow = currentRow.belowRow;
 
 			StartCoroutine(FadeBetweenRows(prevRow, currentRow));
-			//StartCoroutine(prevRow.TransitionOut(Constants.Transitions.FadeTime, currentRow));
 		}
 
         private IEnumerator SmoothMovement(Vector3 end)
