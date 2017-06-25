@@ -21,11 +21,13 @@ namespace CylinderMenu {
 			yield return Fade(0f, 1f, Constants.Transitions.FadeTime);
 
 			InputManager.instance.goDown.AddListener(Back);
-		}
+            NetworkManager.instance.BeginCamDiscovery();
+        }
 
 		override protected IEnumerator TransitionOut ()
 		{
 			InputManager.instance.goDown.RemoveListener(Back);
+            NetworkManager.instance.CloseCamConnection();
 
 			yield return Fade(1f, 0f, Constants.Transitions.FadeTime);
 

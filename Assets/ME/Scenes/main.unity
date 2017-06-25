@@ -150,10 +150,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 42414956}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 316dcebff36d0ae47b628809829344c2, type: 3}
+  m_Script: {fileID: 11500000, guid: b49484a431b288c45819b76ca38e9436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveThreshold: {x: 5, y: 3}
+  moveThreshold: {x: 2, y: 2}
   scrollSpeed: 1
   reticle: {fileID: 716822385}
   goRight:
