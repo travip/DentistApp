@@ -5,6 +5,11 @@ using UnityEngine.UI;
 
 public class TimerScreen : TransitionableObject {
 
+    public static TimerScreen instance { get; private set; }
+
+    [SerializeField]
+    private List<Renderer> rends;
+
     [SerializeField]
     private Text minText, secText;
 
@@ -18,7 +23,16 @@ public class TimerScreen : TransitionableObject {
 	public float currentTime = 0f;
 	public int consecutiveProcs = 0;
 
-    private Coroutine updateTimer;
+    [SerializeField]
+    private TimerSelector startTime, stopTime;
+
+    void Awake()
+    {
+        if (instance == null || instance == this)
+            instance = this;
+        else
+            Destroy(this);
+    }
 
     // Use this for initialization
     void Start ()
@@ -84,6 +98,16 @@ public class TimerScreen : TransitionableObject {
 		minText.text = mins < 10 ? "0" + mins.ToString() : mins.ToString();
 	}
 
+    public void BeginTimer()
+    {
+        CylinderMenu.GlobalTimer.instance.StartTimer(mins * 60 + secs);
+    }
+
+    public void StopTimer()
+    {
+        CylinderMenu.GlobalTimer.instance.ResetTimer();
+    }
+
 	public void Back () {
 		StartTransitionOut(CylinderMenu.MenuManager.instance);
 	}
@@ -96,8 +120,10 @@ public class TimerScreen : TransitionableObject {
 		RayCaster.instance.StartRaycasting();
 
 		yield return StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime));
+        startTime.gameObject.SetActive(true);
+        stopTime.gameObject.SetActive(true);
 
-		InputManager.instance.goDown.AddListener(Back);
+        InputManager.instance.goDown.AddListener(Back);
 	}
 
 	protected override IEnumerator TransitionOut ()
@@ -106,12 +132,24 @@ public class TimerScreen : TransitionableObject {
 		RayCaster.instance.StopRaycasting();
 		RayCaster.instance.OnRayStay -= RayStayHandler;
 		RayCaster.instance.OnRayExit -= RayExitHandler;
+        startTime.gameObject.SetActive(false);
+        stopTime.gameObject.SetActive(false);
 
-		yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime));
-	}
+        yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime));
+    }
 
-	private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime)
+    private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime)
     {
-        yield return null;
+        float t = 0;
+        float alpha = startAlpha;
+
+        while (t < totalTime)
+        {
+            t += Time.deltaTime;
+            alpha = Mathf.Lerp(startAlpha, endAlpha, t / totalTime);
+            foreach(Renderer r in rends)
+                r.materials[0].SetFloat("_Alpha", alpha);
+            yield return null;
+        }
     }
 }

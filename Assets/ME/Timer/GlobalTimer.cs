@@ -10,6 +10,7 @@ namespace CylinderMenu
 		public static GlobalTimer instance { get; private set; }
 
 		public Text timerText;
+        public Color defaultColor;
 		public float totalTime;
 
 		private float currentTime;
@@ -45,6 +46,7 @@ namespace CylinderMenu
 
 				if (currentTime <= 0)
 				{
+                    currentTime = 0;
 					TimesUp();
 				}
 			}
@@ -63,21 +65,33 @@ namespace CylinderMenu
 				(secs < 10 ? "0" + secs.ToString() : secs.ToString());
 		}
 
-		public void StartTimer ()
+		public void StartTimer (float time)
 		{
+            Debug.Log("Start Timing");
+            timerText.color = defaultColor;
 			timerText.gameObject.SetActive(true);
+            totalTime = time;
+            currentTime = time;
+            UpdateText();
 			timing = true;
 		}
 
 		private void TimesUp ()
 		{
-			// change colour but keep counting down?
+            UpdateText();
+            timerText.color = Color.red;
+            timing = false;
 		}
 
 		public void PauseTimer ()
 		{
 			timing = false;
 		}
+
+        public void ResumeTimer()
+        {
+            timing = true;
+        }
 
 		public void ResetTimer ()
 		{
