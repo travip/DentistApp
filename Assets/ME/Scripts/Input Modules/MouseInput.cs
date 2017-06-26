@@ -43,7 +43,8 @@ public class MouseInput : InputManager
             }
         }
 
-		if (rotationMode) {
+		if (rotationMode)
+		{
 			yaw += rotDiff.x * scrollSpeed;
 			pitch -= rotDiff.y * scrollSpeed;
 			cam.transform.eulerAngles = new Vector3(pitch, yaw, 0f);
@@ -51,9 +52,9 @@ public class MouseInput : InputManager
 
 	}
 
-	public override void ToggleViewMode ()
+	public override void ResetCamera ()
 	{
-		base.ToggleViewMode();
+		base.ResetCamera();
 		yaw = 0;
 		pitch = 0;
 	}

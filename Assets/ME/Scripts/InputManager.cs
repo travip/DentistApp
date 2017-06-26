@@ -58,6 +58,10 @@ public abstract class InputManager : MonoBehaviour
 	{
 		reticle.SetActive(!reticle.activeSelf);
 		rotationMode = !rotationMode;
+		ResetCamera();
+	}
+
+	virtual public void ResetCamera() {
 		cam.transform.rotation = Quaternion.identity;
 	}
 

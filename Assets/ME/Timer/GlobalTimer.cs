@@ -39,7 +39,6 @@ namespace CylinderMenu
 			{
 				currentTime -= Time.deltaTime;
 
-				Debug.Log((float)currentDisplayNumber - currentTime);
 				if ((float)currentDisplayNumber - currentTime >= 0f)
 				{
 					UpdateText();

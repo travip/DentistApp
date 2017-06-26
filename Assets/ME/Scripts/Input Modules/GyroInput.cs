@@ -60,9 +60,9 @@ public class GyroInput : InputManager
 		}
 	}
 
-	public override void ToggleViewMode ()
+	public override void ResetCamera ()
 	{
-		base.ToggleViewMode();
+		base.ResetCamera();
 		yaw = 0;
 		pitch = 0;
 	}

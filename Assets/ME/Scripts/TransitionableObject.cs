@@ -14,6 +14,8 @@ public class TransitionableObject : MonoBehaviour
 		if (overlay != null)
 			StartCoroutine(FadeCanvasGroup(0f, 1f, Constants.Transitions.FadeTime, overlay));
 
+		InputManager.instance.ResetCamera();
+
 		StartCoroutine(TransitionIn());
 	}
 
