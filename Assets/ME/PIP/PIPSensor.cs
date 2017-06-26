@@ -52,10 +52,8 @@ public class PIPSensor : MonoBehaviour {
         udpClient.EnableBroadcast = true;
 		broadcastAddr = new IPEndPoint(IPAddress.Parse("255.255.255.255"), 12345);
 
-		currentListenAddr = any;
-
         UdpState s = new UdpState();
-        s.e = currentListenAddr;
+        s.e = any;
         s.u = udpClient;
 
         udpClient.BeginReceive(new AsyncCallback(ReceiveCallback), s);
@@ -130,7 +128,7 @@ public class PIPSensor : MonoBehaviour {
         // Get next UDP Datagram
         datagramCount++;
         UdpState s = new UdpState();
-        s.e = currentListenAddr;
+        s.e = any;
         s.u = udpClient;
         udpClient.BeginReceive(new AsyncCallback(ReceiveCallback), s);
     }
@@ -152,7 +150,7 @@ public class PIPSensor : MonoBehaviour {
         {
             currentMsg = "Discovering headset..";
             byte[] msg = NetworkHelper.CreateDatagram(PacketType.PIP_DISCOVERY, null);
-            udpClient.Send(msg, msg.Length, any);
+            udpClient.Send(msg, msg.Length, broadcastAddr);
         }
     }
 
