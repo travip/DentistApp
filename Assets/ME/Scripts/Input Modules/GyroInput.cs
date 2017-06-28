@@ -56,6 +56,7 @@ public class GyroInput : InputManager
 		{
 			yaw -= rotDiff.y * scrollSpeed;
 			pitch -= rotDiff.x * scrollSpeed;
+			pitch = Mathf.Clamp(pitch, -27f, 27f);
 			cam.transform.eulerAngles = new Vector3(pitch, yaw, 0f);
 		}
 	}

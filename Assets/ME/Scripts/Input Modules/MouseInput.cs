@@ -46,7 +46,9 @@ public class MouseInput : InputManager
 		if (rotationMode)
 		{
 			yaw += rotDiff.x * scrollSpeed;
+			yaw = Mathf.Clamp(yaw, -80f, 80f);
 			pitch -= rotDiff.y * scrollSpeed;
+			pitch = Mathf.Clamp(pitch, -27f, 27f);
 			cam.transform.eulerAngles = new Vector3(pitch, yaw, 0f);
 		}
 

@@ -98,18 +98,17 @@ public class PIPController : TransitionableObject
 
 
 	private Quaternion ReadGyroscopeRotation (Quaternion quat) {
-		return new Quaternion(0.5f, 0.5f, -0.5f, 0.5f) * quat * new Quaternion(0, 0, 1, 0);
+		return new Quaternion(0.5f, 0.5f, -0.5f, -0.5f) * quat;// * new Quaternion(0, 0, 1, 0);
 	}
 
 	//wifi stuff
 	public void CalculateOrienatation()
     {
-		//finalOrientation = Quaternion.Inverse(zeroOrientation) * orientation;
-		//orientation = ReadGyroscopeRotation(Input.gyro.attitude);
-		finalOrientation = orientation * Quaternion.Inverse(zeroOrientation);
-		spiritLevel.rotation = finalOrientation;
+		orientation = ReadGyroscopeRotation(Input.gyro.attitude);
+		spiritLevel.localRotation = orientation;
 
-        angle_x = Mathf.Abs(spiritLevel.localEulerAngles.x);
+
+		angle_x = Mathf.Abs(spiritLevel.localEulerAngles.x);
         angle_y = Mathf.Abs(spiritLevel.localEulerAngles.y);
         angle_z = Mathf.Abs(spiritLevel.localEulerAngles.z);
 
@@ -148,7 +147,10 @@ public class PIPController : TransitionableObject
 			NetworkManager.instance.StartPIPDataStream();
 		}
 		zeroOrientation = orientation;
-    }
+
+		spiritLevel.parent.rotation = Quaternion.Inverse(orientation);
+
+	}
 
 	public void Back() {
 		StartTransitionOut(CylinderMenu.MenuManager.instance);

@@ -16,8 +16,8 @@ namespace CylinderMenu
 	    [Header("Navigation")]
 	    public float turnTick = 10f;
 	    public float rotateTime = 0.1f;
-	    public static float turnAccel = 0.5f;
-	    public static float turnRateMax = 0.3f;
+	    public static float turnAccel = 0.4f;
+	    public static float turnRateMax = 0.6f;
 	    public static float turnFriction = 0.96f;
 
 	    [Header("Transitions")]
@@ -273,6 +273,11 @@ namespace CylinderMenu
 
 	    private void Turn()
         {
+			if ((targetTurnRate < 0f && turnRate > 0f) || (targetTurnRate > 0f && turnRate < 0f))
+			{
+				turnRate *= turnFriction;
+			}
+
 		    if (turnRate > targetTurnRate)
             {
 			    turnRate -= turnAccel * Time.deltaTime;
