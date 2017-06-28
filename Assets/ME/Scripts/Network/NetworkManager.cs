@@ -222,7 +222,7 @@ public class NetworkManager : MonoBehaviour {
             float.Parse(gyro[2]),
             float.Parse(gyro[3]));
 
-        PIPController.instance.orientation = new Quaternion(0.5f, 0.5f, -0.5f, 0.5f) * receivedQuart * new Quaternion(0, 0, 1, 0);
+        PIPController.instance.ReceiveNetworkedRotation(receivedQuart);
     }
     
     public void ReceiveDatagram(IAsyncResult ar)
@@ -232,8 +232,6 @@ public class NetworkManager : MonoBehaviour {
         IPEndPoint e = ((UdpState)(ar.AsyncState)).e;
 
         byte[] recv = u.EndReceive(ar, ref e);
-        Debug.Log("Got datagram");
-        Debug.Log("Leng: " + recv.Length);
 
         switch (recv[0])
         {

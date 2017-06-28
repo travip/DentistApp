@@ -93,39 +93,17 @@ public class PIPController : TransitionableObject
     }
 
 	public void ReceiveNetworkedRotation(Quaternion quat) {
-		orientation = ReadGyroscopeRotation(quat);
-	}
-
-
-	private Quaternion ReadGyroscopeRotation (Quaternion quat) {
-		return new Quaternion(0.5f, 0.5f, -0.5f, -0.5f) * quat;// * new Quaternion(0, 0, 1, 0);
+		orientation = new Quaternion(0.5f, 0.5f, -0.5f, -0.5f) * quat;
 	}
 
 	//wifi stuff
 	public void CalculateOrienatation()
     {
-		orientation = ReadGyroscopeRotation(Input.gyro.attitude);
-		spiritLevel.localRotation = orientation;
+        spiritLevel.localRotation = orientation;
+        float diffAngle = Quaternion.Angle(zeroOrientation, orientation);
 
-
-		angle_x = Mathf.Abs(spiritLevel.localEulerAngles.x);
-        angle_y = Mathf.Abs(spiritLevel.localEulerAngles.y);
-        angle_z = Mathf.Abs(spiritLevel.localEulerAngles.z);
-
-        sensitivity.text = tolerance.ToString();
-
-        if (angle_x > tolerance && angle_x < (360 - tolerance))
-        {
+        if ((diffAngle) > 5)
             pipAlert.materials[0].SetColor("_Tint", Color.red);
-        }
-        else if (angle_y > tolerance && angle_y < (360 - tolerance))
-        {
-            pipAlert.materials[0].SetColor("_Tint", Color.red);
-        }
-        else if (angle_z > tolerance && angle_z < (360 - tolerance))
-        {
-            pipAlert.materials[0].SetColor("_Tint", Color.red);
-        }
         else
             pipAlert.materials[0].SetColor("_Tint", Color.black);
     }
@@ -146,10 +124,8 @@ public class PIPController : TransitionableObject
 		{
 			NetworkManager.instance.StartPIPDataStream();
 		}
-		zeroOrientation = orientation;
-
+        zeroOrientation = spiritLevel.localRotation;
 		spiritLevel.parent.rotation = Quaternion.Inverse(orientation);
-
 	}
 
 	public void Back() {
