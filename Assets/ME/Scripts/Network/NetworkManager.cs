@@ -226,12 +226,13 @@ public class NetworkManager : MonoBehaviour {
 
     public void ReceiveDatagram(IAsyncResult ar)
     {
-        UdpClient u = ((UdpState)(ar.AsyncState)).u;
+		Debug.Log("Got a datagram");
+		UdpClient u = ((UdpState)(ar.AsyncState)).u;
         IPEndPoint e = ((UdpState)(ar.AsyncState)).e;
-
-        byte[] recv = u.EndReceive(ar, ref e);
-
-        switch (recv[0])
+		
+		byte[] recv = u.EndReceive(ar, ref e);
+		
+		switch (recv[0])
         {
             case PacketType.CAM_DISCOVERY:
                 if (discoveryingStream)

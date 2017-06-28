@@ -11,7 +11,7 @@ public class PIPController : TransitionableObject
 
     //values and variables
     public Quaternion orientation;
-    Quaternion zeroOrientation;
+    Quaternion zeroOrientation = Quaternion.identity;
     Quaternion finalOrientation;
 
     public Transform spiritLevel;
@@ -92,11 +92,22 @@ public class PIPController : TransitionableObject
         CrossEast.transform.localPosition = new Vector3((110 + tolerance * scaleCrossHair), 0, 0);
     }
 
-    //wifi stuff
-    public void CalculateOrienatation()
+	public void ReceiveNetworkedRotation(Quaternion quat) {
+		orientation = ReadGyroscopeRotation(quat);
+	}
+
+
+	private Quaternion ReadGyroscopeRotation (Quaternion quat) {
+		return new Quaternion(0.5f, 0.5f, -0.5f, 0.5f) * quat * new Quaternion(0, 0, 1, 0);
+	}
+
+	//wifi stuff
+	public void CalculateOrienatation()
     {
-        finalOrientation = Quaternion.Inverse(zeroOrientation) * orientation;
-        spiritLevel.rotation = finalOrientation;
+		//finalOrientation = Quaternion.Inverse(zeroOrientation) * orientation;
+		//orientation = ReadGyroscopeRotation(Input.gyro.attitude);
+		finalOrientation = orientation * Quaternion.Inverse(zeroOrientation);
+		spiritLevel.rotation = finalOrientation;
 
         angle_x = Mathf.Abs(spiritLevel.localEulerAngles.x);
         angle_y = Mathf.Abs(spiritLevel.localEulerAngles.y);
@@ -132,11 +143,11 @@ public class PIPController : TransitionableObject
 
     public void ZeroOrientation()
     {
-        if (!pipSending)
-        {
-            NetworkManager.instance.StartPIPDataStream();
-        }
-        zeroOrientation = orientation;
+		if (!pipSending)
+		{
+			NetworkManager.instance.StartPIPDataStream();
+		}
+		zeroOrientation = orientation;
     }
 
 	public void Back() {

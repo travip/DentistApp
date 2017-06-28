@@ -116,7 +116,7 @@ namespace CylinderMenu
 		    } else {
 				currentRow.TowardsNearestItem();
 			}
-	    }
+		}
 
 	    public void RayEnterHandler(GameObject hit)
         {
