@@ -11,8 +11,6 @@ public class PIPController : TransitionableObject
 
     //values and variables
     public Quaternion orientation;
-    Quaternion zeroOrientation = Quaternion.identity;
-    Quaternion finalOrientation;
 
     public Transform spiritLevel;
     public bool pipSending;
@@ -100,14 +98,12 @@ public class PIPController : TransitionableObject
 	private Quaternion ReadGyroscopeRotation (Quaternion quat) {
 		return new Quaternion(0.5f, 0.5f, -0.5f, -0.5f) * quat;// * new Quaternion(0, 0, 1, 0);
 	}
-
+	
 	//wifi stuff
 	public void CalculateOrienatation()
     {
-		orientation = ReadGyroscopeRotation(Input.gyro.attitude);
 		spiritLevel.localRotation = orientation;
-
-
+		
 		angle_x = Mathf.Abs(spiritLevel.localEulerAngles.x);
         angle_y = Mathf.Abs(spiritLevel.localEulerAngles.y);
         angle_z = Mathf.Abs(spiritLevel.localEulerAngles.z);
@@ -146,7 +142,6 @@ public class PIPController : TransitionableObject
 		{
 			NetworkManager.instance.StartPIPDataStream();
 		}
-		zeroOrientation = orientation;
 
 		spiritLevel.parent.rotation = Quaternion.Inverse(orientation);
 

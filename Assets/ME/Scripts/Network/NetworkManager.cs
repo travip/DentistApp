@@ -23,7 +23,7 @@ public class NetworkManager : MonoBehaviour {
     public int dataPort = 56567;
     public string myIpString;
 
-    private IPAddress localAddr;
+    //private IPAddress localAddr;
     private IPEndPoint broadcastAddr;
 
     private IPEndPoint pipAddr;
@@ -85,7 +85,7 @@ public class NetworkManager : MonoBehaviour {
             Debug.Log(e);
             return false;
         }
-        localAddr = IPAddress.Parse(myIpString);
+        //localAddr = IPAddress.Parse(myIpString);
         return true;
     }
 

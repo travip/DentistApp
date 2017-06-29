@@ -88,13 +88,28 @@ namespace CylinderMenu
 			currentRow.StartTransitionIn();
 
 			raycaster = RayCaster.instance;
-		    raycaster.OnRayEnter += RayEnterHandler;
-		    raycaster.OnRayStay += RayStayHandler;
-		    raycaster.OnRayExit += RayExitHandler;
-		    raycaster.looker = cam.transform;
+			raycaster.looker = cam.transform;
+			AddRaycasters();
+	    }
+
+		void AddRaycasters()
+		{
+			raycaster.OnRayEnter += RayEnterHandler;
+			raycaster.OnRayStay += RayStayHandler;
+			raycaster.OnRayExit += RayExitHandler;
+			raycaster.looker = cam.transform;
 
 			raycaster.StartRaycasting();
-	    }
+		}
+
+		void RemoveRaycasters()
+		{
+			raycaster.StopRaycasting();
+
+			raycaster.OnRayEnter -= RayEnterHandler;
+			raycaster.OnRayStay -= RayStayHandler;
+			raycaster.OnRayExit -= RayExitHandler;
+		}
 
 	    void Update()
 		{
@@ -207,6 +222,7 @@ namespace CylinderMenu
 
 		protected override IEnumerator TransitionOut () {
 			currentRow.StartTransitionOut();
+			//RemoveRaycasters();
 			yield return new WaitForSeconds(Constants.Transitions.FadeTime);
 			// nothing after
 		}
@@ -214,6 +230,7 @@ namespace CylinderMenu
 		protected override IEnumerator TransitionIn () {
 			currentRow.StartTransitionIn();
 			yield return null;
+			//AddRaycasters();
 			raycaster.StartRaycasting();
 		}
 

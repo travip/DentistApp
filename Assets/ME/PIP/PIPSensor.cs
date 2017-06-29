@@ -21,16 +21,16 @@ public class PIPSensor : MonoBehaviour {
     private UdpClient udpClient;
     private UdpState udpState;
 
-    private IPAddress localAddr;
+    //private IPAddress localAddr;
 
     private IPEndPoint broadcastAddr;
-    private IPEndPoint currentListenAddr;
+    //private IPEndPoint currentListenAddr;
     private IPEndPoint targetAddr;
     private IPEndPoint any;
 
     private bool pipConnected = false;
     private bool sending = false;
-    private float timeSinceDiscover;
+    //private float timeSinceDiscover;
 
     public Text displayText;
     public Text countText;
@@ -58,7 +58,7 @@ public class PIPSensor : MonoBehaviour {
 
         udpClient.BeginReceive(new AsyncCallback(ReceiveCallback), s);
 
-        timeSinceDiscover = 0f;
+        //timeSinceDiscover = 0f;
     }
 
     private void ReportMessage()
@@ -79,7 +79,7 @@ public class PIPSensor : MonoBehaviour {
             Debug.Log(e);
             return false;
         }
-        localAddr = IPAddress.Parse(myIpString);
+        //localAddr = IPAddress.Parse(myIpString);
         return true;
     }
 
@@ -97,7 +97,7 @@ public class PIPSensor : MonoBehaviour {
                 {
                     currentMsg = "Got a reply from headset";
                     targetAddr = e;
-                    currentListenAddr = e;
+                    //currentListenAddr = e;
                     pipConnected = true;
                 }
                 break;
@@ -106,7 +106,7 @@ public class PIPSensor : MonoBehaviour {
                 break;
             case PacketType.PIP_DISCONNECT:
                 currentMsg = "Pip disconnected";
-                currentListenAddr = any;
+                //currentListenAddr = any;
                 pipConnected = false;
                 sending = false;
                 break;

@@ -10,8 +10,7 @@ public class TimerScreen : TransitionableObject {
     [SerializeField]
     private List<Renderer> rends;
 
-    [SerializeField]
-    private Text minText, secText;
+    public Text minText, secText;
 
     private int mins = 0;
     private int secs = 0;
@@ -23,8 +22,7 @@ public class TimerScreen : TransitionableObject {
 	public float currentTime = 0f;
 	public int consecutiveProcs = 0;
 
-    [SerializeField]
-    private TimerSelector startTime, stopTime;
+    public TimerSelector startTime, stopTime;
 
     void Awake()
     {
@@ -37,12 +35,20 @@ public class TimerScreen : TransitionableObject {
     // Use this for initialization
     void Start ()
 	{
-        RayCaster.instance.OnRayStay += RayStayHandler;
+		RayCaster.instance.OnRayEnter += RayEnterHandler;
+		RayCaster.instance.OnRayStay += RayStayHandler;
 		RayCaster.instance.OnRayExit += RayExitHandler;
 		RayCaster.instance.looker = Camera.main.transform;
 		RayCaster.instance.StartRaycasting();
 
 		currentTime = timeToProc;
+	}
+
+	public void RayEnterHandler(GameObject hit)
+	{
+		if (hit.tag == "TimerButton") {
+			hit.GetComponent<Renderer>().material.SetColor("_Tint", Color.green);
+		}
 	}
 
 	public void RayStayHandler(GameObject hit)
@@ -89,6 +95,10 @@ public class TimerScreen : TransitionableObject {
 
     public void RayExitHandler(GameObject hit)
     {
+		if (hit.tag == "TimerButton") {
+			hit.GetComponent<Renderer>().material.SetColor("_Tint", Color.white);
+		}
+
 		timeToProc = baseTimeToProc;
 		currentTime = timeToProc;
 	}
