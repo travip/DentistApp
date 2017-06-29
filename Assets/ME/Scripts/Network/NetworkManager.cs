@@ -32,6 +32,7 @@ public class NetworkManager : MonoBehaviour {
     private IPEndPoint any;
 
     private bool discoveryingStream = false;
+    [SerializeField]
     private bool pipConnected = false;
     private bool camConnected = false;
 
@@ -221,18 +222,18 @@ public class NetworkManager : MonoBehaviour {
             float.Parse(gyro[2]),
             float.Parse(gyro[3]));
 
-        PIPController.instance.orientation = receivedQuart;
+        PIPController.instance.ReceiveNetworkedRotation(receivedQuart);
     }
-
+    
     public void ReceiveDatagram(IAsyncResult ar)
     {
-		Debug.Log("Got a datagram");
-		UdpClient u = ((UdpState)(ar.AsyncState)).u;
+        
+        UdpClient u = ((UdpState)(ar.AsyncState)).u;
         IPEndPoint e = ((UdpState)(ar.AsyncState)).e;
-		
-		byte[] recv = u.EndReceive(ar, ref e);
-		
-		switch (recv[0])
+
+        byte[] recv = u.EndReceive(ar, ref e);
+
+        switch (recv[0])
         {
             case PacketType.CAM_DISCOVERY:
                 if (discoveryingStream)

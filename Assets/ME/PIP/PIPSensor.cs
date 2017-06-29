@@ -140,7 +140,6 @@ public class PIPSensor : MonoBehaviour {
                                              Input.gyro.attitude.z.ToString() + ":" +
                                              Input.gyro.attitude.w.ToString());
         msg = NetworkHelper.CreateDatagram(PacketType.PIP_GYRODATA, msg);
-
         udpClient.Send(msg, msg.Length, targetAddr);
     }
 
