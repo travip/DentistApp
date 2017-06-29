@@ -34,7 +34,7 @@ public class PIPController : TransitionableObject
     public RectTransform CrossSouth;
     public RectTransform CrossWest;
     public RectTransform CrossEast;
-    private int scaleCrossHair = 3;
+    public int scaleCrossHair = 2;
 
     public Text sensitivity;
 
@@ -49,10 +49,10 @@ public class PIPController : TransitionableObject
     void OnEnable()
     {
         orientation = Quaternion.identity;
-        CrossNorth.localPosition = new Vector3(0, (110 + tolerance * scaleCrossHair), 0);
-        CrossSouth.localPosition = new Vector3(0, (-110 - tolerance * scaleCrossHair), 0);
-        CrossWest.localPosition = new Vector3((-110 - tolerance * scaleCrossHair), 0, 0);
-        CrossEast.localPosition = new Vector3((110 + tolerance * scaleCrossHair), 0, 0);
+        CrossNorth.localPosition = new Vector3(0, (100 + tolerance * scaleCrossHair), 0);
+        CrossSouth.localPosition = new Vector3(0, (-100 - tolerance * scaleCrossHair), 0);
+        CrossWest.localPosition = new Vector3((-100 - tolerance * scaleCrossHair), 0, 0);
+        CrossEast.localPosition = new Vector3((100 + tolerance * scaleCrossHair), 0, 0);
         sensitivity.text = tolerance.ToString();
     }
 
@@ -85,10 +85,10 @@ public class PIPController : TransitionableObject
 
     public void UpdateCrosshairPosition()
     {
-        CrossNorth.transform.localPosition = new Vector3(0, 110 + tolerance * scaleCrossHair, 0);
-        CrossSouth.transform.localPosition = new Vector3(0, -110 - tolerance * scaleCrossHair, 0);
-        CrossWest.transform.localPosition = new Vector3(-110 - tolerance * scaleCrossHair, 0, 0);
-        CrossEast.transform.localPosition = new Vector3((110 + tolerance * scaleCrossHair), 0, 0);
+        CrossNorth.transform.localPosition = new Vector3(0, 100 + tolerance * scaleCrossHair, 0);
+        CrossSouth.transform.localPosition = new Vector3(0, -100 - tolerance * scaleCrossHair, 0);
+        CrossWest.transform.localPosition = new Vector3(-100 - tolerance * scaleCrossHair, 0, 0);
+        CrossEast.transform.localPosition = new Vector3((100 + tolerance * scaleCrossHair), 0, 0);
     }
 
 	public void ReceiveNetworkedRotation(Quaternion quat) {
@@ -101,8 +101,11 @@ public class PIPController : TransitionableObject
         spiritLevel.localRotation = orientation;
         float diffAngle = Quaternion.Angle(zeroOrientation, orientation);
 
-        if ((diffAngle) > 5)
+        if ((diffAngle) > tolerance)
+        {
+            Debug.Log(diffAngle);
             pipAlert.materials[0].SetColor("_Tint", Color.red);
+        }
         else
             pipAlert.materials[0].SetColor("_Tint", Color.black);
     }

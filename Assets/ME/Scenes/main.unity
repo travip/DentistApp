@@ -224,7 +224,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 42414956}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b49484a431b288c45819b76ca38e9436, type: 3}
+  m_Script: {fileID: 11500000, guid: 316dcebff36d0ae47b628809829344c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moveThreshold: {x: 3, y: 3}
@@ -2312,6 +2312,7 @@ MonoBehaviour:
   overlay: {fileID: 47071283}
   PIPPointer: {fileID: 159859621}
   orientation: {x: 0, y: 0, z: 0, w: 0}
+  zeroOrientation: {x: 0, y: 0, z: 0, w: 1}
   spiritLevel: {fileID: 1279015462}
   pipSending: 0
   x: 0
