@@ -11,8 +11,9 @@ public class PIPController : TransitionableObject
 
     //values and variables
     public Quaternion orientation;
+	public Quaternion zeroOrientation = Quaternion.identity;
 
-    public Transform spiritLevel;
+	public Transform spiritLevel;
     public bool pipSending;
 
     public float x = 0;
