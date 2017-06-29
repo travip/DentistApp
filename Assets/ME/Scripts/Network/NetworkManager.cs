@@ -184,6 +184,7 @@ public class NetworkManager : MonoBehaviour {
             byte[] msg = NetworkHelper.CreateDatagram(PacketType.PIP_STOP, null);
             udpClient.Send(msg, msg.Length, pipAddr);
             PIPController.instance.pipSending = false;
+            DisconnectPip();
         }
         else
         {
@@ -301,6 +302,13 @@ public class NetworkManager : MonoBehaviour {
             tcpStream = null;
             camConnected = false;
         }
+    }
+
+    public void DisconnectPip()
+    {
+        byte[] msg = NetworkHelper.CreateDatagram(PacketType.PIP_DISCONNECT, null);
+        udpClient.Send(msg, msg.Length, pipAddr);
+        pipConnected = false;
     }
 
     private void Update()
