@@ -2312,6 +2312,7 @@ MonoBehaviour:
   overlay: {fileID: 47071283}
   PIPPointer: {fileID: 159859621}
   orthographicCamera: {fileID: 1061194596}
+  perspectiveCamera: {fileID: 507158836}
   orientation: {x: 0, y: 0, z: 0, w: 0}
   zeroOrientation: {x: 0, y: 0, z: 0, w: 1}
   spiritLevel: {fileID: 1279015462}

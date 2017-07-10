@@ -9,8 +9,7 @@ public class PIPController : TransitionableObject
 
     public Transform PIPPointer;
 	public Camera orthographicCamera;
-
-	private Camera perspectiveCamera;
+	public Camera perspectiveCamera;
 
     //values and variables
     public Quaternion orientation;
@@ -140,8 +139,6 @@ public class PIPController : TransitionableObject
 
 	private void SwitchToOrthographicCamera()
 	{
-		Debug.Log("to ortho");
-		perspectiveCamera = Camera.main;
 		perspectiveCamera.enabled = false;
 		perspectiveCamera.gameObject.SetActive(false);
 		orthographicCamera.enabled = true;
@@ -150,7 +147,6 @@ public class PIPController : TransitionableObject
 
 	private void SwitchToPerspectiveCamera()
 	{
-		Debug.Log("to perspective");
 		perspectiveCamera.enabled = true;
 		perspectiveCamera.gameObject.SetActive(true);
 		orthographicCamera.enabled = false;
