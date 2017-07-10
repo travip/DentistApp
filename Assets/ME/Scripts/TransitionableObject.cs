@@ -29,7 +29,7 @@ public class TransitionableObject : MonoBehaviour
 		if (inAfter != null)
 			inAfter.Invoke("StartTransitionIn", Constants.Transitions.FadeTime);
 
-		Invoke("EndTransitionOut", Constants.Transitions.FadeTime + 0.5f);
+		Invoke("EndTransitionOut", Constants.Transitions.FadeTime + 0.1f);
 	}
 
 	private void EndTransitionOut() {

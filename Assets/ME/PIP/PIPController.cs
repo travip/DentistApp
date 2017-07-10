@@ -185,6 +185,9 @@ public class PIPController : TransitionableObject
         Material mat1 = spiritLevel.GetComponent<Renderer>().materials[0];
         Material mat2 = PIPPointer.GetComponent<Renderer>().materials[0];
         Material mat3 = pipAlert.materials[0];
+
+		Color col1 = mat1.color;
+		Color col2 = mat2.color;
         float t = 0;
         float alpha = startAlpha;
 
@@ -192,8 +195,10 @@ public class PIPController : TransitionableObject
         {
             t += Time.deltaTime;
             alpha = Mathf.Lerp(startAlpha, endAlpha, t / totalTime);
-            mat1.SetFloat("_Alpha", alpha);
-            mat2.SetFloat("_Alpha", alpha);
+			col1.a = alpha;
+			col2.a = alpha;
+			mat1.color = col1;
+			mat2.color = col2;
             mat3.SetFloat("_Alpha", alpha);
             yield return null;
         }
