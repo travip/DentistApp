@@ -8,6 +8,9 @@ public class PIPController : TransitionableObject
     public static PIPController instance { get; private set; }
 
     public Transform PIPPointer;
+	public Camera orthographicCamera;
+
+	private Camera perspectiveCamera;
 
     //values and variables
     public Quaternion orientation;
@@ -130,13 +133,35 @@ public class PIPController : TransitionableObject
 		spiritLevel.parent.rotation = Quaternion.Inverse(orientation);
 	}
 
-	public void Back() {
+	public void Back()
+	{
 		StartTransitionOut(CylinderMenu.MenuManager.instance);
+	}
+
+	private void SwitchToOrthographicCamera()
+	{
+		Debug.Log("to ortho");
+		perspectiveCamera = Camera.main;
+		perspectiveCamera.enabled = false;
+		perspectiveCamera.gameObject.SetActive(false);
+		orthographicCamera.enabled = true;
+		orthographicCamera.gameObject.SetActive(true);
+	}
+
+	private void SwitchToPerspectiveCamera()
+	{
+		Debug.Log("to perspective");
+		perspectiveCamera.enabled = true;
+		perspectiveCamera.gameObject.SetActive(true);
+		orthographicCamera.enabled = false;
+		orthographicCamera.gameObject.SetActive(false);
 	}
 
     override protected IEnumerator TransitionIn()
     {
-        InputManager.instance.ToggleViewMode();
+		SwitchToOrthographicCamera();
+
+		InputManager.instance.ToggleViewMode();
         InputManager.instance.goDown.AddListener(Back);
         InputManager.instance.goLeft.AddListener(ZeroOrientation);
         InputManager.instance.goRight.AddListener(ZeroOrientation);
@@ -155,6 +180,8 @@ public class PIPController : TransitionableObject
 
         pipAlert.materials[0].color = Color.black;
         InputManager.instance.ToggleViewMode();
+
+		SwitchToPerspectiveCamera();
 	}
 
     private IEnumerator Fade(float startAlpha, float endAlpha, float totalTime)

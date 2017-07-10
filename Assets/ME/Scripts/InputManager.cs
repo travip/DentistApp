@@ -8,8 +8,8 @@ public abstract class InputManager : MonoBehaviour
 {
     public static InputManager instance { get; private set; }
 
-	public Vector2 moveThreshold = new Vector2(5f, 5f);
-	public float scrollSpeed = 1f;
+	public Vector2 moveThreshold = new Vector2(2f, 2f);
+	public float scrollSpeed = 2f;
 
 	protected bool rotationMode = true;
 	protected bool canTrigger = false;
