@@ -63,6 +63,7 @@ public abstract class InputManager : MonoBehaviour
 
 	virtual public void ResetCamera() {
 		cam.transform.rotation = Quaternion.identity;
+		StartCoroutine(PreventMovement(0.2f));
 	}
 
 	private void PreventMultipleInput()
@@ -73,8 +74,20 @@ public abstract class InputManager : MonoBehaviour
 	private IEnumerator PreventMultipleInputRoutine ()
 	{
 		canTrigger = false;
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(0.15f);
 		canTrigger = true;
+	}
+
+	private IEnumerator PreventMovement(float time)
+	{
+		enabled = false;
+		float t = 0f;
+		while (t < time)
+		{
+			t += Time.deltaTime;
+			yield return null;
+		}
+		enabled = true;
 	}
 
 	public abstract Vector2 Get2DMovement();

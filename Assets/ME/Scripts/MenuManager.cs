@@ -38,10 +38,15 @@ namespace CylinderMenu
 	    [HideInInspector]
 	    public MenuRow currentRow;
 	    private RayCaster raycaster;
+		private bool leftRecently = false;
+		private bool rightRecently = false;
+		private float timeSinceShake = 0f;
+		private IEnumerator shakeCoroutine;
 
-	    // Parameters of the menu system
-	    [Header("Navigation")]
-	    public float turnThresholdMin;
+		// Parameters of the menu system
+		[Header("Navigation")]
+		public float shakeGestureTime = 0.5f;
+		public float turnThresholdMin;
 	    public float turnThresholdMax;
 	    [Header("Between Rows")]
 	    public float rowGap = 10f;
@@ -90,7 +95,8 @@ namespace CylinderMenu
 			raycaster = RayCaster.instance;
 			raycaster.looker = cam.transform;
 			AddRaycasters();
-	    }
+			AddGestureListeners();
+		}
 
 		void AddRaycasters()
 		{
@@ -111,7 +117,76 @@ namespace CylinderMenu
 			raycaster.OnRayExit -= RayExitHandler;
 		}
 
-	    void Update()
+
+		private void AddGestureListeners()
+		{
+			InputManager.instance.goDown.AddListener(ToPreviousRow);
+			InputManager.instance.goLeft.AddListener(GestureLeft);
+			InputManager.instance.goRight.AddListener(GestureRight);
+		}
+
+		private void RemoveGestureListeners()
+		{
+			InputManager.instance.goDown.RemoveListener(ToPreviousRow);
+			InputManager.instance.goLeft.RemoveListener(GestureLeft);
+			InputManager.instance.goRight.RemoveListener(GestureRight);
+		}
+
+		private void GestureLeft()
+		{
+			if (rightRecently)
+			{
+				ResetView();
+			}
+			else
+			{
+				leftRecently = true;
+				CountdownShake();
+			}
+		}
+
+		private void GestureRight()
+		{
+			if (leftRecently)
+			{
+				ResetView();
+			}
+			else
+			{
+				rightRecently = true;
+				CountdownShake();
+			}
+		}
+
+		private void CountdownShake()
+		{
+			timeSinceShake = 0f;
+			if (shakeCoroutine == null)
+			{
+				shakeCoroutine = CountdownShakeIenum();
+				StartCoroutine(shakeCoroutine);
+			}
+		}
+
+		private IEnumerator CountdownShakeIenum()
+		{
+			while (timeSinceShake < shakeGestureTime)
+			{
+				timeSinceShake += Time.deltaTime;
+				yield return null;
+			}
+
+			rightRecently = false;
+			leftRecently = false;
+			shakeCoroutine = null;
+		}
+
+		private void ResetView()
+		{
+			InputManager.instance.ResetCamera();
+		}
+
+		void Update()
 		{
 			if (currentRow.canMove == false)
 				return;
@@ -223,6 +298,7 @@ namespace CylinderMenu
 		protected override IEnumerator TransitionOut () {
 			currentRow.StartTransitionOut();
 			//RemoveRaycasters();
+			RemoveGestureListeners();
 			yield return new WaitForSeconds(Constants.Transitions.FadeTime);
 			// nothing after
 		}
@@ -231,6 +307,7 @@ namespace CylinderMenu
 			currentRow.StartTransitionIn();
 			yield return null;
 			//AddRaycasters();
+			AddGestureListeners();
 			raycaster.StartRaycasting();
 		}
 
