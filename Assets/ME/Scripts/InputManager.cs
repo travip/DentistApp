@@ -10,6 +10,7 @@ public abstract class InputManager : MonoBehaviour
 
 	public Vector2 moveThreshold = new Vector2(2f, 2f);
 	public float scrollSpeed = 2f;
+	public float preventMovementTime = 0.3f;
 
 	protected bool rotationMode = true;
 	protected bool canTrigger = false;
@@ -63,7 +64,7 @@ public abstract class InputManager : MonoBehaviour
 
 	virtual public void ResetCamera() {
 		cam.transform.rotation = Quaternion.identity;
-		StartCoroutine(PreventMovement(0.2f));
+		StartCoroutine(PreventMovement(preventMovementTime));
 	}
 
 	private void PreventMultipleInput()

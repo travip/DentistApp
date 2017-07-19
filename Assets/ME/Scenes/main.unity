@@ -202,7 +202,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &42414957
 Transform:
   m_ObjectHideFlags: 0
@@ -229,6 +229,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveThreshold: {x: 2, y: 2}
   scrollSpeed: 2
+  preventMovementTime: 0.3
   reticle: {fileID: 716822385}
   goRight:
     m_PersistentCalls:
@@ -649,6 +650,67 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 75761688}
+--- !u!1001 &90805230
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 522103492}
+    m_Modifications:
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4904686432969730, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1857470517894238, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+      propertyPath: m_Name
+      value: View reset stop time
+      objectReference: {fileID: 0}
+    - target: {fileID: 114209796583056542, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
+        type: 2}
+      propertyPath: setting
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114209796583056542, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
+        type: 2}
+      propertyPath: menuPic
+      value: 
+      objectReference: {fileID: 2800000, guid: 215017ffe86a7b84b87e208fae5888ce, type: 3}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 89c4b4319efe6184d96d74fe0e86d0d4, type: 2}
+  m_IsPrefabParent: 0
+--- !u!102 &90805231 stripped
+TextMesh:
+  m_PrefabParentObject: {fileID: 102556761413643674, guid: 89c4b4319efe6184d96d74fe0e86d0d4,
+    type: 2}
+  m_PrefabInternal: {fileID: 90805230}
 --- !u!1 &138524335
 GameObject:
   m_ObjectHideFlags: 0
@@ -2999,6 +3061,16 @@ Prefab:
       propertyPath: rowItemSize.z
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114870236191980876, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58,
+        type: 2}
+      propertyPath: newRowDetails.itemScale.x
+      value: 2.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114870236191980876, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58,
+        type: 2}
+      propertyPath: newRowDetails.itemScale.y
+      value: 3.6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 2f6c0c772ba3a0f4b8ae18d357cd2e58, type: 2}
   m_IsPrefabParent: 0
@@ -3990,6 +4062,11 @@ MonoBehaviour:
     min: 0
     max: 50
     tick: 2
+  viewResetTime:
+    text: {fileID: 90805231}
+    min: 0
+    max: 2
+    tick: 0.1
 --- !u!1001 &1307158599
 Prefab:
   m_ObjectHideFlags: 0
@@ -5382,7 +5459,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1826280214
 Transform:
   m_ObjectHideFlags: 0
@@ -5409,6 +5486,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveThreshold: {x: 2, y: 2}
   scrollSpeed: 2
+  preventMovementTime: 0.3
   reticle: {fileID: 716822385}
   goRight:
     m_PersistentCalls:

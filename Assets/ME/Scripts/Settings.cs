@@ -10,7 +10,7 @@ namespace CylinderMenu
 	{
 		public static Settings instance { get; private set; }
 
-		public MenuSetting senseX, senseY, look, scroll, deadzone;
+		public MenuSetting senseX, senseY, look, scroll, deadzone, viewResetTime;
 
 		public enum Setting
 		{
@@ -18,7 +18,8 @@ namespace CylinderMenu
 			gestureSensitivityY,
 			movementSensitivity,
 			rowScrollSpeed,
-			deadzoneSize
+			deadzoneSize,
+			viewResetTime
 		}
 
 		private void Awake ()
@@ -41,6 +42,7 @@ namespace CylinderMenu
 			look.Set(InputManager.instance.scrollSpeed);
 			scroll.Set(MenuRow.turnRateMax);
 			deadzone.Set(MenuManager.instance.turnThresholdMin);
+			viewResetTime.Set(InputManager.instance.preventMovementTime);
 		}
 
 
@@ -60,6 +62,9 @@ namespace CylinderMenu
 					break;
 				case Setting.deadzoneSize:
 					MenuManager.instance.turnThresholdMin = deadzone.Tick(amount);
+					break;
+				case Setting.viewResetTime:
+					InputManager.instance.preventMovementTime = viewResetTime.Tick(amount);
 					break;
 				default:
 					break;
