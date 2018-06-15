@@ -381,7 +381,7 @@ namespace LPMSB2
             mLpmsData.quat[3] = convertRxbytesToFloat(o, rxBuffer);
             o += 4;
 
-            parent.CheckPacket(currentLength, mLpmsData.quat);
+            parent.CheckPacket(currentFunction, currentLength, mLpmsData.quat);
         }
 
         //////////////////////////////////////////

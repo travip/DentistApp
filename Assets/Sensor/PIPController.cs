@@ -101,8 +101,7 @@ public class PIPController : TransitionableObject
 	//wifi stuff
 	public void CalculateOrienatation()
     {
-        rotator.localRotation = LpmsManager.instance.sensorOrientation;
-        /*
+        rotator.localRotation = LpmsManager.instance.sensorOrientation * zeroOrientation;
         float diffAngle = Quaternion.Angle(zeroOrientation, orientation);
 
         if ((diffAngle) > tolerance)
@@ -112,7 +111,6 @@ public class PIPController : TransitionableObject
         }
         else
             pipAlert.materials[0].SetColor("_Tint", Color.black);
-        */
     }
 
     public void RightHanded()
@@ -125,15 +123,19 @@ public class PIPController : TransitionableObject
         PIPPointer.localRotation = Quaternion.Euler(0, -180f, 0);
     }
 
-    /*
     public void ZeroOrientation()
     {
-        zeroOrientation = spiritLevel.localRotation;
-		spiritLevel.parent.rotation = Quaternion.Inverse(orientation);
+        zeroOrientation = Quaternion.Inverse(rotator.localRotation);
 	}
-    */
 
-	public void Back()
+    public void ZeroOrientation2()
+    {
+        zeroOrientation = Quaternion.identity;
+        rotator.parent.rotation = Quaternion.Inverse(zeroOrientation);
+        rotator.parent.Rotate(new Vector3(90f, 90f, 0f));
+    }
+
+    public void Back()
 	{
 		StartTransitionOut(CylinderMenu.MenuManager.instance);
 	}
