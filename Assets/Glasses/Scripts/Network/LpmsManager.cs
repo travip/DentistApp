@@ -16,8 +16,10 @@ public class LpmsManager : MonoBehaviour
     LpmsB2 Sensor;
     public Text sensorText;
     public Text sensorName;
+    public Text logText;
     public bool gotAck;
     public bool gotNack;
+    public bool canSend = true;
     int cnt = 0;
 
 
@@ -129,13 +131,11 @@ public class LpmsManager : MonoBehaviour
         if(func == 0)
         {
             gotAck = true;
-            //sensorText.text = "GOT AN ACK!";
         }
         // REPLY_NACK
         else if(func == 1)
         {
             gotNack = true;
-            //sensorText.text = "GOT A NACK";
         }
         else
             sensorOrientation = new Quaternion(quat[0], quat[1], quat[2], quat[3]);
@@ -143,58 +143,60 @@ public class LpmsManager : MonoBehaviour
 
     public void ResetOrientation()
     {
-        // Reset Orientation packet
-        cnt++;
-        StartCoroutine(ChangeModes(resetOrientation));
+        Sensor.resetOrientationOffset();
     }
 
     public void ResetOrientationObject()
     {
-        // Reset Orientation packet
-        cnt++;
-        StartCoroutine(ChangeModes(setObjectOrientation));
+        Sensor.setOrientationOffset(0);
     }
 
     public void ResetOrientationHeading()
     {
-        // Reset Orientation packet
-        cnt++;
-        StartCoroutine(ChangeModes(setHeadingOrientation));
+        Sensor.setOrientationOffset(1);
     }
 
     public void ResetOrientationAlignment()
     {
-        // Reset Orientation packet
-        cnt++;
-        StartCoroutine(ChangeModes(setAlignmentOrientation));
+        Sensor.setOrientationOffset(2);
     }
 
-    IEnumerator ChangeModes(byte[] cmd)
+    public bool SendCommand(byte[] data)
     {
-        gotAck = false;
-        device.send(setCommandMode);
-        yield return new WaitForAck();
-        if(gotAck == true)
-        {
-            gotAck = false;
-            device.send(cmd);
-            yield return new WaitForAck();
-            if(gotAck == false)
-                sensorText.text = "Failed to reset orientation!";
-            else
-            {
-                gotAck = false;
-                sensorText.text = "Reset Orientation! " + cnt;
-            }
-        }
+        if(device == null || canSend == false)
+            return false;
         else
         {
-            sensorText.text = "Failed to reset orientation!";
+            StartCoroutine(Command(data));
+            return true;
         }
+    }
+
+    IEnumerator Command(byte[] data)
+    {
+        gotAck = false;
+        gotNack = false;
+        canSend = false;
+        device.send(setCommandMode);
+        yield return new WaitForAck();
+
+        gotAck = false;
+        gotNack = false;
+        device.send(data);
+        yield return new WaitForAck();
+
+        gotAck = false;
+        gotNack = false;
         device.send(setStreamMode);
         yield return new WaitForAck();
-        gotAck = false;
 
+        canSend = true;
+    }
+
+    IEnumerator NeedAck()
+    {
+        yield return new WaitForAck();
+        canSend = true;
     }
 
     public void ShowAddress(int a)

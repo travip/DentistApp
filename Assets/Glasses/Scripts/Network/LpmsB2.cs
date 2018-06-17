@@ -194,7 +194,7 @@ namespace LPMSB2
         const int MAX_BUFFER = 2048;
         const int DATA_QUEUE_SIZE = 64;
 
-        int imuId = 0;
+        int imuId = 1;
 
         // Protocol parsing related
         int rxState = PACKET_END;
@@ -210,7 +210,7 @@ namespace LPMSB2
         byte b = 0;
         int lrcCheck = 0;
         public int nBytes = 0;
-        bool waitForAck = false;
+        public bool waitForAck = false;
         bool waitForData = false;
         byte[] inBytes = new byte[2];
 
@@ -225,16 +225,108 @@ namespace LPMSB2
 
         LpmsManager parent;
 
+        public class CommandParameter
+        {
+
+            public int commandRegisters;
+            public int target;
+
+            public CommandParameter(int command, int tar)
+            {
+                this.commandRegisters = command;
+                this.target = tar;
+            }
+        }
+
         public LpmsB2(LpmsManager parent)
         {
             this.parent = parent;
         }
 
+        public void resetOrientationOffset()
+        {
+            lpbusSetNone(RESET_ORIENTATION_OFFSET);
+        }
+
+        public void setOrientationOffset(int offset)
+        {
+            if(offset == LPMS_OFFSET_MODE_ALIGNMENT ||
+                    offset == LPMS_OFFSET_MODE_HEADING ||
+                    offset == LPMS_OFFSET_MODE_OBJECT)
+            {
+                lpbusSetInt32(SET_ORIENTATION_OFFSET, offset);
+            }
+        }
+
+        void lpbusSetNone(int command)
+        {
+            sendData(command, 0);
+        }
+
+        void lpbusSetData(int command, int length, byte[] dataBuffer)
+        {
+            for(int i = 0; i < length; ++i)
+            {
+                rawTxData[i] = dataBuffer[i];
+            }
+            sendData(command, length);
+        }
+
+        void lpbusSetInt32(int command, int v)
+        {
+            for(int i = 0; i < 4; ++i)
+            {
+                rawTxData[i] = (byte) (v & 0xff);
+                v = v >> 8;
+            }
+            sendData(command, 4);
+        }
+
+        public void setCommandMode()
+        {
+            waitForAck = true;
+            lpbusSetNone(GOTO_COMMAND_MODE);
+        }
+
+        public void setStreamingMode()
+        {
+            waitForAck = true;
+            lpbusSetNone(GOTO_STREAM_MODE);
+        }
+
+        void sendData(int function, int length)
+        {
+            int txLrcCheck;
+
+            txBuffer[0] = 0x3a;
+            convertInt16ToTxbytes((Int16) imuId, 1, ref txBuffer);
+            convertInt16ToTxbytes((Int16) function, 3, ref txBuffer);
+            convertInt16ToTxbytes((Int16) length, 5, ref txBuffer);
+
+            for(int i = 0; i < length; ++i)
+            {
+                txBuffer[7 + i] = rawTxData[i];
+            }
+
+            txLrcCheck = (imuId & 0xffff) + (function & 0xffff) + (length & 0xffff);
+
+            for(int j = 0; j < length; j++)
+            {
+                txLrcCheck += (int) rawTxData[j] & 0xff;
+            }
+
+            convertInt16ToTxbytes((Int16) txLrcCheck, 7 + length, ref txBuffer);
+            txBuffer[9 + length] = 0x0d;
+            txBuffer[10 + length] = 0x0a;
+
+            byte[] sendBuf = new byte[length + 11];
+            Array.Copy(txBuffer, sendBuf, length + 11);
+            parent.SendCommand(sendBuf);
+        }
+
         public void parse()
         {
             int lrcReceived = 0;
-            //String s = BitConverter.ToString(rawRxBuffer,0,nBytes);
-            //Console.WriteLine(TAG+"  [LpmsBThread] Received: " + s);
             for(int i = 0; i < nBytes; i++)
             {
                 b = rawRxBuffer[i];

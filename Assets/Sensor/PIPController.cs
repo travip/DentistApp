@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using CylinderMenu;
 
 public class PIPController : TransitionableObject
 {
@@ -39,6 +40,7 @@ public class PIPController : TransitionableObject
     public int scaleCrossHair = 2;
 
     public Text sensitivity;
+    public PipTimer timer;
 
     private void Awake()
     {
@@ -98,15 +100,13 @@ public class PIPController : TransitionableObject
 		orientation = new Quaternion(0.5f, 0.5f, -0.5f, -0.5f) * quat;
 	}
 
-	//wifi stuff
 	public void CalculateOrienatation()
     {
-        rotator.localRotation = LpmsManager.instance.sensorOrientation * zeroOrientation;
-        float diffAngle = Quaternion.Angle(zeroOrientation, orientation);
+        rotator.localRotation = LpmsManager.instance.sensorOrientation;
+        float diffAngle = Vector3.Angle(-Vector3.forward, rotator.right);
 
-        if ((diffAngle) > tolerance)
+        if (Mathf.Abs(180-diffAngle) > tolerance)
         {
-            Debug.Log(diffAngle);
             pipAlert.materials[0].SetColor("_Tint", Color.red);
         }
         else
@@ -115,29 +115,23 @@ public class PIPController : TransitionableObject
 
     public void RightHanded()
     {
-        PIPPointer.localRotation = Quaternion.Euler(0, 0, 0);
+        PIPPointer.localRotation = Quaternion.Euler(0, 90f, 90f);
     }
 
     public void LeftHanded()
     {
-        PIPPointer.localRotation = Quaternion.Euler(0, -180f, 0);
+        PIPPointer.localRotation = Quaternion.Euler(0, 90f, -90f);
     }
 
     public void ZeroOrientation()
     {
-        zeroOrientation = Quaternion.Inverse(rotator.localRotation);
-	}
-
-    public void ZeroOrientation2()
-    {
-        zeroOrientation = Quaternion.identity;
-        rotator.parent.rotation = Quaternion.Inverse(zeroOrientation);
-        rotator.parent.Rotate(new Vector3(90f, 90f, 0f));
+        LpmsManager.instance.ResetOrientationObject();
+        timer.ResetTimer();
     }
 
     public void Back()
 	{
-		StartTransitionOut(CylinderMenu.MenuManager.instance);
+        StartTransitionOut(CylinderMenu.MenuManager.instance);
 	}
 
 	private void SwitchToOrthographicCamera()
@@ -160,18 +154,20 @@ public class PIPController : TransitionableObject
     {
 		SwitchToOrthographicCamera();
 
+        PipTimer.instance.LoadTimer();
 		InputManager.instance.ToggleViewMode();
         InputManager.instance.goDown.AddListener(Back);
-        //InputManager.instance.goLeft.AddListener(ZeroOrientation);
-        //InputManager.instance.goRight.AddListener(ZeroOrientation);
+        InputManager.instance.goLeft.AddListener(ZeroOrientation);
+        InputManager.instance.goRight.AddListener(ZeroOrientation);
         yield return StartCoroutine(Fade(0f, 1f, Constants.Transitions.FadeTime));
     }
 
     override protected IEnumerator TransitionOut()
     {
         InputManager.instance.goDown.RemoveListener(Back);
-       // InputManager.instance.goLeft.RemoveListener(ZeroOrientation);
-       // InputManager.instance.goRight.RemoveListener(ZeroOrientation);
+        InputManager.instance.goLeft.RemoveListener(ZeroOrientation);
+        InputManager.instance.goRight.RemoveListener(ZeroOrientation);
+        PipTimer.instance.UnloadTimer();
 
         yield return StartCoroutine(Fade(1f, 0f, Constants.Transitions.FadeTime));
 
