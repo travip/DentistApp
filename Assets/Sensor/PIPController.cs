@@ -64,7 +64,6 @@ public class PIPController : TransitionableObject
     // Update is called once per frame
     void Update()
     {
-        CalculateOrienatation();
         if(pipSending)
             CalculateOrienatation();
     }
@@ -103,13 +102,10 @@ public class PIPController : TransitionableObject
 
 	public void CalculateOrienatation()
     {
-        //rotator.localRotation = LpmsManager.instance.sensorOrientation;
-        //float diffAngle = Vector3.Angle(-Vector3.forward, rotator.right);
+        rotator.localRotation = LpmsManager.instance.sensorOrientation;
         float diffAngle = Mathf.Abs(180 - Vector3.Angle(-Vector3.forward, rotator.right));
         diffAngle = Mathf.Max(diffAngle, Mathf.Abs(rotator.localRotation.eulerAngles.x));
-        Debug.Log(diffAngle);
 
-        //if (Mathf.Abs(180-diffAngle) > tolerance)
         if(diffAngle > tolerance)
         {
             pipAlert.materials[0].SetColor("_Tint", Color.red);
