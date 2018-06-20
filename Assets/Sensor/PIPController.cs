@@ -40,6 +40,7 @@ public class PIPController : TransitionableObject
     public int scaleCrossHair = 2;
 
     public Text sensitivity;
+    public Text test;
     public PipTimer timer;
 
     private void Awake()
@@ -64,6 +65,7 @@ public class PIPController : TransitionableObject
     // Update is called once per frame
     void Update()
     {
+        //CalculateOrienatation();
         if(pipSending)
             CalculateOrienatation();
     }
@@ -103,9 +105,9 @@ public class PIPController : TransitionableObject
 	public void CalculateOrienatation()
     {
         rotator.localRotation = LpmsManager.instance.sensorOrientation;
-        float diffAngle = Mathf.Abs(180 - Vector3.Angle(-Vector3.forward, rotator.right));
-        diffAngle = Mathf.Max(diffAngle, Mathf.Abs(rotator.localRotation.eulerAngles.x));
-
+        Quaternion q = Quaternion.Euler(new Vector3(0, 180f, 180f));
+        test.text = Quaternion.Angle(q, rotator.localRotation).ToString("N0");
+        float diffAngle = Quaternion.Angle(q, rotator.localRotation);
         if(diffAngle > tolerance)
         {
             pipAlert.materials[0].SetColor("_Tint", Color.red);

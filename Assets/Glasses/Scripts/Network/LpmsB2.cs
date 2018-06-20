@@ -497,8 +497,6 @@ namespace LPMSB2
 
         private String convertRxbytesToString(int length, byte[] buffer)
         {
-            //Max length define 32
-            //return BitConverter.ToString(buffer,0,32);
             byte[] buffer2 = new byte[length];
             Buffer.BlockCopy(buffer, 0, buffer2, 0, length);
             return System.Text.Encoding.UTF8.GetString(buffer2);

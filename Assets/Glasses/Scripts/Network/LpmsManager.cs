@@ -22,7 +22,6 @@ public class LpmsManager : MonoBehaviour
     public bool canSend = true;
     int cnt = 0;
 
-
     private BluetoothDevice device;
 
     public Quaternion sensorOrientation;
@@ -49,6 +48,24 @@ public class LpmsManager : MonoBehaviour
     private void Start()
     {
         Sensor = new LpmsB2(this);
+        CheckForSavedSensor();
+    }
+
+
+    private void CheckForSavedSensor()
+    {
+        string mac = PlayerPrefs.GetString("sensor_mac", "");
+        if(mac == "")
+            device = null;
+        else
+        {
+            device = new BluetoothDevice();
+            device.MacAddress = mac;
+            device.Name = PlayerPrefs.GetString("sensor_name", "Unknown Name");
+            device.ReadingCoroutine = ManageConnection;
+            sensorText.text = device.Name + ": Sensor Idle";
+            sensorName.text = device.Name;
+        }
     }
 
     void HandleOnDeviceOff(BluetoothDevice dev)
@@ -68,6 +85,8 @@ public class LpmsManager : MonoBehaviour
         InputManager.instance.ResetCamera();
         sensorText.text = device.Name + ": Sensor Idle";
         sensorName.text = device.Name;
+        PlayerPrefs.SetString("sensor_mac", device.MacAddress);
+        PlayerPrefs.SetString("sensor_name", device.Name);
     }
 
     void HandleOnDisconnected(BluetoothDevice device)
@@ -138,7 +157,7 @@ public class LpmsManager : MonoBehaviour
             gotNack = true;
         }
         else
-            sensorOrientation = new Quaternion(quat[0], quat[1], quat[2], quat[3]);
+            sensorOrientation = new Quaternion(-quat[0], -quat[1], quat[2], quat[3]);
     }
 
     public void ResetOrientation()
