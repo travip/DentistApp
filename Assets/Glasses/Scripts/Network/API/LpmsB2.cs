@@ -223,7 +223,7 @@ namespace LPMSB2
         Thread connectionThread;
         Thread dataReadThread;
 
-        LpmsManager parent;
+        LpmsConnection conn;
 
         public class CommandParameter
         {
@@ -238,9 +238,9 @@ namespace LPMSB2
             }
         }
 
-        public LpmsB2(LpmsManager parent)
+        public LpmsB2(LpmsConnection conn)
         {
-            this.parent = parent;
+            this.conn = conn;
         }
 
         public void resetOrientationOffset()
@@ -321,7 +321,7 @@ namespace LPMSB2
 
             byte[] sendBuf = new byte[length + 11];
             Array.Copy(txBuffer, sendBuf, length + 11);
-            parent.SendCommand(sendBuf);
+            conn.SendCommand(sendBuf);
         }
 
         public void parse()
@@ -473,7 +473,7 @@ namespace LPMSB2
             mLpmsData.quat[3] = convertRxbytesToFloat(o, rxBuffer);
             o += 4;
 
-            parent.CheckPacket(currentFunction, currentLength, mLpmsData.quat);
+            conn.CheckPacket(currentFunction, currentLength, mLpmsData.quat);
         }
 
         //////////////////////////////////////////

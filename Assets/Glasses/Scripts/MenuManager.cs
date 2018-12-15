@@ -96,7 +96,8 @@ namespace CylinderMenu
 			raycaster.looker = cam.transform;
 			AddRaycasters();
 			AddGestureListeners();
-		}
+            StartTransitionOut(pipController);
+        }
 
 		void AddRaycasters()
 		{
